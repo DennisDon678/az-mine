@@ -14,5 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+Route::prefix('auth')->group(function () {
+    Route::get('/login',function(){
+        return view('auth.login');
+    })->name('login');
+
+    Route::get('/register',function(){
+        $code = rand(1000,9999);
+        return view('auth.register',compact('code'));
+    })->name('register');
 });
