@@ -35,43 +35,45 @@
 
                         </ion-card-header>
 
-                        <ion-card-content>
-                            <div class="input-system">.
+                        <ion-card-content mode="ios">
+                            <div class="input-system">
                                 <form action="" id="register">
+                                    @csrf
                                     <ion-item>
                                         <ion-icon name="person-circle-outline" slot="start"></ion-icon>
-                                        <ion-input placeholder="Create a Unique Username" id="username"
+                                        <ion-input placeholder="Create a Unique Username" name="username" id="username"
                                             fill=""></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
                                         <ion-icon name="mail-outline" slot="start"></ion-icon>
-                                        <ion-input type="email" placeholder="Enter your Email Address" id="email"
-                                            fill=""></ion-input>
+                                        <ion-input type="email" placeholder="Enter your Email Address" name="email"
+                                            id="email" fill=""></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
                                         <ion-icon name="call-outline" slot="start"></ion-icon>
-                                        <ion-input type="tel" placeholder="Enter Your Phone Number" id="phone"
-                                            fill=""></ion-input>
+                                        <ion-input type="tel" placeholder="Enter Your Phone Number" name="phone"
+                                            id="phone" fill=""></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
                                         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-                                        <ion-input type="password" placeholder="Create Your Password" fill=""
-                                            id="password"></ion-input>
+                                        <ion-input type="password" placeholder="Create Your Password" name="password"
+                                            fill="" id="password"></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
                                         <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-                                        <ion-input type="password" placeholder="Confirm Your Password" fill=""
+                                        <ion-input type="password" placeholder="Confirm Your Password"
+                                            name="password_confirmation" fill=""
                                             id="password_confirmation"></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
                                         <ion-icon name="enter-outline" slot="start"></ion-icon>
                                         <ion-input type="text" placeholder="Enter Invitation code (optional)"
-                                            fill="" id="referral_code"></ion-input>
+                                            fill="" id="referral_code" name="referred_by"></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
@@ -133,7 +135,12 @@
                 if (!username || !email || !phone || !password || !password_confirmation || !captcha) {
                     loading.dismiss();
                     alertCustom.message = "Please enter all required fields"
-                    alertCustom.buttons = ['Close']
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            console.log('Alert closed');
+                        }
+                    }]
                     alertCustom.present();
                     return;
                 }
@@ -142,7 +149,27 @@
                 if (!emailRegex.test(email)) {
                     loading.dismiss();
                     alertCustom.message = "Please enter a valid email address"
-                    alertCustom.buttons = ['Close']
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            console.log('Alert closed');
+                        }
+                    }]
+                    alertCustom.present();
+                    return;
+                }
+
+                // Check if phone number is valid
+                const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+                if (!phoneRegex.test(phone)) {
+                    loading.dismiss();
+                    alertCustom.message = "Please enter a valid phone number e.g. +1234567890"
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            console.log('Alert closed');
+                        }
+                    }]
                     alertCustom.present();
                     return;
                 }
@@ -151,7 +178,12 @@
                 if (password !== password_confirmation) {
                     loading.dismiss();
                     alertCustom.message = "Passwords do not match"
-                    alertCustom.buttons = ['Close']
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            console.log('Alert closed');
+                        }
+                    }]
                     alertCustom.present();
                     return;
                 }
@@ -161,10 +193,78 @@
                 if (captcha.toLowerCase() !== confirmationCodeElement.textContent.toLowerCase()) {
                     loading.dismiss();
                     alertCustom.message = "Verification code is incorrect"
-                    alertCustom.buttons = ['Close']
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            console.log('Alert closed');
+                        }
+                    }]
                     alertCustom.present();
                     return;
                 }
+
+                // Send data to server for registration
+                var form = document.getElementById('register');
+                $.ajax({
+                    type: "post",
+                    url: "/auth/register",
+                    data: new FormData(form),
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status == 'success') {
+
+                            loading.dismiss();
+                            alertCustom.message = response.message
+                            alertCustom.buttons = [{
+                                text: "Close",
+                                handler: () => {
+                                    // Clear form inputs
+                                    $('#username').val('');
+                                    $('#email').val('');
+                                    $('#phone').val('');
+                                    $('#password').val('');
+                                    $('#password_confirmation').val('');
+                                    $('#referral_code').val('');
+                                    $('#captcha').val('');
+                                    confirmationCodeElement.textContent = '';
+                                    console.log('Alert closed after a successful response');
+
+                                    loading.message = "Redirecting..."
+                                    loading.present();
+
+                                    // Redirect to login page
+                                    setTimeout(() => {
+                                        window.location.href = "/auth/login";
+                                    }, 2000);
+                                }
+                            }]
+                            alertCustom.present();
+                        } else {
+                            loading.dismiss();
+                            alertCustom.message = response.message
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                                handler: () => {
+                                    console.log('Alert closed');
+                                }
+                            }]
+                            alertCustom.present();
+                        }
+                    },
+                    error: function(xhr, ajaxOptions, thrownError) {
+                        loading.dismiss();
+                        var error = xhr.responseJSON;
+                        alertCustom.message = JSON.stringify(error);
+                        alertCustom.buttons = [{
+                            text: 'OK',
+                            handler: () => {
+                                console.log('Alert closed');
+                            }
+                        }]
+                        alertCustom.present();
+                    }
+                });
             });
 
         });

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,4 +28,19 @@ Route::prefix('auth')->group(function () {
         $code = rand(1000,9999);
         return view('auth.register',compact('code'));
     })->name('register');
+
+    Route::get('/forgot_password', function(){
+        return view('auth.forgot_password');
+    });
+
+    Route::post('/register',[AuthController::class, 'register']);
+    Route::post('/login',[AuthController::class, 'login']);
 });
+
+// User management routes prifx user and middleware auth
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('user')->group(function () {
+        Route::get('/dashboard', [UserDashboardController::class,'index'])->name('user.index');
+    });
+});
+

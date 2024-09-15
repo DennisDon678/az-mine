@@ -1,6 +1,6 @@
 @extends('auth.layout')
 
-@section('title', 'login page')
+@section('title', 'Forgot Password page')
 
 <style>
     .main {
@@ -26,12 +26,9 @@
                         <ion-card-header>
                             <ion-card-title>
                                 <div class="h2 text-center ">
-                                    <h2 class="font-weight-bold" style="font-weight:bold!important;"> Welcome Back</h2>
+                                    <h2 class="font-weight-bold" style="font-weight:bold!important;">Reset Password</h2>
                                 </div>
                             </ion-card-title>
-                            <p class="text-center">Login and claim your reward by helping our algorithm process orders
-                                faster.</p>
-
                         </ion-card-header>
 
                         <ion-card-content mode="ios">
@@ -39,20 +36,13 @@
                                 <form action="" id="login">
                                     @csrf
                                     <ion-item>
-                                        <ion-icon name="person-circle-outline" slot="start"></ion-icon>
-                                        <ion-input placeholder="Username" name="username" fill=""></ion-input>
+                                        <ion-icon name="mail-outline" slot="start"></ion-icon>
+                                        <ion-input placeholder="Enter Your Account Email" name="username" fill=""></ion-input>
                                     </ion-item>
-                                    <br>
-                                    <ion-item>
-                                        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-                                        <ion-input type="password" placeholder="Your Password" name="password"
-                                            fill=""></ion-input>
-                                    </ion-item>
-
-
+                                    
                                     <div class="log-btn mt-5">
                                         <ion-item>
-                                            <ion-button type="submit" style="width: 100%;">Login
+                                            <ion-button type="submit" style="width: 100%;">Send Recovery Mail
                                                 <ion-icon name="caret-forward-outline" slot="end"></ion-icon>
                                             </ion-button>
                                         </ion-item>
@@ -60,7 +50,7 @@
                                 </form>
                             </div>
                             <div class="forgot text-center mt-3">
-                                <a href="/auth/forgot_password" class="text-decoration-none">Forgot Password?</a>
+                                <a href="/auth/login" class="text-decoration-none">Remembered Password?</a>
                             </div>
                             <div class="or text-center mt-2">
                                 <h3>OR</h3>
@@ -81,12 +71,6 @@
         $(document).ready(function() {
             const loading = document.querySelector('ion-loading');
             const alertCustom = document.querySelector('ion-alert');
-
-            alertCustom.message = "Welcome Back, Login Now!";
-            alertCustom.buttons = [{
-                text: 'OK',
-            }]
-            alertCustom.present();
 
             $('#login').submit(function(e) {
                 e.preventDefault();
