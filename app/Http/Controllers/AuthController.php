@@ -10,12 +10,13 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(Request $request)
+    {
         $request->validate([
-            'username' => ['required','string','max:255'],
-            'email' => ['required','string','email','max:255','unique:users'],
-            'password' => ['required','string','min:8','confirmed'],
-            'phone' => ['required','unique:users'],
+            'username' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => ['required', 'unique:users'],
         ]);
 
         // Generate referral ID
@@ -31,7 +32,7 @@ class AuthController extends Controller
         ]);
 
 
-        if($user){
+        if ($user) {
             Auth::attempt([
                 'email' => $user->email,
                 'password' => $request->password,
@@ -40,31 +41,42 @@ class AuthController extends Controller
                 'status' => 'success',
                 'message' => 'Registration Completed',
             ], 201);
-        }else{
+        } else {
             return response()->json(['message' => 'Error creating user'], 500);
         }
     }
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $username = $request->username;
         $password = $request->password;
 
         // find user by username
-        $user=  User::where('username',$username)->first();
+        $user =  User::where('username', $username)->first();
 
-        if($user){
-            if(Auth::attempt([
+        if ($user) {
+            if (Auth::attempt([
                 'email' => $user->email,
                 'password' => $password,
-            ])){
+            ])) {
                 return response()->json([
                     'message' => 'Successfully logged in',
                 ]);
-            }else{
+            } else {
                 return response()->json(['message' => 'Check Your Password'], 401);
             }
-        }else{
+        } else {
             return response()->json(['message' => 'User not found'], 401);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        if (Auth::check()) {
+            Auth::logout();
+            return response()->json(['message' => 'Logged out successfully']);
+        }else{
+            return response()->json(['message' => 'User not logged in'], 401);
         }
     }
 }

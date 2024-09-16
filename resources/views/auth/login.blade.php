@@ -23,7 +23,7 @@
             <div class="ion-padding">
                 <div class="mt-5">
                     <ion-card>
-                        <ion-card-header>
+                        <ion-card-header mode="md">
                             <ion-card-title>
                                 <div class="h2 text-center ">
                                     <h2 class="font-weight-bold" style="font-weight:bold!important;"> Welcome Back</h2>

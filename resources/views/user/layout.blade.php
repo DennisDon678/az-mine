@@ -16,7 +16,7 @@
     <title>@yield('title') {{ env('APP_NAME') }}</title>
 
     <style>
-        #main{
+        #main {
             max-width: 950px;
             margin: auto;
         }
@@ -25,36 +25,34 @@
 
 <body>
     <ion-app id="main">
-        
-        <div class="ion-page" id="main-content">
-            <ion-header mode="ios">
-                <ion-toolbar color="primary">
-                    @yield('header')
-                </ion-toolbar>
-            </ion-header>
-            <ion-content class="ion-padding">
-
-                @yield('content')
-                
-                <ion-tabs mode="ios">
-                    <ion-tab-bar slot="bottom" color="primary">
-                        <ion-tab-button  href="/user/dashboard" selected="true">
-                            <ion-icon name="home" size="large"></ion-icon>
-                            <ion-label><h5>Home</h5></ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button  href="/user/dashboard">
-                            <ion-icon name="flash" size="large"></ion-icon>
-                            <ion-label><h5>Earn</h5></ion-label>
-                        </ion-tab-button>
-                        <ion-tab-button  href="/user/about">
-                            <ion-icon name="book" size="large"></ion-icon>
-                            <ion-label><h5>History</h5></ion-label>
-                        </ion-tab-button>
-                    </ion-tab-bar>
-                </ion-tabs>
-                </ion-tabs>
-            </ion-content>
-        </div>
+        <ion-header mode="ios">
+            <ion-toolbar color="primary">
+                @yield('header')
+            </ion-toolbar>
+        </ion-header>
+        <ion-content scroll="true">
+            @yield('content')
+        </ion-content>
+            <ion-tab-bar slot="bottom" color="primary">
+                <ion-tab-button href="/user/dashboard" selected="true">
+                    <ion-icon name="home" size="large"></ion-icon>
+                    <ion-label>
+                        <h5>Home</h5>
+                    </ion-label>
+                </ion-tab-button>
+                <ion-tab-button href="/user/dashboard">
+                    <ion-icon name="flash" size="large"></ion-icon>
+                    <ion-label>
+                        <h5>Earn</h5>
+                    </ion-label>
+                </ion-tab-button>
+                <ion-tab-button href="/user/about">
+                    <ion-icon name="book" size="large"></ion-icon>
+                    <ion-label>
+                        <h5>History</h5>
+                    </ion-label>
+                </ion-tab-button>
+            </ion-tab-bar>
         <ion-loading mode="ios"></ion-loading>
         <ion-alert mode="ios"></ion-alert>
     </ion-app>

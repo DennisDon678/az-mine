@@ -35,12 +35,14 @@ Route::prefix('auth')->group(function () {
 
     Route::post('/register',[AuthController::class, 'register']);
     Route::post('/login',[AuthController::class, 'login']);
+    Route::post('logout',[AuthController::class, 'logout']);
 });
 
 // User management routes prifx user and middleware auth
 Route::middleware(['auth'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/dashboard', [UserDashboardController::class,'index'])->name('user.index');
+        Route::get('/profile', [UserDashboardController::class,'profile'])->name('user.profile');
     });
 });
 

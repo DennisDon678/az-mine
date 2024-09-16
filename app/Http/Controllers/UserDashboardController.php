@@ -9,4 +9,8 @@ class UserDashboardController extends Controller
     public function index(){
         return view('user.dashboard');
     }
+
+    public function profile(){
+        return view('user.profile');
+    }
 }
