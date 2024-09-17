@@ -13,4 +13,8 @@ class UserDashboardController extends Controller
     public function profile(){
         return view('user.profile');
     }
+
+    public function history(){
+        return view('user.history');
+    }
 }

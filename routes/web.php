@@ -43,6 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/dashboard', [UserDashboardController::class,'index'])->name('user.index');
         Route::get('/profile', [UserDashboardController::class,'profile'])->name('user.profile');
+        Route::get('/history', [UserDashboardController::class,'history'])->name('user.history');
     });
 });
 

@@ -34,19 +34,19 @@
             @yield('content')
         </ion-content>
             <ion-tab-bar slot="bottom" color="primary">
-                <ion-tab-button href="/user/dashboard" selected="true">
+                <ion-tab-button href="/user/dashboard" {{request()->segment(count(request()->segments())) == "dashboard"? "selected":""}}>
                     <ion-icon name="home" size="large"></ion-icon>
                     <ion-label>
                         <h5>Home</h5>
                     </ion-label>
                 </ion-tab-button>
-                <ion-tab-button href="/user/dashboard">
+                <ion-tab-button href="/user/dashboard" {{request()->segment(count(request()->segments())) == "earn"? "selected":""}}>
                     <ion-icon name="flash" size="large"></ion-icon>
                     <ion-label>
                         <h5>Earn</h5>
                     </ion-label>
                 </ion-tab-button>
-                <ion-tab-button href="/user/about">
+                <ion-tab-button href="/user/history" {{request()->segment(count(request()->segments())) == "history"? "selected":""}}>
                     <ion-icon name="book" size="large"></ion-icon>
                     <ion-label>
                         <h5>History</h5>
