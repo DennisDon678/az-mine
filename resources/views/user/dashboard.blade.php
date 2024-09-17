@@ -2,39 +2,6 @@
 @section('title', 'Dashboard')
 
 <style>
-    <!-- Custom CSS for cards, menu list, and notification icon
-    -->
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
-
-    /* Top Navbar */
-    .navbar-custom {
-        background-color: #007bff;
-        margin: 0 auto;
-        width: calc(100% - 570px);
-        /* Add side margins to navbar */
-        border-radius: 5px;
-        position: relative;
-        padding: 10px 20px;
-        /* Added padding for spacing */
-    }
-
-    /* Notification Icon */
-    .notification-icon {
-        position: absolute;
-        top: 55%;
-        /* Vertically center */
-        left: 10px;
-        transform: translateY(-50%);
-        /* Adjust vertical centering */
-        font-size: 20px;
-        color: white;
-        margin-right: 20px;
-    }
 
     /* Main Content */
     .main-content {
@@ -141,7 +108,7 @@
 
     .menu-item {
         display: inline-block;
-        width: 120px;
+        min-width: 120px;
         height: 100px;
         text-align: center;
         background-color: white;
@@ -219,7 +186,12 @@
         font-size: 22px;
         color: #007bff;
     }
-</style>
+    .menu_list a {
+        color: black;
+    }
+    span {
+        text-wrap:nowrap;
+    }
 </style>
 
 @section('header')
@@ -232,24 +204,23 @@
 @section('content')
     <div class="">
 
-        <div class="d-flex justify-content-center flex-row gap-3 ion-padding">
-            <div class="card card-custom col-6">
+        <div class="d-sm-flex justify-content-center flex-row gap-3 ion-padding">
+            <div class="card card-custom col-sm-6 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title mt-1">Referral</h5>
-                        <p class="card-balance">${{ number_format(Auth::user()->referral_earning, 2) }}</p>
-                    </div>
-                    <div class="icon bg-danger text-white"><ion-icon name="people-outline"></ion-icon></div>
-                </div>
-            </div>
-
-            <div class="card card-custom col-6">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="card-title mt-1">Wallet</h5>
+                        <h4 class="card-title mt-1">Wallet Balance</h4>
                         <p class="card-balance">${{ number_format(Auth::user()->balance, 2) }}</p>
                     </div>
                     <div class="icon bg-success text-white"><ion-icon name="cash-outline"></ion-icon></div>
+                </div>
+            </div>
+            <div class="card card-custom col-sm-6 col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title mt-1">Referral Balance</h4>
+                        <p class="card-balance">${{ number_format(Auth::user()->referral_earning, 2) }}</p>
+                    </div>
+                    <div class="icon bg-danger text-white"><ion-icon name="people-outline"></ion-icon></div>
                 </div>
             </div>
         </div>
@@ -265,39 +236,55 @@
                         <p class="text-end">Power Digital Marketing</p>
                     </div>
                 </div>
-                <div class="d-flex horizontal-scrollable overflow-auto" style="-webkit-scrollbar:0px;">
-                    <div class="menu-item">
-                        <ion-icon name="people-outline"></ion-icon>
-                        <span>Customer Service</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="calendar-outline"></ion-icon>
-                        <span>Event</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="cash-outline"></ion-icon>
-                        <span>Withdrawal</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="wallet-outline"></ion-icon>
-                        <span>Deposit</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="document-text-outline"></ion-icon>
-                        <span>T&C</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="ribbon-outline"></ion-icon>
-                        <span>Certificate</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="help-circle-outline"></ion-icon>
-                        <span>FAQs</span>
-                    </div>
-                    <div class="menu-item">
-                        <ion-icon name="information-circle-outline"></ion-icon>
-                        <span>About</span>
-                    </div>
+                <div class="d-flex horizontal-scrollable overflow-auto menu_list" style="-webkit-scrollbar:0px;">
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="people-outline"></ion-icon>
+                            <span>Customer Service</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                            <span>Event</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="cash-outline"></ion-icon>
+                            <span>Withdrawal</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="wallet-outline"></ion-icon>
+                            <span>Deposit</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            <span>T&C</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="ribbon-outline"></ion-icon>
+                            <span>Certificate</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="help-circle-outline"></ion-icon>
+                            <span>FAQs</span>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="menu-item">
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                            <span>About</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
