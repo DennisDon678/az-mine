@@ -38,12 +38,15 @@ Route::prefix('auth')->group(function () {
     Route::post('logout',[AuthController::class, 'logout']);
 });
 
-// User management routes prifx user and middleware auth
+// User management routes prefix user and middleware auth
 Route::middleware(['auth'])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/dashboard', [UserDashboardController::class,'index'])->name('user.index');
         Route::get('/profile', [UserDashboardController::class,'profile'])->name('user.profile');
         Route::get('/history', [UserDashboardController::class,'history'])->name('user.history');
+        Route::get('/deposit', [UserDashboardController::class,'deposit_view'])->name('user.deposit');
+        Route::post('/deposit', [UserDashboardController::class,'deposit_process'])->name('user.deposit_process');
+        Route::get('/earn', [UserDashboardController::class,'earn_view'])->name('user.earn');
     });
 });
 

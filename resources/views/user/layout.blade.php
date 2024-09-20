@@ -40,7 +40,7 @@
                         <h5>Home</h5>
                     </ion-label>
                 </ion-tab-button>
-                <ion-tab-button href="/user/dashboard" {{request()->segment(count(request()->segments())) == "earn"? "selected":""}}>
+                <ion-tab-button href="/user/earn" {{request()->segment(count(request()->segments())) == "earn"? "selected":""}}>
                     <ion-icon name="flash" size="large"></ion-icon>
                     <ion-label>
                         <h5>Earn</h5>
