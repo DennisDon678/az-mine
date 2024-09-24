@@ -218,6 +218,7 @@
         const image = document.querySelector('#image');
         const title = document.querySelector('#title');
         const price = document.querySelector('#price');
+        const alertCustom = document.querySelector('ion-alert');
 
 
         spinBtn.addEventListener('click', function() {
@@ -240,6 +241,15 @@
 
                         spinArrow.style.animationPlayState = 'paused';
                         modal.present();
+                    },
+                    error: function(xhr, status, error) {
+                        spinArrow.style.animationPlayState = 'paused';
+                        // handle error here
+
+                        // Alert the user
+                        alertCustom.message = "Opps! no product available try again.";
+                        alertCustom.buttons = [{ text: 'Okay' }];
+                        alertCustom.present();
                     }
                 });
             }, 3000);

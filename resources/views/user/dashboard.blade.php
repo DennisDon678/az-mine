@@ -249,7 +249,7 @@
                             <span>Event</span>
                         </div>
                     </a>
-                    <a href="">
+                    <a href="/user/withdraw">
                         <div class="menu-item">
                             <ion-icon name="cash-outline"></ion-icon>
                             <span>Withdrawal</span>

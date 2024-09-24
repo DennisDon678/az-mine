@@ -68,4 +68,8 @@ class UserDashboardController extends Controller
     public function earn_view(){
         return view('user.earn');
     }
+
+    public function withdraw_view(){
+        return view('user.withdraw');
+    }
 }

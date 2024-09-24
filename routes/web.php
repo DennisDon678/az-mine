@@ -47,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/deposit', [UserDashboardController::class,'deposit_view'])->name('user.deposit');
         Route::post('/deposit', [UserDashboardController::class,'deposit_process'])->name('user.deposit_process');
         Route::get('/earn', [UserDashboardController::class,'earn_view'])->name('user.earn');
+        Route::get('/withdraw', [UserDashboardController::class,'withdraw_view'])->name('user.withdraw');
     });
 });
 
