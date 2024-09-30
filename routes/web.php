@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
+use App\Models\Products;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +51,40 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/deposit', [UserDashboardController::class,'deposit_process'])->name('user.deposit_process');
         Route::get('/earn', [UserDashboardController::class,'earn_view'])->name('user.earn');
         Route::get('/withdraw', [UserDashboardController::class,'withdraw_view'])->name('user.withdraw');
+
+        Route::get('/get_product/{id}',[UserDashboardController::class,'get_product']);
+        Route::get('/subscribe', [UserDashboardController::class,'subscribe']);
+        Route::get('/claim-order',[UserDashboardController::class,'performTask']);
+
+        Route::get('/terms-and-conditions',[UserDashboardController::class,'terms_and_conditions']);
     });
 });
 
+Route::get('products_update/{id}/{page}', function ($id,$page) {
+
+    try {
+        $response = Http::withHeaders([
+            'x-rapidapi-host' => 'amazon-online-data-api.p.rapidapi.com',
+            'x-rapidapi-key' => '13cdb17d7amsh8be3afdeb37f0d8p103f42jsn8d229c3734f6',
+        ])
+        ->get('https://amazon-online-data-api.p.rapidapi.com/search?geo=US&query=' . $id. 'page='.$page)
+        ->json();
+
+        $response = (object) $response;
+
+        foreach ($response->products as $result) {
+            $result = (object) $result;
+
+            Products::create([
+                'name' => $result->product_title,
+                'price' => $result->product_price,
+                'image' => $result->product_photo,
+                'o_id' => $result->asin,
+            ]);
+        }
+
+        return response('done');
+    } catch (\Throwable $th) {
+        return response(['error' => $th->getMessage()]);
+    }
+});

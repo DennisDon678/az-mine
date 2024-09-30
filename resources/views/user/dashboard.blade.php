@@ -2,7 +2,6 @@
 @section('title', 'Dashboard')
 
 <style>
-
     /* Main Content */
     .main-content {
         padding-top: 20px;
@@ -109,7 +108,7 @@
     .menu-item {
         display: inline-block;
         min-width: 120px;
-        height: 100px;
+        min-height: 100px;
         text-align: center;
         background-color: white;
         border-radius: 10px;
@@ -186,11 +185,33 @@
         font-size: 22px;
         color: #007bff;
     }
+
     .menu_list a {
         color: black;
     }
+
     span {
-        text-wrap:nowrap;
+        text-wrap: nowrap;
+    }
+
+    .vip-card {
+        border: none;
+        /* Remove default card border */
+        border-radius: 10px;
+        /* Add rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Add a subtle shadow */
+    }
+
+    .card_plan {
+        background-image: url('/users/imgs/back.jpg');
+        background-position: center;
+        background-size: cover;
+    }
+
+    .vip-card .card-body {
+        padding: 2rem;
+        /* Adjust padding as needed */
     }
 </style>
 
@@ -261,7 +282,7 @@
                             <span>Deposit</span>
                         </div>
                     </a>
-                    <a href="">
+                    <a href="/user/terms-and-conditions">
                         <div class="menu-item">
                             <ion-icon name="document-text-outline"></ion-icon>
                             <span>T&C</span>
@@ -288,6 +309,75 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="">
+            <div class="pb-2 pt-3">
+                <div class=" mt-3 px-3">
+                    <h5>Available <span style="color:rgb(98, 0, 255);">Packages</span></h5>
+                </div>
+
+                <div class="container text-light">
+                    <div class="row flex-nowrap overflow-auto">
+                        @foreach ($package as $package)
+                            <div class=" col-6 col-md-4 mb-4">
+                                <div class="card card_plan h-100 vip-card">
+                                    <div class="card-body text-center text-light">
+                                        <i class="fas fa-medal" style="font-size: 3rem;"></i>
+                                        <h5 class="card-title mt-3"><strong>{{ $package->package_name }}</strong></h5>
+                                        <h5 class="card-title mt-1">
+                                            <strong>${{ number_format($package->package_price, 2) }}</strong></h5>
+                                        <p class="card-text"><strong>{{ $package->percentage_profit }}%</strong> Profit
+                                            rate. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
+                                            day.</p>
+
+                                        @if ($active)
+                                            @if ($active->package_id === $package->id)
+                                                <div style="height: 20px;">
+                                                    <ion-button expand="block">
+                                                        <ion-icon name="cart-outline" slot="start"></ion-icon>
+                                                        Active
+                                                    </ion-button>
+                                                </div>
+                                            @else
+                                                <div style="height: 20px;">
+                                                    <ion-button expand="block"
+                                                        href="/user/subscribe?package={{ $package->id }}">
+                                                        <ion-icon name="cart-outline" slot="start"></ion-icon>
+                                                        Upgrade To
+                                                    </ion-button>
+                                                </div>
+                                            @endif
+                                        @else
+                                            <div style="height: 20px;">
+                                                <ion-button expand="block"
+                                                    href="/user/subscribe?package={{ $package->id }}">
+                                                    <ion-icon name="cart-outline" slot="start"></ion-icon>
+                                                    Activate
+                                                </ion-button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cards = document.querySelectorAll('.fa-medal');
+            cards.forEach((card, index) => {
+                const colors = ['#00BCD4', '#E91E63', '#CDDC39', '#3F51B5', '#FF9800'];
+                card.style.color = colors[index % colors.length];
+            });
+        });
+    </script>
+
 
 @endsection

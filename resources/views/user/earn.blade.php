@@ -152,10 +152,10 @@
         <ion-grid>
             <ion-row>
                 <ion-col>
-                    <ion-label>Available Orders</ion-label>
+                    <ion-label>Today Orders</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong>28\28</strong></ion-text>
+                    <ion-text><strong><em id="taskDone">{{$performed}}</em> of {{ $package->number_of_orders_per_day }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -163,7 +163,15 @@
                     <ion-label>Current Package</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong>VIP 1</strong></ion-text>
+                    <ion-text><strong>{{ $package->package_name }}</strong></ion-text>
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Percentage Profit</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-text><strong>{{ $package->percentage_profit }}%</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -171,13 +179,13 @@
                     <ion-label>Username</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong>{{Auth::user()->username}}</strong></ion-text>
+                    <ion-text><strong>{{ Auth::user()->username }}</strong></ion-text>
                 </ion-col>
             </ion-row>
         </ion-grid>
     </ion-card>
 
-    <ion-modal initial-breakpoint="0.75" mode="ios">
+    <ion-modal initial-breakpoint="0.85" mode="ios" class="ion-text-center">
         <ion-header>
             <ion-toolbar>
                 <ion-title>Order</ion-title>
@@ -187,6 +195,7 @@
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
+            <input type="hidden" id="product_id">
             <ion-image>
                 <img alt="" id="image" referrerpolicy="no-referrer">
             </ion-image>
@@ -199,13 +208,13 @@
             <ion-item>
                 <ion-label>Order Number: #123456</ion-label>
             </ion-item>
-            
-            <div style="height: 50px;" >
-                <ion-button expand="block">
-                <ion-icon name="cart-outline" slot="start"></ion-icon>
-                Claim Order
+
+            <div style="height: 50px;">
+                <ion-button expand="block" id="claim">
+                    <ion-icon name="cart-outline" slot="start"></ion-icon>
+                    Claim Order
+                </ion-button>
             </div>
-            </ion-item>
         </ion-content>
     </ion-modal>
 @endsection
@@ -219,6 +228,8 @@
         const title = document.querySelector('#title');
         const price = document.querySelector('#price');
         const alertCustom = document.querySelector('ion-alert');
+        const claim = document.querySelector('#claim');
+        const loader = document.querySelector('ion-loading')
 
 
         spinBtn.addEventListener('click', function() {
@@ -226,18 +237,15 @@
 
             setTimeout(() => {
                 //  random number between 0 and 81
-                var num = Math.floor(Math.random() * 20) + 1;
+                var num = Math.floor(Math.random() * 150) + 1;
                 $.ajax({
                     type: "get",
-                    url: "https://api.escuelajs.co/api/v1/products/" + num,
+                    url: "/user/get_product/" + num,
                     success: function(response) {
-                        console.log(response);
-                        // handle response here
-
-
-                        image.src = response.images[0]
-                        title.textContent = response.title;
+                        image.src = response.image;
+                        title.textContent = response.name;
                         price.textContent = 'Price: $' + response.price;
+                        $('#product_id').val(response.id);
 
                         spinArrow.style.animationPlayState = 'paused';
                         modal.present();
@@ -248,11 +256,39 @@
 
                         // Alert the user
                         alertCustom.message = "Opps! no product available try again.";
-                        alertCustom.buttons = [{ text: 'Okay' }];
+                        alertCustom.buttons = [{
+                            text: 'Okay'
+                        }];
                         alertCustom.present();
                     }
                 });
             }, 3000);
         })
+
+        $('#claim').click(() => {
+            modal.dismiss();
+            loader.message = "Processing Order";
+            loader.present();
+
+            $.ajax({
+                type: "GET",
+                url: "/user/claim-order?package_id=" + $('#product_id').val(),
+                success: function(response) {
+                    loader.dismiss()
+                    alertCustom.message = response.message;
+                    alertCustom.buttons = ['ok'];
+                    alertCustom.present();
+
+                    $('#taskDone').text(response.taskDone);
+                },
+                error: (xhr, ajaxOptions, response) => {
+                    loader.dismiss()
+                    var error = xhr.responseJSON.error;
+                    alertCustom.message = error;
+                    alertCustom.buttons = ['ok'];
+                    alertCustom.present();
+                }
+            });
+        });
     </script>
 @endsection
