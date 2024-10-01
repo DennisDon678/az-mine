@@ -79,4 +79,28 @@ class AuthController extends Controller
             return response()->json(['message' => 'User not logged in'], 401);
         }
     }
+
+    public function admin_login(Request $request){
+       $auth = Auth::guard('admin')->attempt([
+            'email' => $request->username,
+            'password' => $request->password
+        ]);
+
+        if($auth){
+            return response()->json([
+               'message' => 'Logged in successfully as admin'
+            ],200);
+        }else{
+            return response()->json([
+               'message' => 'Invalid credentials'
+            ],401);
+        }
+    }
+
+    public function admin_logout(Request $request){
+        Auth::guard('admin')->logout();
+        return response()->json([
+           'message' => 'Logged out successfully as admin'
+        ],200);
+    }
 }

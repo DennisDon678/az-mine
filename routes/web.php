@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
 use App\Models\Products;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,12 @@ Route::prefix('auth')->group(function () {
     Route::get('/login',function(){
         return view('auth.login');
     })->name('login');
+
+    Route::get('/admin',function(){
+        return view('admin.auth.login');
+    })->name('admin.login');
+
+    Route::post('/admin',[AuthController::class,'admin_login']);
 
     Route::get('/register',function(){
         $code = rand(1000,9999);
@@ -59,6 +67,18 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/terms-and-conditions',[UserDashboardController::class,'terms_and_conditions']);
     });
 });
+
+
+
+// Admin ROUTES
+Route::get('/admin',function(){
+    if(Auth::guard('admin')->check()){
+        return redirect(route('admin.dashboard'));
+    }else{
+        return redirect(route('admin.login'));
+    }
+});
+
 
 Route::get('products_update/{id}/{page}', function ($id,$page) {
 
