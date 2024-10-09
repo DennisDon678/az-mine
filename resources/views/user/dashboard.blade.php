@@ -223,10 +223,10 @@
 @endsection
 
 @section('content')
-    <div class="">
+    <div class="" mode="ios">
 
         <div class="d-sm-flex justify-content-center flex-row gap-3 ion-padding">
-            <div class="card card-custom col-sm-6 col-12">
+            <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Wallet Balance</h4>
@@ -235,7 +235,7 @@
                     <div class="icon bg-success text-white"><ion-icon name="cash-outline"></ion-icon></div>
                 </div>
             </div>
-            <div class="card card-custom col-sm-6 col-12">
+            <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Referral Balance</h4>
@@ -244,10 +244,19 @@
                     <div class="icon bg-danger text-white"><ion-icon name="people-outline"></ion-icon></div>
                 </div>
             </div>
+            <div class="card card-custom col-sm-4 col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="card-title mt-1">Order Wallet</h4>
+                        <p class="card-balance">${{ number_format(Auth::user()->order_balance, 2) }}</p>
+                    </div>
+                    <div class="icon bg-primary text-white"><ion-icon name="cart-outline"></ion-icon></div>
+                </div>
+            </div>
         </div>
 
         <!-- Menu List Section (below the cards) -->
-        <div class="">
+        <div class="" mode="ios">
             <div class="pb-2" style="background-color: rgba(182, 179, 179, 0.39)">
                 <div class="d-flex px-2 justify-content-between align-items-center">
                     <div class="col-4">
@@ -264,36 +273,33 @@
                             <span>Customer Service</span>
                         </div>
                     </a>
-                    <a href="">
+                     <a href="/user/deposit">
                         <div class="menu-item">
-                            <ion-icon name="calendar-outline"></ion-icon>
-                            <span>Event</span>
+                            <ion-icon name="wallet-outline"></ion-icon>
+                            <span>Deposit</span>
                         </div>
                     </a>
+                   
                     <a href="/user/withdraw">
                         <div class="menu-item">
                             <ion-icon name="cash-outline"></ion-icon>
                             <span>Withdrawal</span>
                         </div>
                     </a>
-                    <a href="/user/deposit">
+                    <a href="/user/transfer">
                         <div class="menu-item">
-                            <ion-icon name="wallet-outline"></ion-icon>
-                            <span>Deposit</span>
+                            <ion-icon name="cloud-upload-outline"></ion-icon>
+                            <span>Transfer</span>
                         </div>
                     </a>
+                   
                     <a href="/user/terms-and-conditions">
                         <div class="menu-item">
                             <ion-icon name="document-text-outline"></ion-icon>
                             <span>T&C</span>
                         </div>
                     </a>
-                    <a href="">
-                        <div class="menu-item">
-                            <ion-icon name="ribbon-outline"></ion-icon>
-                            <span>Certificate</span>
-                        </div>
-                    </a>
+                    
                     <a href="">
                         <div class="menu-item">
                             <ion-icon name="help-circle-outline"></ion-icon>
@@ -311,7 +317,7 @@
         </div>
 
 
-        <div class="">
+        <div class="" mode="ios">
             <div class="pb-2 pt-3">
                 <div class=" mt-3 px-3">
                     <h5>Available <span style="color:rgb(98, 0, 255);">Packages</span></h5>
@@ -327,7 +333,7 @@
                                         <h5 class="card-title mt-3"><strong>{{ $package->package_name }}</strong></h5>
                                         <h5 class="card-title mt-1">
                                             <strong>${{ number_format($package->package_price, 2) }}</strong></h5>
-                                        <p class="card-text"><strong>{{ $package->percentage_profit }}%</strong> Profit
+                                        <p class="card-text"><strong>{{ number_format($package->percentage_profit,1) }}%</strong> Profit
                                             rate. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
                                             day.</p>
 
@@ -335,7 +341,6 @@
                                             @if ($active->package_id === $package->id)
                                                 <div style="height: 20px;">
                                                     <ion-button expand="block">
-                                                        <ion-icon name="cart-outline" slot="start"></ion-icon>
                                                         Active
                                                     </ion-button>
                                                 </div>
@@ -344,7 +349,7 @@
                                                     <ion-button expand="block"
                                                         href="/user/subscribe?package={{ $package->id }}">
                                                         <ion-icon name="cart-outline" slot="start"></ion-icon>
-                                                        Upgrade To
+                                                        Activate
                                                     </ion-button>
                                                 </div>
                                             @endif

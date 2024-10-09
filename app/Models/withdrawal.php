@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class crypto extends Model
+class withdrawal extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'short_name',
+        'user_id',
+        'coin',
+        'amount',
         'wallet',
+        'withdrawal_id',
         'network',
     ];
+
 }

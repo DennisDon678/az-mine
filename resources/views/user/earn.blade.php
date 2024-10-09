@@ -120,6 +120,11 @@
             transform: rotate(360deg);
         }
     }
+
+    ion-modal ion-content::part(scroll) {
+        overflow-y: scroll;
+        overscroll-behavior-y: contain;
+    }
 </style>
 
 @section('header')
@@ -130,8 +135,8 @@
 @endsection
 
 @section('content')
-    <ion-card>
-        <ion-card-header>
+    <ion-card mode="ios">
+        <ion-card-header mode="md">
             <ion-title class="text-center">Grab Your Order</ion-title>
             <p class="text-center">click on grab your order button and wait.</button></p>
         </ion-card-header>
@@ -148,14 +153,23 @@
         </div>
     </ion-card>
 
-    <ion-card class="ion-padding">
+    <ion-card class="ion-padding" mode="ios">
         <ion-grid>
+            <ion-row>
+                <ion-col>
+                    <ion-label>Order Balance</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-text><strong id="order_balance">${{ number_format(Auth::user()->order_balance,2) }}</strong></ion-text>
+                </ion-col>
+            </ion-row>
             <ion-row>
                 <ion-col>
                     <ion-label>Today Orders</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong><em id="taskDone">{{$performed}}</em> of {{ $package->number_of_orders_per_day }}</strong></ion-text>
+                    <ion-text><strong><em id="taskDone">{{ $performed }}</em> of
+                            {{ $package->number_of_orders_per_day }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -185,7 +199,7 @@
         </ion-grid>
     </ion-card>
 
-    <ion-modal initial-breakpoint="0.85" mode="ios" class="ion-text-center">
+    <ion-modal initial-breakpoint="0.95" mode="ios" class="ion-text-center">
         <ion-header>
             <ion-toolbar>
                 <ion-title>Order</ion-title>
@@ -280,6 +294,7 @@
                     alertCustom.present();
 
                     $('#taskDone').text(response.taskDone);
+                    $('#order_balance').text('$'+response.order_balance);
                 },
                 error: (xhr, ajaxOptions, response) => {
                     loader.dismiss()

@@ -7,7 +7,7 @@
 @endsection
 
 @section('content')
-    <div class="terms-content ion-padding">
+    <div class="terms-content ion-padding" mode="ios">
         <!-- <h3>Term & Condition</h3> -->
         <p>1) To optimize and reset your account, you must first complete all ratings with a minimum amount of USD 50 and a
             minimum account reset amount of USD 100.</p>

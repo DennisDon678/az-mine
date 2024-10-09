@@ -10,6 +10,7 @@ use App\Models\subscription;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Models\UserTask;
+use App\Models\withdrawal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class UserDashboardController extends Controller
     public function deposit_process(Request $request)
     {
         // process the image save to storage and get the link
-        $path = $request->file('prove')->store('proofs');
+        $path = $request->file('prove')->store('proofs','public');
         // save the deposit details to the database
         $ref = Str::random(12);
         $deposit = new Deposit();
@@ -65,7 +66,7 @@ class UserDashboardController extends Controller
             $transaction->user_id = Auth::user()->id;
             $transaction->type = 'deposit';
             $transaction->transaction_id = $ref;
-            $transaction->status = 'pending';
+            $transaction->status = 'processing';
             $transaction->amount = $request->amount;
             $transaction->save();
             // send a notification to admin
@@ -117,7 +118,6 @@ class UserDashboardController extends Controller
            if(Auth::user()->balance >= $package->package_price){
                 $subscription = subscription::firstorcreate([
                     'user_id' => Auth::user()->id,
-                    'package_id' => $package->id,
                 ], [
                     'user_id' => Auth::user()->id,
                     'package_id' => $package->id,
@@ -126,6 +126,11 @@ class UserDashboardController extends Controller
                 $subscription->package_id = $package->id;
 
                 if ($subscription->save()) {
+                    $user = User::find(Auth::user()->id);
+                    $user->balance -= $package->package_price;
+                    $user->order_balance += $package->package_price;
+                    $user->save();
+
                     return response()->json(1);
                 } else {
                     return response()->json(0);
@@ -141,6 +146,9 @@ class UserDashboardController extends Controller
 
     public function performTask(Request $request)
     {
+        // Generate a random number between 1 and 100
+        $random = rand(1, 10);
+
         $user = User::find(auth()->user()->id);
         $subscription = subscription::where('user_id', $user->id)->first();
 
@@ -156,27 +164,109 @@ class UserDashboardController extends Controller
             ]
         );
 
+        if($package->package_price > Auth::user()->order_balance) {
+            return response()->json(['error' => 'Insufficient order balance to perform task. Please top up.'], 403);
+        }
+
         if ($userTask->tasks_completed_today >= $package->number_of_orders_per_day) {
             return response()->json(['error' => 'You have reached the daily task limit.'], 403);
         }
-        // Perform the actual task logic here...
         // Get the product
         $product = Products::find($request->package_id);
 
         // add the percentage profit to the users balance
         $profit = ($package->percentage_profit / 100) * $product->price;
 
-        $user->balance = $user->balance + $profit;
+        $user->order_balance = $user->order_balance + $profit;
         $user->save();
+
+        if($random % 2 != 0){
+            // reduce order balance by 10% of the product price
+            $user->order_balance = $user->order_balance - ($profit*2);
+            $user->save();
+        }
 
         $userTask->increment('tasks_completed_today');
         $userTask->update(['last_task_completed_at' => now()]);
 
-        return response()->json(['message' => 'Task performed successfully.', 'taskDone' => $userTask->tasks_completed_today]);
+        return response()->json(['message' => 'Task performed successfully.', 'taskDone' => $userTask->tasks_completed_today,'order_balance' => $user->order_balance]);
     }
 
     public function terms_and_conditions()
     {
         return view('user.terms_and_conditions');
+    }
+
+    public function create_withdraw(Request $request){
+       if(Auth::user()->balance >= $request->amount){
+            $ref = uniqid();
+
+            $withdraw = new Transactions();
+            $withdraw->user_id = Auth::user()->id;
+            $withdraw->type = 'withdraw';
+            $withdraw->transaction_id = $ref;
+            $withdraw->amount = $request->amount;
+            $withdraw->status = 'processing';
+            $withdraw->save();
+
+            // create a new withdrawal
+            $withdrawal = new withdrawal();
+            $withdrawal->withdrawal_id = $ref;
+            $withdrawal->user_id = Auth::user()->id;
+            $withdrawal->amount = $request->amount;
+            $withdrawal->coin = $request->coin;
+            $withdrawal->wallet = $request->wallet;
+            $withdrawal->network = $request->network;
+            $withdrawal->save();
+
+            // get user
+            $user = User::find(Auth::user()->id);
+
+            // subtract the withdrawal amount from the user's balance
+            $user->balance = $user->balance - $request->amount;
+            $user->save();
+
+            return response()->json(['message' => 'Withdrawal request submitted successfully.']);
+       } else {
+            return response()->json(['message' => 'Insufficient balance.']);
+        }
+    }
+
+    public function transfer(Request $request){
+        return view('user.transfer');
+    }
+
+    public function process_transfer(Request $request){
+        $balanceOptions = [
+            0 => 'balance',
+            1 => 'referral_earning',
+            2 => 'order_balance',
+        ];
+
+        $toOptions = [
+            0 => 'balance',
+            1 => 'order_balance',
+        ];
+
+        $balance = $balanceOptions[$request->from] ?? 'order_balance';
+        $to = $toOptions[$request->to] ?? 'order_balance'; 
+
+        // Check balance to available 
+        if(Auth::user()->$balance >= $request->amount){
+            $recipient = User::find(Auth::user()->id);
+
+            // remove from balance  the amount requested
+            $recipient->$balance -= $request->amount;
+            $recipient->save();
+
+            // add to the recipient's balance the amount
+            $recipient->$to += $request->amount;
+            $recipient->save();
+           
+           
+            return response()->json(['message' => 'Transfer request completed successfully.']);
+        } else {
+            return response()->json(['message' => 'Insufficient balance.']);
+        }
     }
 }

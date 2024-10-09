@@ -13,7 +13,7 @@
         <div class="mt-2 text-center">
             <ion-card-heading>
                 <ion-title>
-                    Paackage Details
+                    Package Details
                 </ion-title>
             </ion-card-heading>
         </div>

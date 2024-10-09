@@ -33,12 +33,12 @@
             <div class="tab-pane fade show active" id="deposit" role="tabpanel" aria-labelledby="pills-home-tab">
                 @php
                     $deposits = App\Models\Transactions::where('type', 'deposit')->get();
-                    $withdrawals = App\Models\Transactions::where('type', 'withdrawal')->get();
+                    $withdrawals = App\Models\Transactions::where('type', 'withdraw')->get();
                 @endphp
                 <ion-card>
                     <ion-card-header>
                         <ion-card-subtitle>Deposit History</ion-card-subtitle>
-                        <ion-card-title>Total Deposits: ${{ number_format($deposits->sum('amount'), 2) }}</ion-card-title>
+                        <ion-card-title>Total Deposits: ${{ number_format($deposits->where('status','success')->sum('amount'), 2) }}</ion-card-title>
                     </ion-card-header>
                     <ion-card-content>
                         <ion-lists>
@@ -46,7 +46,7 @@
                                 <ion-item>
                                     <ion-label>Deposit Transaction</ion-label>
                                     <ion-label
-                                        color="{{ $deposit->status == 'success' ? 'success' : '' }}">
+                                        color="{{ $deposit->status == 'success' ? 'success' : '' }}{{ $deposit->status == 'failed' ? 'danger' : ''}}">
                                         {{ $deposit->status }}</ion-label>
                                     <ion-label>${{number_format($deposit->amount,2)}}</ion-label>
                                 </ion-item>
@@ -64,7 +64,7 @@
                 <ion-card>
                     <ion-card-header>
                         <ion-card-subtitle>Withdraw History</ion-card-subtitle>
-                        <ion-card-title>Total Withdraws: ${{number_format($withdrawals->sum('amount'),2)}}</ion-card-title>
+                        <ion-card-title>Total Withdraws: ${{number_format($withdrawals->where('status','success')->sum('amount'),2)}}</ion-card-title>
                     </ion-card-header>
                     <ion-card-content>
                         <ion-lists>

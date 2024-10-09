@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
+use App\Models\Admin;
 use App\Models\Products;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -64,7 +65,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/subscribe', [UserDashboardController::class,'subscribe']);
         Route::get('/claim-order',[UserDashboardController::class,'performTask']);
 
+        Route::post('/withdrawal/submit',[UserDashboardController::class,'create_withdraw']);
+
         Route::get('/terms-and-conditions',[UserDashboardController::class,'terms_and_conditions']);
+
+        Route::get('/transfer',[UserDashboardController::class,'transfer']);
+        Route::post('/transfer',[UserDashboardController::class,'process_transfer']);
     });
 });
 
@@ -77,6 +83,38 @@ Route::get('/admin',function(){
     }else{
         return redirect(route('admin.login'));
     }
+});
+
+Route::get('/create-admin',function(){
+    Admin::create([
+        'email' => 'admin@example.com',
+        'password' => password_hash('123456789',PASSWORD_DEFAULT),
+    ]);
+
+    return 'done';
+});
+
+Route::middleware('admin')->prefix('admin')->group(function(){
+    Route::get('/dashboard', [AdminController::class,'index'])->name('admin.dashboard');
+    Route::get('/products', [AdminController::class,'products'])->name('admin.products');
+    Route::get('/orders', [AdminController::class,'orders'])->name('admin.orders');
+    Route::get('/settings', [AdminController::class,'settings'])->name('admin.settings');
+    Route::get('/users', [AdminController::class,'users'])->name('admin.users');
+    Route::get('/add_product', [AdminController::class,'add_product_view'])->name('admin.add_product_view');
+    Route::post('/add_product', [AdminController::class,'add_product_process'])->name('admin.add_product_process');
+    Route::get('/edit_product/{id}', [AdminController::class,'edit_product_view'])->name('admin.edit_product_view');
+
+    Route::get('/approve-deposit', [AdminController::class,'approve_deposit']);
+    Route::get('/reject-deposit', [AdminController::class,'reject_deposit']);
+    Route::get('/delete-user',[AdminController::class,'delete_user']);
+    Route::get('/user/{id}',[AdminController::class,'view_user']);
+    Route::get('/edit-user',[AdminController::class,'edit_user']);
+    Route::get('/wallets',[AdminController::class,'wallets']);
+    Route::post('/wallet/create',[AdminController::class,'create_wallet']);
+    Route::get('/delete-wallet',[AdminController::class,'delete_wallet']);
+    Route::get('/packages',[AdminController::class,'packages']);
+    Route::post('/packages',[AdminController::class,'update_packages']);
+    Route::get('/setting',[AdminController::class,'setting']);
 });
 
 
