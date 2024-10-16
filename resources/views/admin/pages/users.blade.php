@@ -10,7 +10,7 @@
 @section('content')
     <ion-card mode="ios">
         <ion-card-header class="text-center">
-            <ion-card-title>Users List</ion-card-title>
+            <ion-title>Users List</ion-title>
         </ion-card-header>
 
         <ion-card-body>

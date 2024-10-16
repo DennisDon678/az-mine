@@ -335,7 +335,8 @@
                                             <strong>${{ number_format($package->package_price, 2) }}</strong></h5>
                                         <p class="card-text"><strong>{{ number_format($package->percentage_profit,1) }}%</strong> Profit
                                             rate. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
-                                            day.</p>
+                                            day. <br><strong>{{number_format($package->daily_profit,1)}}%</strong> daily Profit</p>
+                                            
 
                                         @if ($active)
                                             @if ($active->package_id === $package->id)

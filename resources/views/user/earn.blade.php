@@ -160,7 +160,8 @@
                     <ion-label>Order Balance</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong id="order_balance">${{ number_format(Auth::user()->order_balance,2) }}</strong></ion-text>
+                    <ion-text><strong
+                            id="order_balance">${{ number_format(Auth::user()->order_balance, 2) }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -247,36 +248,54 @@
 
 
         spinBtn.addEventListener('click', function() {
-            spinArrow.style.animation = 'spin 300ms linear infinite';
-
-            setTimeout(() => {
-                //  random number between 0 and 81
-                var num = Math.floor(Math.random() * 150) + 1;
-                $.ajax({
-                    type: "get",
-                    url: "/user/get_product/" + num,
-                    success: function(response) {
-                        image.src = response.image;
-                        title.textContent = response.name;
-                        price.textContent = 'Price: $' + response.price;
-                        $('#product_id').val(response.id);
-
-                        spinArrow.style.animationPlayState = 'paused';
-                        modal.present();
-                    },
-                    error: function(xhr, status, error) {
-                        spinArrow.style.animationPlayState = 'paused';
-                        // handle error here
-
-                        // Alert the user
-                        alertCustom.message = "Opps! no product available try again.";
+            // check for tasks
+            $.ajax({
+                type: "get",
+                url: "/user/task-check",
+                success: function(response) {
+                    if (response.start == false) {
+                        alertCustom.message = "You don't have any tasks to perform.";
                         alertCustom.buttons = [{
                             text: 'Okay'
                         }];
                         alertCustom.present();
+                        return false;
+                    } else {
+                        spinArrow.style.animation = 'spin 300ms linear infinite';
+
+                        setTimeout(() => {
+                            //  random number between 0 and 81
+                            var num = Math.floor(Math.random() * 150) + 1;
+                            $.ajax({
+                                type: "get",
+                                url: "/user/get_product/" + num,
+                                success: function(response) {
+                                    image.src = response.image;
+                                    title.textContent = response.name;
+                                    price.textContent = 'Price: $' + response.price;
+                                    $('#product_id').val(response.id);
+
+                                    spinArrow.style.animationPlayState = 'paused';
+                                    modal.present();
+                                },
+                                error: function(xhr, status, error) {
+                                    spinArrow.style.animationPlayState = 'paused';
+                                    // handle error here
+
+                                    // Alert the user
+                                    alertCustom.message =
+                                        "Opps! no product available try again.";
+                                    alertCustom.buttons = [{
+                                        text: 'Okay'
+                                    }];
+                                    alertCustom.present();
+                                }
+                            });
+                        }, 3000);
                     }
-                });
-            }, 3000);
+                }
+            });
+
         })
 
         $('#claim').click(() => {
@@ -294,7 +313,7 @@
                     alertCustom.present();
 
                     $('#taskDone').text(response.taskDone);
-                    $('#order_balance').text('$'+response.order_balance);
+                    $('#order_balance').text('$' + response.order_balance);
                 },
                 error: (xhr, ajaxOptions, response) => {
                     loader.dismiss()

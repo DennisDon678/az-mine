@@ -27,7 +27,7 @@
 
                     </ion-item>
 
-                    <ion-modal trigger="{{ $package->id }}" initial-breakpoint="0.50" mode="ios">
+                    <ion-modal trigger="{{ $package->id }}" initial-breakpoint="0.95" mode="ios">
                         <ion-header>
                             <ion-toolbar>
                                 <ion-title>Edit Package {{ $package->package_name }}</ion-title>
@@ -55,7 +55,12 @@
                                 <ion-item mode="ios">
                                     <ion-label>Package Fee</ion-label>
                                     <ion-input type="number" placeholder="Crypto Wallet Address" name="package_price"
-                                        value={{ $package->package_price }} required></ion-input>
+                                        value="{{ $package->package_price }}" required></ion-input>
+                                </ion-item>
+                                <ion-item mode="ios">
+                                    <ion-label>Daily Profit</ion-label>
+                                    <ion-input type="text" placeholder="Daily Profit percentage" name="daily_profit"
+                                        value="{{ $package->daily_profit }}" required></ion-input>
                                 </ion-item>
 
                                 <ion-button expand="block" type="submit" color="primary">Save

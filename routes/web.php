@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/transfer',[UserDashboardController::class,'transfer']);
         Route::post('/transfer',[UserDashboardController::class,'process_transfer']);
+        Route::get('task-check',[UserDashboardController::class, 'check_task']);
     });
 });
 
@@ -115,6 +116,18 @@ Route::middleware('admin')->prefix('admin')->group(function(){
     Route::get('/packages',[AdminController::class,'packages']);
     Route::post('/packages',[AdminController::class,'update_packages']);
     Route::get('/setting',[AdminController::class,'setting']);
+    Route::post('/setting',[AdminController::class,'process_setting']);
+
+    Route::get('/profile',[AdminController::class,'profile']);
+    Route::post('/profile/update',[AdminController::class,'update_profile']);
+    Route::post('/profile/reset',[AdminController::class,'reset_password']);
+    Route::post('/profile/change',[AdminController::class, 'change_password']);
+
+    Route::get('/approve-withdrawal',[AdminController::class,'approve_withdrawal']);
+    Route::get('/reject-withdrawal',[AdminController::class,'reject_withdrawal']);
+
+    Route::get('/task-config',[AdminController::class,'task_config']);
+    Route::post('/task-config',[AdminController::class,'update_task_config']);
 });
 
 

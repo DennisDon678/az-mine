@@ -8,17 +8,79 @@
 @endsection
 
 @section('content')
-    <ion-card>
+    <ion-card mode="ios">
         <ion-card-header class="text-center">
-            <ion-card-title>Settings</ion-card-title>
+            <ion-title>Settings</ion-title>
         </ion-card-header>
 
         <ion-card-body>
-            <ion-list>
-                <ion-item>
-                    <ion-input placeholder="Whatsapp Link for customer service." name="whatsapp"></ion-input>
-                </ion-item>
-            </ion-list>
+            <form action="" id="settings">
+                @csrf
+                <ion-list>
+                    <ion-item>
+                        {{-- <ion-icon name="whatsapp-outline"></ion-icon> --}}
+                        <ion-input label-placement="floating" placeholder="Whatsapp Link for customer service."
+                            value="{{ $settings->whatsapp }}" name="whatsapp">
+                            <ion-label slot="label">
+                                Whatsapp link Settings
+                            </ion-label>
+                        </ion-input>
+                    </ion-item>
+                    <ion-item>
+                        {{-- <ion-icon name="telegram-outline"></ion-icon> --}}
+                        <ion-input label-placement="floating" placeholder="Telegram Link for customer service."
+                            value="{{ $settings->telegram }}" name="telegram">
+                            <ion-label slot="label">
+                                Telegram link Settings
+                            </ion-label>
+                        </ion-input>
+                    </ion-item>
+                </ion-list>
+                <ion-button expand="block" class="mt-3" type="submit">
+                    Save Settings
+                    <ion-icon name="save-outline" slot="end"></ion-icon>
+                </ion-button>
+            </form>
         </ion-card-body>
     </ion-card>
+@endsection
+
+
+@section('script')
+<script>
+    const loading = document.querySelector('ion-loading');
+    const alertCustom = document.querySelector('ion-alert');
+
+    $('#settings').on('submit', function(e) {
+        e.preventDefault();
+        loading.message = 'Saving Settings...';
+        loading.present();
+
+        $.ajax({
+            type: 'post',
+            url: '/admin/setting',
+            data: new FormData($('#settings')[0]),
+            contentType:false,
+            processData: false,
+            success: function(response) {
+                loading.dismiss();
+                alertCustom.message = response.message;
+                alertCustom.buttons = [{
+                    text: 'OK',
+                }];
+                alertCustom.present();
+            },
+            error: function(xhr, status, error) {
+                loading.dismiss();
+                alertCustom.message = 'Error saving settings.';
+                alertCustom.buttons = [{
+                    text: 'OK',
+                }];
+                alertCustom.present();
+            }
+        });
+
+    });
+</script>
+
 @endsection

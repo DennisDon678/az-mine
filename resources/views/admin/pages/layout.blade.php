@@ -47,10 +47,10 @@
                         <h5>Users</h5>
                     </ion-label>
                 </ion-tab-button>
-                <ion-tab-button href="/admin/profile" {{request()->segment(count(request()->segments())) == "history"? "selected":""}}>
-                    <ion-icon name="person" size="large"></ion-icon>
+                <ion-tab-button href="/admin/setting" {{request()->segment(count(request()->segments())) == "setting"? "selected":""}}>
+                    <ion-icon name="settings" size="large"></ion-icon>
                     <ion-label>
-                        <h5>Profile</h5>
+                        <h5>Settings</h5>
                     </ion-label>
                 </ion-tab-button>
             </ion-tab-bar>

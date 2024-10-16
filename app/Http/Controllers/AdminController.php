@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\crypto;
 use App\Models\Deposit;
 use App\Models\packages;
+use App\Models\Settings;
 use App\Models\subscription;
 use App\Models\Transactions;
 use App\Models\User;
+use App\Models\UserNegativeBalanceConfig;
+use App\Models\withdrawal;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -17,7 +21,8 @@ class AdminController extends Controller
         $users = User::count();
         $balance = User::sum('balance');
         $deposits = Deposit::paginate('20');
-        return view('admin.pages.dashboard', compact('users', 'balance', 'deposits'));
+        $withdrawals = withdrawal::paginate('20');
+        return view('admin.pages.dashboard', compact('users', 'balance', 'deposits', 'withdrawals'));
     }
 
     public function approve_deposit(Request $request)
@@ -73,7 +78,15 @@ class AdminController extends Controller
     public function view_user($id){
         $user = User::find($id);
         $package = subscription::where('user_id', $user->id)->first();
-        $package = packages::find($package->package_id)->first();
+
+        if($package){
+            $package = packages::find($package->package_id)->first();
+        }
+        else{
+            $package = (object) [
+                'package_name' => 'No active package',
+            ];
+        }
 
         return view('admin.pages.user',compact('user','package'));
     }
@@ -123,12 +136,112 @@ class AdminController extends Controller
         $package->package_price = $request->package_price;
         $package->percentage_profit = $request->percentage_profit;
         $package->number_of_orders_per_day = $request->number_of_orders_per_day;
+        $package->daily_profit = $request->daily_profit;
         $package->save();
 
         return redirect()->back()->with('message',"Package update");
     }
 
     public function setting(){
-        return view('admin.pages.setting');
+        $settings = Settings::first();
+        return view('admin.pages.setting',compact('settings'));
     }
+
+    // update settings
+    public function process_setting(Request $request){
+        $settings = Settings::first();
+
+        $settings->update($request->except('_token'));
+
+        return response()->json([
+            'message' => 'Settings updated successfully',
+        ]);
+    }
+
+    public function profile(){
+        return view('admin.pages.profile');
+    }
+
+    public function update_profile(Request $request){
+        $admin = Admin::first();
+        $admin->update($request->except('_token'));
+
+        return response()->json([
+           'message' => 'Email updated successfully',
+        ]);
+    }
+
+    public function reset_password(Request $request){
+        $admin = Admin::first();
+        $admin->password = password_hash($request->password,PASSWORD_DEFAULT);
+        $admin->save();
+
+        return response()->json([
+           'message' => 'Password updated successfully',
+        ]);
+    }
+
+    public function change_password(Request $request){
+        $admin = Admin::first();
+        if(password_verify($request->old_password, $admin->password)){
+            $admin->password = password_hash($request->password, PASSWORD_DEFAULT);
+            $admin->save();
+
+            return response()->json([
+               'message' => 'Password updated successfully',
+            ]);
+        }else{
+            return response()->json([
+               'message' => 'Old password does not match',
+            ], 401);
+        }
+    }
+
+    public function approve_withdrawal(Request $request){
+        $withdrawal = withdrawal::find($request->id);
+        $transaction = Transactions::where('transaction_id',$withdrawal->withdrawal_id)->first();
+        $transaction->status = 'success';
+        $transaction->save();
+
+        $withdrawal->delete();
+
+        return redirect()->back()->with('success', 'Withdrawal approved successfully');
+    }
+
+    public function reject_withdrawal(Request $request){
+        $withdrawal = withdrawal::find($request->id);
+        $transaction = Transactions::where('transaction_id',$withdrawal->withdrawal_id)->first();
+        $transaction->status ='failed';
+        $transaction->save();
+
+        // refund user balance
+        $user = User::find($withdrawal->user_id);
+        $user->balance += $withdrawal->amount;
+        $user->save();
+
+        $withdrawal->delete();
+
+        return redirect()->back()->with('success', 'Withdrawal rejected successfully');
+    }
+
+    public function task_config(){
+        $users =  UserNegativeBalanceConfig::with('user')->paginate(20);
+        return view('admin.pages.task_config',compact('users'));
+    }
+
+
+    public function update_task_config(Request $request){
+        $config = UserNegativeBalanceConfig::find($request->id);
+
+        if($config->update($request->except('_token'))){
+            return response()->json([
+                'message' => 'Task configuration updated successfully',
+            ]);
+        }else{
+            return response()->json([
+                'error' => 'Failed to update task configuration',
+            ], 400);
+        }
+    }
+
 }

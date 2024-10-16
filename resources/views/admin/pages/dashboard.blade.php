@@ -217,7 +217,7 @@
 
 @section('header')
     <ion-title>{{ strtoupper(env('APP_NAME')) }}</ion-title>
-    <ion-button slot="end" href="/user/profile">
+    <ion-button slot="end" href="/admin/profile">
         <ion-icon name="person-circle" mode="ios" size="large"></ion-icon>
     </ion-button>
 @endsection
@@ -264,28 +264,27 @@
                             <span>Wallets</span>
                         </div>
                     </a>
-                   
+
                     <a href="/admin/packages">
                         <div class="menu-item">
                             <ion-icon name="bag-outline"></ion-icon>
                             <span>Packages</span>
                         </div>
                     </a>
-
-                    <a href="/admin/setting">
+                     <a href="/admin/task-config">
                         <div class="menu-item">
-                            <ion-icon name="settings-outline"></ion-icon>
-                            <span>Settings</span>
+                            <ion-icon name="cog-outline"></ion-icon>
+                            <span>Configs</span>
                         </div>
                     </a>
-                    
+
                 </div>
             </div>
         </div>
 
         <ion-card mode="ios">
             <ion-card-header class="text-center">
-                <ion-card-title>Pending Deposits</ion-card-title>
+                <ion-title>Pending Deposits</ion-title>
             </ion-card-header>
 
             <ion-card-body>
@@ -294,21 +293,24 @@
                         <ion-item>
                             <ion-grid>
                                 <ion-row class="ion-justify-content-between">
-                                    <ion-col size="6">
+                                    <ion-col size="8">
                                         <ion-label>
-                                            <p>Deposit ID: {{$deposit->deposit_id}}</p>
-                                            <p>Amount: ${{number_format($deposit->amount,2)}}</p>
+                                            <p>Deposit ID: {{ $deposit->deposit_id }}</p>
+                                            <p>Amount: ${{ number_format($deposit->amount, 2) }}</p>
 
                                         </ion-label>
-                                        <a class="btn btn-primary mt-1" href="{{asset('/storage/'.$deposit->proof)}}" target="blank">View Proof</a>
+                                        <a class="btn btn-primary mt-1" href="{{ asset('/storage/' . $deposit->proof) }}"
+                                            target="blank">View Proof</a>
                                     </ion-col>
-                                    <ion-col size="6">
+                                    <ion-col size="4">
                                         <ion-row class="ion-justify-content-end">
                                             <ion-col>
-                                                <ion-button href="/admin/approve-deposit?id={{$deposit->id}}">Approve</ion-button>
+                                                <ion-button
+                                                    href="/admin/approve-deposit?id={{ $deposit->id }}">Approve</ion-button>
                                             </ion-col>
                                             <ion-col>
-                                                <ion-button color="danger" href="/admin/reject-deposit?id={{$deposit->id}}">Reject</ion-button>
+                                                <ion-button color="danger"
+                                                    href="/admin/reject-deposit?id={{ $deposit->id }}">Reject</ion-button>
                                             </ion-col>
                                         </ion-row>
                                     </ion-col>
@@ -317,19 +319,146 @@
                             </ion-grid>
                         </ion-item>
                     @empty
-                    <ion-item class="text-center text-danger">
-                        <ion-label>No pending deposits</ion-label>
-                    </ion-item>
+                        <ion-item class="text-center text-danger">
+                            <ion-label>No pending deposits</ion-label>
+                        </ion-item>
                     @endforelse
                 </ion-list>
             </ion-card-body>
         </ion-card>
 
 
+        <ion-card mode="ios">
+            <ion-card-header class="text-center">
+                <ion-title>Pending Withdrawals</ion-title>
+            </ion-card-header>
+
+            <ion-card-body>
+                <ion-list inset="true">
+                    @forelse ($withdrawals as $deposit)
+                        <ion-item>
+                            <ion-grid>
+                                <ion-row class="ion-justify-content-between">
+                                    <ion-col size="8">
+                                        <ion-label>
+                                            <p>Deposit ID: {{ $deposit->withdrawal_id }}</p>
+                                            <p>Amount: ${{ number_format($deposit->amount, 2) }}</p>
+
+                                        </ion-label>
+                                        <a class="btn btn-primary mt-1" id="detail-{{ $deposit->id }}">View Details</a>
+                                    </ion-col>
+                                    <ion-col size="4">
+                                        <ion-row class="ion-justify-content-end">
+                                            <ion-col>
+                                                <ion-button
+                                                    href="/admin/approve-withdrawal?id={{ $deposit->id }}">Approve</ion-button>
+                                            </ion-col>
+                                            <ion-col>
+                                                <ion-button color="danger"
+                                                    href="/admin/reject-withdrawal?id={{ $deposit->id }}">Reject</ion-button>
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </ion-item>
+                        <ion-modal initial-breakpoint="0.9" trigger="detail-{{ $deposit->id }}" mode="ios"
+                            id="{{ $deposit->withdrawal_id }}">
+                            <ion-header>
+                                <ion-toolbar>
+                                    <ion-title>Withdrawal Details</ion-title>
+                                    <ion-buttons slot="end">
+                                        <ion-button
+                                            onclick="document.getElementById('{{ $deposit->withdrawal_id }}').dismiss()">
+                                            close
+                                        </ion-button>
+                                    </ion-buttons>
+                                </ion-toolbar>
+                            </ion-header>
+
+                            <ion-content class="ion-padding">
+                                @php
+                                    $user = App\Models\User::find($deposit->user_id);
+                                @endphp
+                                <ion-card>
+                                    <ion-card-header>
+                                        <ion-title>
+                                            User Information
+                                        </ion-title>
+                                    </ion-card-header>
+                                    <ion-card-body>
+                                        <ion-item>
+                                            <ion-label>Username</ion-label>
+                                            <ion-text>{{ $user->username }}</ion-text>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Email</ion-label>
+                                            <ion-text>{{ $user->email }}</ion-text>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Open Balance</ion-label>
+                                            <ion-text>${{ number_format($user->balance, 2) }}</ion-text>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Order Balance</ion-label>
+                                            <ion-text>${{ number_format($user->order_balance, 2) }}</ion-text>
+                                        </ion-item>
+                                    </ion-card-body>
+                                </ion-card>
+
+                                <ion-card>
+                                     <ion-card-header>
+                                        <ion-title>
+                                            Withdrawal Details
+                                        </ion-title>
+                                    </ion-card-header>
+                                    <ion-card-body>
+                                        <ion-item>
+                                            <ion-label>Withdrawal ID</ion-label>
+                                            <ion-text>{{ $deposit->withdrawal_id }}</ion-text>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Amount</ion-label>
+                                            <ion-text>${{ number_format($deposit->amount, 2) }}</ion-text>
+                                        </ion-item>
+                                        <ion-item>
+                                            <ion-label>Coin</ion-label>
+                                            <ion-text>{{ $deposit->coin }}</ion-text>
+                                        </ion-item>
+                                        @if($deposit->network)
+                                        <ion-item>
+                                            <ion-label>Coin Network</ion-label>
+                                            <ion-text class="text-wrap">{{ $deposit->network }}</ion-text>
+                                        </ion-item>
+                                        @endif
+                                        <ion-item>
+                                            <ion-label>Wallet Address:</ion-label>
+                                            <ion-label>{{ $deposit->wallet }}</ion-label>
+                                        </ion-item>
+
+                                        {{-- copy wallet address --}}
+                                        <div class="mb-2" style="height: 50px;">
+                                        <ion-button onclick="copyToClipboard('{{ $deposit->wallet }}')">Copy Wallet Address</ion-button>
+                                        </div>
+                                </ion-card>
+                            </ion-content>
+                        </ion-modal>
+                    @empty
+                        <ion-item class="text-center text-danger">
+                            <ion-label>No pending withdrawals</ion-label>
+                        </ion-item>
+                    @endforelse
+                </ion-list>
+            </ion-card-body>
+        </ion-card>
+
     </div>
+@endsection
 
-
+@section('script')
     <script>
+        const alertCustom = document.querySelector('ion-alert');
+        
         document.addEventListener("DOMContentLoaded", function() {
             const cards = document.querySelectorAll('.fa-medal');
             cards.forEach((card, index) => {
@@ -337,6 +466,15 @@
                 card.style.color = colors[index % colors.length];
             });
         });
+
+        function copyToClipboard(address) {
+            window.navigator.clipboard.writeText(address);
+
+            alertCustom.message = "wallet address copied to clipboard"
+            alertCustom.buttons = ['OK'];
+            alertCustom.present();
+        }
+
     </script>
 
 

@@ -73,7 +73,7 @@
                                     <ion-label>Withdrawal Transaction</ion-label>
                                     <ion-label
                                         color="{{ $withdrawal->status == 'success' ? 'success' : '' }} {{ $withdrawal->status == 'processing' ? 'warning' : '' }} {{ $withdrawal->status == 'failed' ? 'danger' : '' }}">
-                                        {{ $deposit->status }}</ion-label>
+                                        {{ $withdrawal->status }}</ion-label>
                                     <ion-label>${{number_format($withdrawal->amount,2)}}</ion-label>
                                 </ion-item>
                             @empty

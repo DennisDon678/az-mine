@@ -51,7 +51,7 @@
         </ion-card-body>
     </ion-card>
 
-    <ion-modal trigger="edit" initial-breakpoint="0.25" mode="ios">
+    <ion-modal trigger="edit" initial-breakpoint="0.5" mode="ios">
         <ion-header>
             <ion-toolbar>
                 <ion-title>Edit User</ion-title>
