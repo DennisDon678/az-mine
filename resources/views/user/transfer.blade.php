@@ -17,7 +17,7 @@
                 @csrf
                 <ion-list>
                     <ion-item>
-                        <ion-select placeholder="Select From Wallet" name="from" id="from">
+                        <ion-select placeholder="Select From Wallet" name="from" id="from" interface="action-sheet">
                             <ion-select-option value="0">Open Wallet ${{number_format(Auth::user()->balance,2)}}</ion-select-option>
                             <ion-select-option value="1">Referral Wallet ${{number_format(Auth::user()->referral_earning,2)}}</ion-select-option>
                             <ion-select-option value="2">Order Wallet ${{number_format(Auth::user()->order_balance,2)}}</ion-select-option>
@@ -29,7 +29,7 @@
                     </div>
 
                     <ion-item>
-                        <ion-select placeholder="Select To Wallet" name="to" id="to">
+                        <ion-select placeholder="Select To Wallet" name="to" id="to" interface="action-sheet">
                             <ion-select-option value="0">Open Wallet ${{number_format(Auth::user()->balance,2)}}</ion-select-option>
                             <ion-select-option value="2">Order Wallet ${{number_format(Auth::user()->order_balance,2)}}</ion-select-option>
                         </ion-select>

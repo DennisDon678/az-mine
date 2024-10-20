@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\crypto;
 use App\Models\Deposit;
 use App\Models\packages;
+use App\Models\Previous_order_balance;
 use App\Models\Settings;
 use App\Models\subscription;
 use App\Models\Transactions;
@@ -240,6 +241,33 @@ class AdminController extends Controller
         }else{
             return response()->json([
                 'error' => 'Failed to update task configuration',
+            ], 400);
+        }
+    }
+
+    public function rest_user_balance(Request $request){
+        $prev = Previous_order_balance::where('user_id','=', $request->id)->first();
+        // return response()->json($request->id);
+
+        $user = User::find($request->id);
+
+        $order = 0-(float)$user->order_balance;
+
+        $new_bal = $order + $request->commission + $prev->previous_order_balance;
+
+        $user->order_balance = $new_bal;
+        if($user->save()){
+            $neg = UserNegativeBalanceConfig::where('user_id', $request->id)->first();
+            $neg->negative_balance_amount = 0;
+            $neg->task_threshold = 0;
+            $neg->save();
+            return response()->json([
+                'balance' => $new_bal,
+               'message' => 'User balance restored successfully',
+            ]);
+        }else{
+            return response()->json([
+                'error' => 'Failed to restore user balance',
             ], 400);
         }
     }

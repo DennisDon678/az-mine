@@ -32,28 +32,34 @@
             </ion-toolbar>
         </ion-header>
         <ion-content scroll="true">
+            <ion-refresher id="refresher" slot="fixed">
+                <ion-refresher-content></ion-refresher-content>
+            </ion-refresher>
             @yield('content')
         </ion-content>
-            <ion-tab-bar slot="bottom" color="primary">
-                <ion-tab-button href="/user/dashboard" {{request()->segment(count(request()->segments())) == "dashboard"? "selected":""}}>
-                    <ion-icon name="home" size="large"></ion-icon>
-                    <ion-label>
-                        <h5>Home</h5>
-                    </ion-label>
-                </ion-tab-button>
-                <ion-tab-button href="/user/earn" {{request()->segment(count(request()->segments())) == "earn"? "selected":""}}>
-                    <ion-icon name="flash" size="large"></ion-icon>
-                    <ion-label>
-                        <h5>Earn</h5>
-                    </ion-label>
-                </ion-tab-button>
-                <ion-tab-button href="/user/history" {{request()->segment(count(request()->segments())) == "history"? "selected":""}}>
-                    <ion-icon name="book" size="large"></ion-icon>
-                    <ion-label>
-                        <h5>History</h5>
-                    </ion-label>
-                </ion-tab-button>
-            </ion-tab-bar>
+        <ion-tab-bar slot="bottom" color="primary">
+            <ion-tab-button href="/user/dashboard"
+                {{ request()->segment(count(request()->segments())) == 'dashboard' ? 'selected' : '' }}>
+                <ion-icon name="home" size="large"></ion-icon>
+                <ion-label>
+                    <h5>Home</h5>
+                </ion-label>
+            </ion-tab-button>
+            <ion-tab-button href="/user/earn"
+                {{ request()->segment(count(request()->segments())) == 'earn' ? 'selected' : '' }}>
+                <ion-icon name="flash" size="large"></ion-icon>
+                <ion-label>
+                    <h5>Earn</h5>
+                </ion-label>
+            </ion-tab-button>
+            <ion-tab-button href="/user/history"
+                {{ request()->segment(count(request()->segments())) == 'history' ? 'selected' : '' }}>
+                <ion-icon name="book" size="large"></ion-icon>
+                <ion-label>
+                    <h5>History</h5>
+                </ion-label>
+            </ion-tab-button>
+        </ion-tab-bar>
         <ion-loading mode="ios"></ion-loading>
         <ion-alert mode="ios"></ion-alert>
     </ion-app>
@@ -65,6 +71,16 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+  const refresher = document.getElementById('refresher');
+
+  refresher.addEventListener('ionRefresh', () => {
+    setTimeout(() => {
+      location.reload();
+      refresher.complete();
+    }, 2000);
+  });
+</script>
 
     @yield('script')
 </body>

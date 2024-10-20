@@ -267,7 +267,7 @@
                     </div>
                 </div>
                 <div class="d-flex horizontal-scrollable overflow-auto menu_list" style="-webkit-scrollbar:0px;">
-                    <a href="">
+                    <a href="/user/contact">
                         <div class="menu-item">
                             <ion-icon name="people-outline"></ion-icon>
                             <span>Customer Service</span>

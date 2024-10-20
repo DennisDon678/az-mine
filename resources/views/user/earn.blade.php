@@ -254,7 +254,7 @@
                 url: "/user/task-check",
                 success: function(response) {
                     if (response.start == false) {
-                        alertCustom.message = "You don't have any tasks to perform.";
+                        alertCustom.message = "OOPS! You don't have any assigned task at the moment to perform.";
                         alertCustom.buttons = [{
                             text: 'Okay'
                         }];

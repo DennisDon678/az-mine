@@ -34,7 +34,7 @@
                                 <ion-col size="4">
                                     <ion-row class="ion-justify-content-end">
                                         <ion-col>
-                                            <ion-button color="primary" id="config-{{$user->id}}">Config</ion-button>
+                                            <ion-button color="primary" id="config-{{ $user->id }}">Config</ion-button>
                                         </ion-col>
                                     </ion-row>
                                 </ion-col>
@@ -43,14 +43,15 @@
                         </ion-grid>
                     </ion-item>
 
-                    <ion-modal trigger="config-{{$user->id}}" initial-breakpoint="0.65" mode="ios" id="modal-{{$user->id}}">
+                    <ion-modal trigger="config-{{ $user->id }}" initial-breakpoint="0.65" mode="ios"
+                        id="modal-{{ $user->id }}">
                         <ion-header>
                             <ion-toolbar>
                                 <ion-title>Task Config</ion-title>
                             </ion-toolbar>
                         </ion-header>
                         <ion-content class="ion-padding">
-                            <form action="" method="post" id="save-{{$user->id}}">
+                            <form action="" method="post" id="save-{{ $user->id }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $user->id }}">
                                 <ion-item mode="ios">
@@ -76,14 +77,26 @@
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Negetive Balance</ion-label>
                                     <ion-input type="text" placeholder="Negative Balance" name="negative_balance_amount"
-                                        value="{{ number_format($user->negative_balance_amount,2) }}" required></ion-input>
+                                        value="{{ number_format($user->negative_balance_amount, 2) }}"
+                                        required></ion-input>
                                 </ion-item>
-                                
 
                                 <ion-button expand="block" type="submit" color="primary">Save
                                     Config</ion-button>
                             </form>
+                            <br>
+                            <form id="resetform-{{$user->id}}">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $user->user_id }}">
+                                <ion-item mode="ios">
+                                    <ion-label slot="start">Commission</ion-label>
+                                    <ion-input type="number" placeholder="Commission(optional)"
+                                        name="commission"></ion-input>
+                                </ion-item>
+                                <ion-button expand="block" type="submit" color="success">Reset Balance</ion-button>
+                            </form>
                         </ion-content>
+
                     </ion-modal>
                 @empty
                     <ion-item class="text-center text-danger">
@@ -96,45 +109,70 @@
 @endsection
 
 @section('script')
-@if(count($users) > 0)
-<script>
-    const loading = document.querySelector('ion-loading');
-    const alertCustom = document.querySelector('ion-alert');
-    
-    $('#save-{{$user->id}}').submit((e) => {
-        const modal = document.querySelector('#modal-{{$user->id}}')
-        e.preventDefault();
-        loading.message = "Saving Config...";
-        loading.present();
+    <script>
+        const loading = document.querySelector('ion-loading');
+        const alertCustom = document.querySelector('ion-alert');
+        var modal
+    </script>
+    @if (count($users) > 0)
+        @foreach ($users as $user)
+            <script>
+                $('#save-{{ $user->id }}').submit((e) => {
+                    modal = document.querySelector('#modal-{{ $user->id }}')
+                    e.preventDefault();
+                    loading.message = "Saving Config...";
+                    loading.present();
 
-        $.ajax({
-            type: "post",
-            url: "/admin/task-config",
-            data: new FormData($('#save-{{$user->id}}')[0]),
-            contentType:false,
-            processData: false,
-            success: function (response) {
-                loading.dismiss();
-                modal.dismiss();
-                alertCustom.message = response.message;
-                alertCustom.buttons = [{
-                    text: 'OK',
-                }];
-                alertCustom.present();
-            },
-            error: function (error) {
-               console.log(error); 
-                loading.dismiss();
-                modal.dismiss();
-                alertCustom.message = error.responseJSON.message;
-                alertCustom.buttons = [{
-                    text: 'OK',
-                }];
-                alertCustom.present();
-            }
-        });
-    })
-</script>
+                    $.ajax({
+                        type: "post",
+                        url: "/admin/task-config",
+                        data: new FormData($('#save-{{ $user->id }}')[0]),
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            loading.dismiss();
+                            modal.dismiss();
+                            alertCustom.message = response.message;
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                            }];
+                            alertCustom.present();
+                        },
+                        error: function(error) {
+                            console.log(error);
+                            loading.dismiss();
+                            modal.dismiss();
+                            alertCustom.message = error.responseJSON.message;
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                            }];
+                            alertCustom.present();
+                        }
+                    });
+                })
 
-@endif
+                $('#resetform-{{$user->id}}').submit((e) => {
+                    e.preventDefault();
+                    loading.message = "Resetting Balance...";
+                    loading.present();
+
+                    $.ajax({
+                        type: "post",
+                        url: "/admin/rest-user-balance",
+                        data: new FormData($('#resetform-{{$user->id}}')[0]),
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            loading.dismiss();
+                            alertCustom.message = response.message;
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                            }];
+                            alertCustom.present();
+                        }
+                    });
+                })
+            </script>
+        @endforeach
+    @endif
 @endsection

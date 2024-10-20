@@ -72,6 +72,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/transfer',[UserDashboardController::class,'transfer']);
         Route::post('/transfer',[UserDashboardController::class,'process_transfer']);
         Route::get('task-check',[UserDashboardController::class, 'check_task']);
+        Route::get('contact',[UserDashboardController::class, 'contact']);
     });
 });
 
@@ -128,6 +129,8 @@ Route::middleware('admin')->prefix('admin')->group(function(){
 
     Route::get('/task-config',[AdminController::class,'task_config']);
     Route::post('/task-config',[AdminController::class,'update_task_config']);
+
+    Route::post('rest-user-balance',[AdminController::class,'rest_user_balance']);
 });
 
 

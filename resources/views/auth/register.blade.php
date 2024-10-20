@@ -235,7 +235,7 @@
 
                                     // Redirect to login page
                                     setTimeout(() => {
-                                        window.location.href = "/auth/login";
+                                        window.location.href = "/user/dashboard";
                                     }, 2000);
                                 }
                             }]

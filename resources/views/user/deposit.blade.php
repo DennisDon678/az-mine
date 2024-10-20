@@ -72,7 +72,7 @@
                 {{-- Select Deposit Method From cash or crypto --}}
                 <ion-item mode="ios">
                     <ion-icon name="list-outline" slot="start"></ion-icon>
-                    <ion-select placeholder="Select Deposit Method" id="method" name="method">
+                    <ion-select placeholder="Select Deposit Method" id="method" name="method" interface="action-sheet">
                         {{-- <ion-select-option value="cash">Cash</ion-select-option> --}}
                         <ion-select-option value="crypto">Crypto</ion-select-option>
                     </ion-select>
@@ -83,7 +83,7 @@
                 <div class="crypto" style="display: none;"">
                     <ion-item mode="ios">
                         <ion-icon name="list-circle-outline" slot="start"></ion-icon>
-                        <ion-select placeholder="Select Crypto" name="choice1">
+                        <ion-select placeholder="Select Crypto" name="choice1" interface="action-sheet">
                             @forelse ($cryptos as $crypto)
                                 <ion-select-option value="{{ $crypto->id }}">{{ strtoupper($crypto->short_name) }}
                                     {{ $crypto->network ? ' - ' . $crypto->network : '' }}</ion-select-option>
@@ -95,7 +95,7 @@
                 <div class="cash" style="display: none;">
                     <ion-item mode="ios">
                         <ion-icon name="list-circle-outline" slot="start"></ion-icon>
-                        <ion-select placeholder="Select Cash" name="choice2">
+                        <ion-select placeholder="Select Cash" name="choice2" interface="action-sheet">
                             <ion-select-option value="cash">Usdt</ion-select-option>
                             <ion-select-option value="crypto">ETH</ion-select-option>
                         </ion-select>

@@ -58,7 +58,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Open Balance:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text>${{number_format(Auth::user()->balance,2)}}</ion-text>
+                    <ion-text>${{ number_format(Auth::user()->balance, 2) }}</ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -66,7 +66,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Referral Balance:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text>${{number_format(Auth::user()->referral_balance,2)}}</ion-text>
+                    <ion-text>${{ number_format(Auth::user()->referral_balance, 2) }}</ion-text>
                 </ion-col>
             </ion-row>
     </ion-card>
@@ -91,7 +91,8 @@
                         <ion-text class="ion-text-nowrap"><strong>Invitation Code:</strong></ion-text>
                     </ion-col>
                     <ion-col>
-                        <ion-text>{{ Auth::user()->referral_id }}</ion-text>
+                        <ion-text>{{ Auth::user()->referral_id }} <ion-icon name="clipboard-outline" color="success"
+                                style="cursor: pointer;" id="copy"></ion-icon></ion-text>
                     </ion-col>
                 </ion-row>
 
@@ -186,6 +187,18 @@
                     });
                 }
             }]
+            alertCustom.present();
+        })
+
+        $('#copy').click(() => {
+            loading.message = 'Copying...';
+            loading.present();
+
+            navigator.clipboard.writeText("{{ Auth::user()->referral_id }}");
+
+            loading.dismiss();
+            alertCustom.message = 'Referral code copied!';
+            alertCustom.buttons = ['OK'];
             alertCustom.present();
         })
     </script>

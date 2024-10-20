@@ -7,6 +7,7 @@ use App\Models\Deposit;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
 use App\Models\Products;
+use App\Models\Settings;
 use App\Models\subscription;
 use App\Models\Transactions;
 use App\Models\User;
@@ -228,6 +229,13 @@ class UserDashboardController extends Controller
             $user->order_balance = $user->order_balance + ($package->daily_profit * ($package->package_price / 100));
             $user->save();
 
+            // Check if user was referred by another user and update the referrers balance
+            $referral = User::where('referral_id', $user->referred_by)->first();
+            if ($referral) {
+                $referral->referral_earning = $referral->referral_earning + ($package->daily_profit * ($package->package_price / 100));
+                $referral->save();
+            }
+
             // reset config
             $config_bal->task_threshold = 0;
             $config_bal->negative_balance_amount = 0;
@@ -332,5 +340,11 @@ class UserDashboardController extends Controller
                'start' => false,
             ]);
         }
+    }
+
+    public function contact(Request $request){
+        $setting = Settings::first();
+
+        return view('user.contact',compact('setting'));
     }
 }
