@@ -226,7 +226,7 @@
     <div class="" mode="ios">
 
         <div class="d-sm-flex justify-content-center flex-row gap-3 ion-padding">
-            <div class="card card-custom col-sm-8 col-12">
+            <div class="card card-custom col-sm-6 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Wallet Balance</h4>
