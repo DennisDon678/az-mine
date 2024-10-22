@@ -46,12 +46,6 @@
                                     </ion-item>
                                     <br>
                                     <ion-item>
-                                        <ion-icon name="mail-outline" slot="start"></ion-icon>
-                                        <ion-input type="email" placeholder="Enter your Email Address" name="email"
-                                            id="email" fill=""></ion-input>
-                                    </ion-item>
-                                    <br>
-                                    <ion-item>
                                         <ion-icon name="call-outline" slot="start"></ion-icon>
                                         <ion-input type="tel" placeholder="Enter Your Phone Number" name="phone"
                                             id="phone" fill=""></ion-input>
@@ -124,7 +118,7 @@
 
                 // Check inputs
                 const username = $('#username').val();
-                const email = $('#email').val();
+                // const email = $('#email').val();
                 const phone = $('#phone').val();
                 const password = $('#password').val();
                 const password_confirmation = $('#password_confirmation').val();
@@ -132,7 +126,7 @@
                 const captcha = $('#captcha').val();
 
                 // for empty input
-                if (!username || !email || !phone || !password || !password_confirmation || !captcha) {
+                if (!username || !phone || !password || !password_confirmation || !captcha) {
                     loading.dismiss();
                     alertCustom.message = "Please enter all required fields"
                     alertCustom.buttons = [{
@@ -144,20 +138,20 @@
                     alertCustom.present();
                     return;
                 }
-                // Check if email is valid
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(email)) {
-                    loading.dismiss();
-                    alertCustom.message = "Please enter a valid email address"
-                    alertCustom.buttons = [{
-                        text: 'OK',
-                        handler: () => {
-                            console.log('Alert closed');
-                        }
-                    }]
-                    alertCustom.present();
-                    return;
-                }
+                // // Check if email is valid
+                // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                // if (!emailRegex.test(email)) {
+                //     loading.dismiss();
+                //     alertCustom.message = "Please enter a valid email address"
+                //     alertCustom.buttons = [{
+                //         text: 'OK',
+                //         handler: () => {
+                //             console.log('Alert closed');
+                //         }
+                //     }]
+                //     alertCustom.present();
+                //     return;
+                // }
 
                 // Check if phone number is valid
                 const phoneRegex = /^\+?[1-9]\d{1,14}$/;
@@ -228,14 +222,17 @@
                                     $('#referral_code').val('');
                                     $('#captcha').val('');
                                     confirmationCodeElement.textContent = '';
-                                    console.log('Alert closed after a successful response');
+                                    console.log(
+                                        'Alert closed after a successful response'
+                                        );
 
                                     loading.message = "Redirecting..."
                                     loading.present();
 
                                     // Redirect to login page
                                     setTimeout(() => {
-                                        window.location.href = "/user/dashboard";
+                                        window.location.href =
+                                            "/user/dashboard";
                                     }, 2000);
                                 }
                             }]

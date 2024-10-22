@@ -244,7 +244,7 @@
                     <div class="icon bg-danger text-white"><ion-icon name="people-outline"></ion-icon></div>
                 </div>
             </div>
-            <div class="card card-custom col-sm-4 col-12">
+            {{-- <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Order Wallet</h4>
@@ -252,7 +252,7 @@
                     </div>
                     <div class="icon bg-primary text-white"><ion-icon name="cart-outline"></ion-icon></div>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <!-- Menu List Section (below the cards) -->

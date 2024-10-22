@@ -59,9 +59,9 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="forgot text-center mt-3">
+                            {{-- <div class="forgot text-center mt-3">
                                 <a href="/auth/forgot_password" class="text-decoration-none">Forgot Password?</a>
-                            </div>
+                            </div> --}}
                             <div class="or text-center mt-2">
                                 <h3>OR</h3>
                             </div>

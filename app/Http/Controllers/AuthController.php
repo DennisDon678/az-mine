@@ -14,7 +14,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone' => ['required', 'unique:users'],
         ]);
@@ -25,7 +25,7 @@ class AuthController extends Controller
         // Create a new user
         $user = User::create([
             'username' => $request->username,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'phone' => $request->phone,
             'password' =>  Hash::make($request->password),
             'referral_id' => $referral_id,
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         if ($user) {
             Auth::attempt([
-                'email' => $user->email,
+                'username' => $user->username,
                 'password' => $request->password,
             ]);
             return response()->json([
@@ -57,7 +57,7 @@ class AuthController extends Controller
 
         if ($user) {
             if (Auth::attempt([
-                'email' => $user->email,
+                'username' => $user->username,
                 'password' => $password,
             ])) {
                 return response()->json([
