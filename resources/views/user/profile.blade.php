@@ -36,6 +36,12 @@
         transform: translate(-50%, -50%);
         color: #ffffff;
     }
+
+    .border-custom{
+        border: 1px solid grey; 
+        border-radius:10px;
+        margin-bottom: 10px;
+    }
 </style>
 
 @section('content')
@@ -66,7 +72,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Referral Balance:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text>${{ number_format(Auth::user()->referral_balance, 2) }}</ion-text>
+                    <ion-text>${{ number_format(Auth::user()->referral_earning, 2) }}</ion-text>
                 </ion-col>
             </ion-row>
     </ion-card>
@@ -118,6 +124,27 @@
                 </ion-row>
             </ion-grid>
         </ion-card-content>
+    </ion-card>
+    <ion-card>
+        <ion-card-header class="text-center">
+            <ion-title>
+                Actions
+            </ion-title>
+        </ion-card-header>
+        <ion-card-body class="ion-padding">
+            <ion-item button href="/" class="mx-3 border-custom">
+                {{-- <ion-button> --}}
+                    <ion-icon name="wallet-outline" slot="start"></ion-icon>
+                    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                    Wallet Binding
+                {{-- </ion-button> --}}
+            </ion-item>
+            <ion-item button id="security" class="mx-3 border-custom">
+                <ion-icon name="lock-open-outline" slot="start"></ion-icon>
+                Security
+                <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+            </ion-item>
+        </ion-card-body>
     </ion-card>
     <ion-list lines="none">
         <ion-item>
@@ -199,6 +226,57 @@
             loading.dismiss();
             alertCustom.message = 'Referral code copied!';
             alertCustom.buttons = ['OK'];
+            alertCustom.present();
+        })
+
+        $('#security').click(()=>{
+            alertCustom.message = "Set or Update Transaction pin";
+            alertCustom.inputs = [
+                {
+                    placeholder: 'New Transaction PIN',
+                    type:'number',
+                    id:'pin',
+                },
+                {
+                    placeholder: 'Confirm Transaction PIN',
+                    type:'number',
+                    id:'confirm',
+                }
+            ];
+            alertCustom.buttons =[
+                {
+                    text:"Save",
+                    handler: () =>{
+                        alertCustom.dismiss();
+                        loading.message = "Updating pin..."
+                        loading.present();
+                        const pin = $("#pin").val();
+                        const confirm = $("#confirm").val();
+
+                        // pin should be 4 digits
+                        if(pin.length != 4){
+                            loading.dismiss();
+                            alertCustom.message =  "pin must be 4 digits";
+                            alertCustom.buttons = ['Okay'];
+                            alertCustom.present();
+                        }
+
+                        if(!pin || !confirm){
+                            loading.dismiss();
+                            alertCustom.message =  "Both PINs are required";
+                            alertCustom.buttons = ['Okay'];
+                            alertCustom.present();
+                        }
+
+                        if(pin != confirm){
+                            loading.dismiss();
+                            alertCustom.message =  "Both PINs must match";
+                            alertCustom.buttons = ['Okay'];
+                            alertCustom.present();
+                        }
+                    }
+                }
+            ];
             alertCustom.present();
         })
     </script>
