@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
 use App\Models\Admin;
 use App\Models\Products;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -164,4 +165,9 @@ Route::get('products_update/{id}/{page}', function ($id,$page) {
     } catch (\Throwable $th) {
         return response(['error' => $th->getMessage()]);
     }
+});
+
+
+Route::get('/artisan',function(){
+    Artisan::call('migrate');
 });
