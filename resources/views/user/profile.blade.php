@@ -247,7 +247,8 @@
                 text: "Save",
                 role: 'confirm',
                 handler: () => {
-                    alertCustom.dismiss();
+                    alertCustom.inputs =[];
+                    alertCustom.isOpen = false;
                     loading.message = "Updating PIN..."
                     loading.present();
                     const pin = $("#pin").val();
