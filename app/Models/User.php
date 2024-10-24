@@ -26,6 +26,7 @@ class User extends Authenticatable
         'referral_earning',
         'balance',
         'refeered_by',
+        'pin',
     ];
 
     /**
@@ -45,6 +46,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'pin' => 'encrypted'
     ];
 
     public function negativeBalanceConfig()

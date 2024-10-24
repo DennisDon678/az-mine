@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\UserNegativeBalanceConfig;
 use App\Models\UserTask;
 use App\Models\withdrawal;
+use App\Models\withdrawal_info;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -346,5 +347,42 @@ class UserDashboardController extends Controller
         $setting = Settings::first();
 
         return view('user.contact',compact('setting'));
+    }
+
+    public function update_transaction(Request $request){
+        // get user
+        $user = User::find($request->user()->id);
+        $user->pin = $request->pin;
+
+        if($user->save()){
+            return response()->json([
+                'message' => 'PIN was successfully updated'
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Something went wrong'
+            ],501);
+        }
+    }
+
+    public function bind_wallet(){
+        if(!Auth::user()->pin){
+            return redirect()->back()->with('error','You must set your Transaction PIN first.');
+        }
+        return view('user.bind_wallet');
+    }
+
+    public function check_withdraw_wallet(Request $request){
+        $wallet = withdrawal_info::where('user_id',$request->user()->id)->first();
+
+        if(!$wallet){
+            return response()->json([
+                'exists' => false,
+            ]);
+        }else{
+            return response()->json([
+                'exists' => true,
+            ]);
+        }
     }
 }

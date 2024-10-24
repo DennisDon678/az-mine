@@ -37,9 +37,9 @@
         color: #ffffff;
     }
 
-    .border-custom{
-        border: 1px solid grey; 
-        border-radius:10px;
+    .border-custom {
+        border: 1px solid grey;
+        border-radius: 10px;
         margin-bottom: 10px;
     }
 </style>
@@ -132,11 +132,11 @@
             </ion-title>
         </ion-card-header>
         <ion-card-body class="ion-padding">
-            <ion-item button href="/" class="mx-3 border-custom">
+            <ion-item button href="/user/bind-wallet" class="mx-3 border-custom">
                 {{-- <ion-button> --}}
-                    <ion-icon name="wallet-outline" slot="start"></ion-icon>
-                    <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
-                    Wallet Binding
+                <ion-icon name="wallet-outline" slot="start"></ion-icon>
+                <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                Wallet Binding
                 {{-- </ion-button> --}}
             </ion-item>
             <ion-item button id="security" class="mx-3 border-custom">
@@ -164,6 +164,7 @@
     <script>
         const loading = document.querySelector('ion-loading');
         const alertCustom = document.querySelector('ion-alert');
+        const toast = document.querySelector('ion-toast');
         $('#logout').click(() => {
             alertCustom.message = "Are you sure you want to logout?";
             alertCustom.buttons = [{
@@ -229,55 +230,95 @@
             alertCustom.present();
         })
 
-        $('#security').click(()=>{
+        $('#security').click(() => {
             alertCustom.message = "Set or Update Transaction pin";
-            alertCustom.inputs = [
-                {
+            alertCustom.inputs = [{
                     placeholder: 'New Transaction PIN',
-                    type:'number',
-                    id:'pin',
+                    type: 'number',
+                    id: 'pin',
                 },
                 {
                     placeholder: 'Confirm Transaction PIN',
-                    type:'number',
-                    id:'confirm',
+                    type: 'number',
+                    id: 'confirm',
                 }
             ];
-            alertCustom.buttons =[
-                {
-                    text:"Save",
-                    handler: () =>{
-                        alertCustom.dismiss();
-                        loading.message = "Updating pin..."
-                        loading.present();
-                        const pin = $("#pin").val();
-                        const confirm = $("#confirm").val();
+            alertCustom.buttons = [{
+                text: "Save",
+                role: 'confirm',
+                handler: () => {
 
-                        // pin should be 4 digits
-                        if(pin.length != 4){
-                            loading.dismiss();
-                            alertCustom.message =  "pin must be 4 digits";
-                            alertCustom.buttons = ['Okay'];
-                            alertCustom.present();
-                        }
+                    loading.message = "Updating PIN..."
+                    loading.present();
+                    const pin = $("#pin").val();
+                    const confirm = $("#confirm").val();
 
-                        if(!pin || !confirm){
-                            loading.dismiss();
-                            alertCustom.message =  "Both PINs are required";
-                            alertCustom.buttons = ['Okay'];
-                            alertCustom.present();
-                        }
+                    if (pin === '' || confirm === '') {
+                        loading.dismiss();
+                        toast.message = "Both PINs are required";
+                        toast.position = 'top';
+                        toast.duration = 3000;
+                        toast.present();
 
-                        if(pin != confirm){
-                            loading.dismiss();
-                            alertCustom.message =  "Both PINs must match";
-                            alertCustom.buttons = ['Okay'];
-                            alertCustom.present();
-                        }
+                        return
                     }
+                    // pin should be 4 digits
+                    if (pin.length != 4) {
+                        loading.dismiss();
+                        toast.message = "PIN must be 4 digits";
+                        toast.position = 'top';
+                        toast.duration = 3000;
+                        toast.present();
+                        return;
+                    }
+
+                    if (pin != confirm) {
+                        loading.dismiss();
+                        toast.message = "Both PINs must match";
+                        toast.position = 'top';
+                        toast.duration = 3000;
+                        toast.present();
+                        return;
+                    }
+                    const data = new FormData();
+                    data.append('pin', pin);
+                    data.append('_token', '{{ csrf_token() }}');
+
+                    $.ajax({
+                        type: "post",
+                        url: "/user/update-transaction-pin",
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            loading.dismiss()
+                            toast.message = response.message;
+                            toast.position = 'top';
+                            toast.duration = 3000;
+                            toast.present();
+                            return;
+                        },
+                        error: function(xhr) {
+                            loading.dismiss();
+                            var error = xhr.responseJSON;
+                            toast.message = error.message;
+                            toast.position = 'top';
+                            toast.duration = 3000;
+                            toast.present();
+                        }
+                    });
                 }
-            ];
+            }];
             alertCustom.present();
         })
     </script>
+
+    @if (Session::has('error'))
+        <script>
+            // console.log('error');
+            alertCustom.message = "Set Transaction PIN First.";
+            alertCustom.buttons = ['Ok']
+            alertCustom.isOpen = true;
+        </script>
+    @endif
 @endsection

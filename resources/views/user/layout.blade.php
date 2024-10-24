@@ -62,6 +62,7 @@
         </ion-tab-bar>
         <ion-loading mode="ios"></ion-loading>
         <ion-alert mode="ios"></ion-alert>
+        <ion-toast mode="ios"></ion-toast>
     </ion-app>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
