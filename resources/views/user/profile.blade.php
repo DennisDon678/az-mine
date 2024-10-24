@@ -228,7 +228,7 @@
             alertCustom.message = 'Referral code copied!';
             alertCustom.buttons = ['OK'];
             alertCustom.present();
-        })
+        });
 
         $('#security').click(() => {
             alertCustom.message = "Set or Update Transaction pin";
@@ -247,7 +247,7 @@
                 text: "Save",
                 role: 'confirm',
                 handler: () => {
-
+                    alertCustom.dismiss();
                     loading.message = "Updating PIN..."
                     loading.present();
                     const pin = $("#pin").val();
