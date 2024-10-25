@@ -273,12 +273,12 @@
                             <span>Customer Service</span>
                         </div>
                     </a>
-                     <a href="/user/deposit">
+                     {{-- <a href="/user/deposit">
                         <div class="menu-item">
                             <ion-icon name="wallet-outline"></ion-icon>
                             <span>Deposit</span>
                         </div>
-                    </a>
+                    </a> --}}
                    
                     <a href="/user/withdraw">
                         <div class="menu-item">
