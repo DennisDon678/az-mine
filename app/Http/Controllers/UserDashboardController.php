@@ -101,7 +101,8 @@ class UserDashboardController extends Controller
 
     public function withdraw_view()
     {
-        return view('user.withdraw');
+        $info = withdrawal_info::where('user_id',Auth::user()->id)->first();
+        return view('user.withdraw', compact('info'));
     }
 
     public function get_product($id)
@@ -367,7 +368,7 @@ class UserDashboardController extends Controller
 
     public function bind_wallet(){
         if(!Auth::user()->pin){
-            return redirect()->back()->with('error','You must set your Transaction PIN first.');
+            return redirect('/user/profile')->with('error','You must set your Transaction PIN first.');
         }
         return view('user.bind_wallet');
     }

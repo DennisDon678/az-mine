@@ -28,21 +28,15 @@
                             <ion-label>Balance: ${{ number_format(Auth::user()->balance, 2) }}</ion-label>
                         </ion-item>
 
-                        <ion-item>
-                            <ion-input type="number" placeholder="Enter the withdrawal amount" id="amount" name="amount"></ion-input>
-                        </ion-item>
+                        @if ($info)
+                            <ion-item>
+                                <ion-input type="number" placeholder="Enter the withdrawal amount" id="amount"
+                                    name="amount"></ion-input>
+                            </ion-item>
+                        @else
+                        <h5 class="mt-4 px-2">You have not bound any wallet to account yet. <a href="/user/bind-wallet">Click Here to Bind</a></h5>
+                        @endif
                         
-                        <ion-item>
-                            <ion-input type="text" placeholder="Enter the Coin e.g ETH" id="coin" name="coin"></ion-input>
-                        </ion-item>
-
-                        <ion-item>
-                            <ion-input type="text" placeholder="Network (optional)" name="network"></ion-input>
-                        </ion-item>
-
-                        <ion-item>
-                            <ion-input type="text" placeholder="Enter your wallet Address" id="address" name="wallet"></ion-input>
-                        </ion-item>
 
                     </form>
                     <!-- Confirm Button -->
@@ -79,52 +73,51 @@
 @endsection
 
 @section('script')
-<script>
-    $("#withdrawBtn").click(function() {
-        const loading = document.querySelector('ion-loading');
-        const alertCustom = document.querySelector('ion-alert');
+    <script>
+        $("#withdrawBtn").click(function() {
+            const loading = document.querySelector('ion-loading');
+            const alertCustom = document.querySelector('ion-alert');
 
-        // check for empty input
-        if (!$('#amount').val() ||!$('#coin').val() ||!$('#address').val()) {
-            alertCustom.message = "Please fill all fields.";
+            // check for empty input
+            if (!$('#amount').val() || !$('#coin').val() || !$('#address').val()) {
+                alertCustom.message = "Please fill all fields.";
+                alertCustom.buttons = [{
+                    text: 'OK',
+                }];
+                alertCustom.present();
+                return;
+            }
+
+            alertCustom.message = "Are you sure you want to withdraw $" + $('#amount').val() + "?";
             alertCustom.buttons = [{
-                text: 'OK',
+                text: 'Cancel',
+                handler: () => {}
+            }, {
+                text: 'Confirm',
+                handler: () => {
+                    loading.message = "Processing..."
+                    loading.present();
+                    // Make API call to submit withdrawal request
+                    $.ajax({
+                        type: "post",
+                        url: "/user/withdrawal/submit",
+                        data: new FormData($('#withdraw')[0]),
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            loading.dismiss();
+                            alertCustom.message = response.message;
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                            }];
+                            alertCustom.present();
+                        }
+                    });
+                    // After successful submission, hide the form and show success message
+                    // or handle any errors
+                }
             }];
             alertCustom.present();
-            return;
-        }
-
-        alertCustom.message = "Are you sure you want to withdraw $"+$('#amount').val()+"?";
-        alertCustom.buttons = [{
-            text: 'Cancel',
-            handler: () => {}
-        }, {
-            text: 'Confirm',
-            handler: () => {
-                loading.message = "Processing..."
-                loading.present();
-                // Make API call to submit withdrawal request
-                $.ajax({
-                    type: "post",
-                    url: "/user/withdrawal/submit",
-                    data: new FormData($('#withdraw')[0]),
-                    contentType: false,
-                    processData: false,
-                    success: function (response) {
-                        loading.dismiss();
-                        alertCustom.message = response.message;
-                        alertCustom.buttons = [{
-                            text: 'OK',
-                        }];
-                        alertCustom.present();
-                    }
-                });
-                // After successful submission, hide the form and show success message
-                // or handle any errors
-            }
-        }];
-        alertCustom.present();
-    });
-</script>
-
+        });
+    </script>
 @endsection
