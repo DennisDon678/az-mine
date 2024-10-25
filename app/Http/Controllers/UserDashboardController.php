@@ -266,14 +266,15 @@ class UserDashboardController extends Controller
             $withdraw->status = 'processing';
             $withdraw->save();
 
+            $info = withdrawal_info::where('user_id', Auth::user()->id)->first();
             // create a new withdrawal
             $withdrawal = new withdrawal();
             $withdrawal->withdrawal_id = $ref;
             $withdrawal->user_id = Auth::user()->id;
             $withdrawal->amount = $request->amount;
-            $withdrawal->coin = $request->coin;
-            $withdrawal->wallet = $request->wallet;
-            $withdrawal->network = $request->network;
+            $withdrawal->coin = "USDT";
+            $withdrawal->wallet = $info->wallet;
+            $withdrawal->network = "TRC20";
             $withdrawal->save();
 
             // get user
