@@ -76,6 +76,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('contact',[UserDashboardController::class, 'contact']);
         Route::post('/update-transaction-pin',[UserDashboardController::class, 'update_transaction']);
         Route::get('/bind-wallet',[UserDashboardController::class, 'bind_wallet']);
+        Route::get('/check-withdraw-wallet', [UserDashboardController::class, 'check_withdraw_wallet']);
+        Route::post('/bind-wallet',[UserDashboardController::class, 'update_wallet']);
     });
 });
 
@@ -134,7 +136,6 @@ Route::middleware('admin')->prefix('admin')->group(function(){
     Route::post('/task-config',[AdminController::class,'update_task_config']);
 
     Route::post('rest-user-balance',[AdminController::class,'rest_user_balance']);
-    Route::get('/check-withdraw-wallet',[AdminController::class,'check_withdraw_wallet']);
 });
 
 

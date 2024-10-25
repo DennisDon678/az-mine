@@ -377,12 +377,34 @@ class UserDashboardController extends Controller
 
         if(!$wallet){
             return response()->json([
-                'exists' => false,
+                'wallet_exists' => false,
             ]);
         }else{
             return response()->json([
-                'exists' => true,
+                'wallet_exists' => true,
             ]);
+        }
+    }
+
+    public function update_wallet(Request $request){
+        $wallet = withdrawal_info::firstorcreate([
+            'user_id' => Auth::user()->id
+        ],[
+            'user_id' => Auth::user()->id,
+            'wallet' => $request->wallet
+        ]);
+
+        $wallet->wallet = $request->wallet;
+
+        if($wallet->save()){
+            return response()->json([
+               'message' => 'Wallet was successfully updated'
+            ]);
+
+        }else{
+            return response()->json([
+               'message' => 'Something went wrong'
+            ],501);
         }
     }
 }
