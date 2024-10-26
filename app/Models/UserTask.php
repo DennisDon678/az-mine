@@ -12,6 +12,7 @@ class UserTask extends Model
     protected $fillable = [
         'user_id',
         'tasks_completed_today',
-        'last_task_completed_at'
+        'last_task_completed_at',
+        'current_set',
     ];
 }

@@ -177,6 +177,7 @@ class UserDashboardController extends Controller
             ['user_id' => $user->id],
             [
                 'user_id' => $user->id,
+                'current_set' => $package->set,
                 'last_task_completed_at' => now(),
                 'tasks_completed_today' => 0,
             ]
