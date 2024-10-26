@@ -138,6 +138,7 @@ class AdminController extends Controller
         $package->percentage_profit = $request->percentage_profit;
         $package->number_of_orders_per_day = $request->number_of_orders_per_day;
         $package->daily_profit = $request->daily_profit;
+        $package->set = $request->set;
         $package->save();
 
         return redirect()->back()->with('message',"Package update");

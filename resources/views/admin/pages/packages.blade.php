@@ -38,28 +38,33 @@
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $package->id }}">
                                 <ion-item mode="ios">
-                                    <ion-label>Package Name</ion-label>
-                                    <ion-input type="text" placeholder="Crypto Name" name=""
+                                    <ion-label slot="start">Package Name</ion-label>
+                                    <ion-input type="text" placeholder="Package Name" name=""
                                         value="{{ $package->package_name }}" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
-                                    <ion-label>Package Percentage:</ion-label>
-                                    <ion-input type="text" placeholder="Crypto Short Name" name="percentage_profit"
+                                    <ion-label slot="start">Package Percentage:</ion-label>
+                                    <ion-input type="text" placeholder="Package Percentage" name="percentage_profit"
                                         value="{{ $package->percentage_profit }}" required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
-                                    <ion-label>Package No. of Orders per day</ion-label>
-                                    <ion-input type="number" placeholder="Crypto Network" name="number_of_orders_per_day"
+                                    <ion-label slot="start">No. of Sets per Day:</ion-label>
+                                    <ion-input type="text" placeholder="No. of Sets per Day" name="set"
+                                        value="{{ $package->set }}" required></ion-input>
+                                </ion-item>
+                                <ion-item mode="ios">
+                                    <ion-label slot="start">Package No. of Orders per Set</ion-label>
+                                    <ion-input type="number" placeholder="Package No. of Orders per Set" name="number_of_orders_per_day"
                                         value="{{ $package->number_of_orders_per_day }}"></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
-                                    <ion-label>Package Fee</ion-label>
-                                    <ion-input type="number" placeholder="Crypto Wallet Address" name="package_price"
+                                    <ion-label slot="start">Package Fee</ion-label>
+                                    <ion-input type="number" placeholder="Package Fee" name="package_price"
                                         value="{{ $package->package_price }}" required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
-                                    <ion-label>Daily Profit</ion-label>
-                                    <ion-input type="text" placeholder="Daily Profit percentage" name="daily_profit"
+                                    <ion-label slot="start">Daily Profit</ion-label>
+                                    <ion-input type="text" placeholder="Daily Profit" name="daily_profit"
                                         value="{{ $package->daily_profit }}" required></ion-input>
                                 </ion-item>
 

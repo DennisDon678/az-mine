@@ -334,8 +334,8 @@
                                         <h5 class="card-title mt-1">
                                             <strong>${{ number_format($package->package_price, 2) }}</strong></h5>
                                         <p class="card-text"><strong>{{ number_format($package->percentage_profit,1) }}%</strong> Profit
-                                            rate. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
-                                            day. <br><strong>{{number_format($package->daily_profit,1)}}%</strong> daily Profit</p>
+                                            rate. <br> {{$package->set}} set per Day. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
+                                            order. <br><strong>{{number_format($package->daily_profit,1)}}%</strong> daily Profit.</p>
                                             
 
                                         @if ($active)
