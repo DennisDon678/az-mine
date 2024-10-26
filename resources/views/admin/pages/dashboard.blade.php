@@ -284,52 +284,6 @@
 
         <ion-card mode="ios">
             <ion-card-header class="text-center">
-                <ion-title>Pending Deposits</ion-title>
-            </ion-card-header>
-
-            <ion-card-body>
-                <ion-list inset="true">
-                    @forelse ($deposits as $deposit)
-                        <ion-item>
-                            <ion-grid>
-                                <ion-row class="ion-justify-content-between">
-                                    <ion-col size="8">
-                                        <ion-label>
-                                            <p>Deposit ID: {{ $deposit->deposit_id }}</p>
-                                            <p>Amount: ${{ number_format($deposit->amount, 2) }}</p>
-
-                                        </ion-label>
-                                        <a class="btn btn-primary mt-1" href="{{ asset('/storage/' . $deposit->proof) }}"
-                                            target="blank">View Proof</a>
-                                    </ion-col>
-                                    <ion-col size="4">
-                                        <ion-row class="ion-justify-content-end">
-                                            <ion-col>
-                                                <ion-button
-                                                    href="/admin/approve-deposit?id={{ $deposit->id }}">Approve</ion-button>
-                                            </ion-col>
-                                            <ion-col>
-                                                <ion-button color="danger"
-                                                    href="/admin/reject-deposit?id={{ $deposit->id }}">Reject</ion-button>
-                                            </ion-col>
-                                        </ion-row>
-                                    </ion-col>
-                                </ion-row>
-
-                            </ion-grid>
-                        </ion-item>
-                    @empty
-                        <ion-item class="text-center text-danger">
-                            <ion-label>No pending deposits</ion-label>
-                        </ion-item>
-                    @endforelse
-                </ion-list>
-            </ion-card-body>
-        </ion-card>
-
-
-        <ion-card mode="ios">
-            <ion-card-header class="text-center">
                 <ion-title>Pending Withdrawals</ion-title>
             </ion-card-header>
 
