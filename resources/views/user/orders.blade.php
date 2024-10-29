@@ -1,6 +1,6 @@
 @extends('user.layout')
 
-@section('title','orders');
+@section('title', 'orders');
 @section('header')
     <ion-title>Order History</ion-title>
     <ion-button slot="start" href="/user/dashboard">
@@ -8,7 +8,7 @@
     </ion-button>
 @endsection
 @section('content')
-<div class="container">
+    <div class="container">
         <!-- Button Container for Deposit and Withdraw -->
         <div class="mt-3 nav nav-pills">
             <div class="col nav-item text-center rounded">
@@ -22,53 +22,91 @@
         <div class="tab-content mt-2" id="pills-tabContent">
             <div class="tab-pane fade show active" id="deposit" role="tabpanel" aria-labelledby="pills-home-tab">
                 @php
-                    $pending = App\Models\TaskLog::where('user_id', Auth::user()->id)->where('completed',false)->get();
-                    $completed = App\Models\TaskLog::where('user_id', Auth::user()->id)->where('completed',true)->get();
+                    $pending = App\Models\TaskLog::where('user_id', Auth::user()->id)
+                        ->where('completed', false)
+                        ->get();
+                    $completed = App\Models\TaskLog::where('user_id', Auth::user()->id)
+                        ->where('completed', true)
+                        ->get();
                 @endphp
-                <ion-card>
-                    
-                    <ion-card-content>
-                        <ion-lists>
-                            @forelse ($pending as $deposit)
-                                <ion-item>
-                                    <ion-label>Deposit Transaction</ion-label>
-                                    <ion-label
-                                        color="{{ $deposit->status == 'success' ? 'success' : '' }}{{ $deposit->status == 'failed' ? 'danger' : ''}}">
-                                        {{ $deposit->status }}</ion-label>
-                                    <ion-label>${{number_format($deposit->amount,2)}}</ion-label>
-                                </ion-item>
-                            @empty
-                                <ion-item>
-                                    <ion-label>No Pending Order found.</ion-label>
-                                </ion-item>
-                            @endforelse
-                        </ion-lists>
-                    </ion-card-content>
-                </ion-card>
-
+                @forelse ($pending as $deposit)
+                    <ion-card mode="ios" class="ion-padding">
+                        <ion-card-body>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Order ID:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    {{ $deposit->order_id }}
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Product Price:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    ${{ $deposit->product_amount }}
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Profit:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    ${{ number_format($deposit->amount_earned, 2) }}
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Action:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-success">Submit</button>
+                                </div>
+                            </div>
+                        </ion-card-body>
+                    </ion-card>
+                @empty
+                    <ion-item>
+                        <ion-label>No Pending Order found.</ion-label>
+                    </ion-item>
+                @endforelse
             </div>
             <div class="tab-pane fade" id="withdraw" role="tabpanel" aria-labelledby="pills-profile-tab">
-                <ion-card>
-                   
-                    <ion-card-content>
-                        <ion-lists>
-                            @forelse ($completed as $withdrawal)
-                                <ion-item>
-                                    <ion-label>Withdrawal Transaction</ion-label>
-                                    <ion-label
-                                        color="{{ $withdrawal->status == 'success' ? 'success' : '' }} {{ $withdrawal->status == 'processing' ? 'warning' : '' }} {{ $withdrawal->status == 'failed' ? 'danger' : '' }}">
-                                        {{ $withdrawal->status }}</ion-label>
-                                    <ion-label>${{number_format($withdrawal->amount,2)}}</ion-label>
-                                </ion-item>
-                            @empty
-                                <ion-item>
-                                    <ion-label>No completed order found.</ion-label>
-                                </ion-item>
-                            @endforelse
-                        </ion-lists>
-                    </ion-card-content>
-                </ion-card>
-
+                @forelse ($completed as $withdrawal)
+                    <ion-card mode="ios" class="ion-padding">
+                        <ion-card-body>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Order ID:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    {{ $deposit->order_id }}
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Product Price:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    ${{ $deposit->product_amount }}
+                                </div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="col-6">
+                                    <ion-label class="bold"><strong>Profit:</strong></ion-label>
+                                </div>
+                                <div class="col-6">
+                                    ${{ number_format($deposit->amount_earned, 2) }}
+                                </div>
+                            </div>
+                        </ion-card-body>
+                    </ion-card>
+                @empty
+                    <ion-item>
+                        <ion-label>No completed order found.</ion-label>
+                    </ion-item>
+                @endforelse
             </div>
         </div>
     </div>

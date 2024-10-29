@@ -79,6 +79,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/check-withdraw-wallet', [UserDashboardController::class, 'check_withdraw_wallet']);
         Route::post('/bind-wallet',[UserDashboardController::class, 'update_wallet']);
         Route::get('/orders',[UserDashboardController::class, 'orders']);
+        Route::get('/check-pending-task',[UserDashboardController::class, 'check_pending_task']);
     });
 });
 

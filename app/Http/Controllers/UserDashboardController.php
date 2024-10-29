@@ -9,6 +9,7 @@ use App\Models\Previous_order_balance;
 use App\Models\Products;
 use App\Models\Settings;
 use App\Models\subscription;
+use App\Models\TaskLog;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Models\UserNegativeBalanceConfig;
@@ -107,9 +108,41 @@ class UserDashboardController extends Controller
 
     public function get_product($id)
     {
-        // Find product
-        $product = Products::find($id);
+        $user = User::find(auth()->user()->id);
+        $subscription = subscription::where('user_id', $user->id)->first();
 
+        // get package
+        $package = packages::find($subscription->package_id);
+
+        $userTask = UserTask::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'user_id' => $user->id,
+                'current_set' => $package->set,
+                'last_task_completed_at' => now(),
+                'tasks_completed_today' => 0,
+            ]
+        );
+        $config_bal = UserNegativeBalanceConfig::where('user_id', $user->id)->first();
+
+        // Find product
+        if ($userTask->tasks_completed_today == $config_bal->task_threshold && $config_bal->task_threshold > 0) {
+            $product = Products::where('price', '>=', 100)
+                ->orderByRaw('RAND()')
+                ->first();
+        } else {
+            $product = Products::where('price', '>=', (3 * $subscription->package_price))->orderByRaw('RAND()')->first();
+        }
+
+        // new Log;
+        $log = TaskLog::create([
+            'user_id' => $user->id,
+            'order_id' => uniqid(),
+            'product_id' => $product->id,
+            'amount_earned' => ($package->percentage_profit / 100) * ($product->price),
+            'product_amount' => $product->price,
+            'completed' => false,
+        ]);
         // return product as json
         return response()->json($product);
     }
@@ -166,7 +199,7 @@ class UserDashboardController extends Controller
 
     public function performTask(Request $request)
     {
-        
+
 
         $user = User::find(auth()->user()->id);
         $subscription = subscription::where('user_id', $user->id)->first();
@@ -234,7 +267,7 @@ class UserDashboardController extends Controller
         $user->balance = $user->balance + $profit;
         $user->save();
 
-        
+
 
         // if the user has completed all tasks for the day, add the daily profit to their balance
         if ($userTask->current_set <= $package->set) {
@@ -361,6 +394,21 @@ class UserDashboardController extends Controller
         }
     }
 
+    public function check_pending_task(){
+        // check pending task log
+        $task = TaskLog::where('user_id', '=', Auth::user()->id)->where('completed',false)->count();
+
+        if($task > 0){
+            return response()->json([
+                'pending' => true,
+            ]);
+        }else{
+            return response()->json([
+                'pending' => false,
+            ]);
+        }
+    }
+
     public function contact(Request $request)
     {
         $setting = Settings::first();
@@ -430,7 +478,8 @@ class UserDashboardController extends Controller
         }
     }
 
-    public function orders(){
+    public function orders()
+    {
         return view('user.orders');
     }
 }

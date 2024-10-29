@@ -160,8 +160,7 @@
                     <ion-label>Current Balance</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong
-                            id="order_balance">${{ number_format(Auth::user()->balance, 2) }}</strong></ion-text>
+                    <ion-text><strong id="order_balance">${{ number_format(Auth::user()->balance, 2) }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -181,12 +180,13 @@
                     <ion-text><strong>{{ $package->package_name }}</strong></ion-text>
                 </ion-col>
             </ion-row>
-             <ion-row>
+            <ion-row>
                 <ion-col>
                     <ion-label>Current Set</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong>{{ $performed->current_set?$performed->current_set:0 }} / {{$package->set}}</strong></ion-text>
+                    <ion-text><strong>{{ $performed->current_set ? $performed->current_set : 0 }} /
+                            {{ $package->set }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
@@ -262,44 +262,74 @@
                 url: "/user/task-check",
                 success: function(response) {
                     if (response.start == false) {
-                        alertCustom.message = "OOPS! You don't have any assigned task at the moment to perform.";
+                        alertCustom.message =
+                            "OOPS! You don't have any assigned task at the moment to perform.";
                         alertCustom.buttons = [{
                             text: 'Okay'
                         }];
                         alertCustom.present();
                         return false;
                     } else {
-                        spinArrow.style.animation = 'spin 300ms linear infinite';
-
-                        setTimeout(() => {
-                            //  random number between 0 and 81
-                            var num = Math.floor(Math.random() * 150) + 1;
-                            $.ajax({
-                                type: "get",
-                                url: "/user/get_product/" + num,
-                                success: function(response) {
-                                    image.src = response.image;
-                                    title.textContent = response.name;
-                                    price.textContent = 'Price: $' + response.price;
-                                    $('#product_id').val(response.id);
-
-                                    spinArrow.style.animationPlayState = 'paused';
-                                    modal.present();
-                                },
-                                error: function(xhr, status, error) {
-                                    spinArrow.style.animationPlayState = 'paused';
-                                    // handle error here
-
-                                    // Alert the user
+                        $.ajax({
+                            type: "get",
+                            url: "/user/check-pending-task",
+                            success: function(response) {
+                                if (response.pending) {
                                     alertCustom.message =
-                                        "Opps! no product available try again.";
+                                        "You Have Pending Orders Kindly Submit them to continue";
                                     alertCustom.buttons = [{
                                         text: 'Okay'
                                     }];
                                     alertCustom.present();
+                                    return false;
+                                } else {
+                                    spinArrow.style.animation =
+                                    'spin 300ms linear infinite';
+
+                                    setTimeout(() => {
+                                        //  random number between 0 and 81
+                                        var num = Math.floor(Math.random() * 150) +
+                                            1;
+                                        $.ajax({
+                                            type: "get",
+                                            url: "/user/get_product/" + num,
+                                            success: function(response) {
+                                                image.src = response
+                                                    .image;
+                                                title.textContent =
+                                                    response.name;
+                                                price.textContent =
+                                                    'Price: $' +
+                                                    response.price;
+                                                $('#product_id').val(
+                                                    response.id);
+
+                                                spinArrow.style
+                                                    .animationPlayState =
+                                                    'paused';
+                                                modal.present();
+                                            },
+                                            error: function(xhr, status,
+                                                error) {
+                                                spinArrow.style
+                                                    .animationPlayState =
+                                                    'paused';
+                                                // handle error here
+
+                                                // Alert the user
+                                                alertCustom.message =
+                                                    "Opps! no product available try again.";
+                                                alertCustom.buttons = [{
+                                                    text: 'Okay'
+                                                }];
+                                                alertCustom.present();
+                                            }
+                                        });
+                                    }, 3000);
                                 }
-                            });
-                        }, 3000);
+                            }
+                        });
+
                     }
                 }
             });
