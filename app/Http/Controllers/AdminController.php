@@ -12,6 +12,7 @@ use App\Models\subscription;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Models\UserNegativeBalanceConfig;
+use App\Models\UserTask;
 use App\Models\withdrawal;
 use Illuminate\Http\Request;
 
@@ -236,6 +237,9 @@ class AdminController extends Controller
         $config = UserNegativeBalanceConfig::find($request->id);
 
         if($config->update($request->except('_token'))){
+            $userTask = UserTask::where('user_id',$config->user_id)->first();
+            $userTask->current_set += 1;
+            $userTask->save();
             return response()->json([
                 'message' => 'Task configuration updated successfully',
             ]);

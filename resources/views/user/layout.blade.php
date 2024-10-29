@@ -45,11 +45,25 @@
                     <h5>Home</h5>
                 </ion-label>
             </ion-tab-button>
+            <ion-tab-button href="/user/lucky"
+                {{ request()->segment(count(request()->segments())) == 'lucky' ? 'selected' : '' }}>
+                <ion-icon name="compass" size="large"></ion-icon>
+                <ion-label>
+                    <h5>Lucky Draw</h5>
+                </ion-label>
+            </ion-tab-button>
             <ion-tab-button href="/user/earn"
                 {{ request()->segment(count(request()->segments())) == 'earn' ? 'selected' : '' }}>
                 <ion-icon name="flash" size="large"></ion-icon>
                 <ion-label>
                     <h5>Earn</h5>
+                </ion-label>
+            </ion-tab-button>
+            <ion-tab-button href="/user/orders"
+                {{ request()->segment(count(request()->segments())) == 'orders' ? 'selected' : '' }}>
+                <ion-icon name="receipt" size="large"></ion-icon>
+                <ion-label>
+                    <h5>Orders</h5>
                 </ion-label>
             </ion-tab-button>
             <ion-tab-button href="/user/history"

@@ -157,19 +157,19 @@
         <ion-grid>
             <ion-row>
                 <ion-col>
-                    <ion-label>Order Balance</ion-label>
+                    <ion-label>Current Balance</ion-label>
                 </ion-col>
                 <ion-col>
                     <ion-text><strong
-                            id="order_balance">${{ number_format(Auth::user()->order_balance, 2) }}</strong></ion-text>
+                            id="order_balance">${{ number_format(Auth::user()->balance, 2) }}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>
                 <ion-col>
-                    <ion-label>Today Orders</ion-label>
+                    <ion-label>Performed Orders</ion-label>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong><em id="taskDone">{{ $performed }}</em> of
+                    <ion-text><strong><em id="taskDone">{{ $performed->tasks_completed_today }}</em> of
                             {{ $package->number_of_orders_per_day }}</strong></ion-text>
                 </ion-col>
             </ion-row>
@@ -179,6 +179,14 @@
                 </ion-col>
                 <ion-col>
                     <ion-text><strong>{{ $package->package_name }}</strong></ion-text>
+                </ion-col>
+            </ion-row>
+             <ion-row>
+                <ion-col>
+                    <ion-label>Current Set</ion-label>
+                </ion-col>
+                <ion-col>
+                    <ion-text><strong>{{ $performed->current_set?$performed->current_set:0 }} / {{$package->set}}</strong></ion-text>
                 </ion-col>
             </ion-row>
             <ion-row>

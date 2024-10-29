@@ -4,7 +4,7 @@
 
 <style>
     .main {
-        max-width: 950px;
+        max-width: 650px;
         margin: auto;
     }
 </style>

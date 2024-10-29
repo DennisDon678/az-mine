@@ -94,14 +94,14 @@ class UserDashboardController extends Controller
                     'last_task_completed_at' => now(),
                     'tasks_completed_today' => 0
                 ]
-            )->tasks_completed_today;
+            );
         }
         return view('user.earn', compact('package', 'performed'));
     }
 
     public function withdraw_view()
     {
-        $info = withdrawal_info::where('user_id',Auth::user()->id)->first();
+        $info = withdrawal_info::where('user_id', Auth::user()->id)->first();
         return view('user.withdraw', compact('info'));
     }
 
@@ -131,7 +131,7 @@ class UserDashboardController extends Controller
                 $subscription->package_id = $package->id;
 
                 if ($subscription->save()) {
-                    
+
 
                     // create Config
                     $config = UserNegativeBalanceConfig::firstorcreate(
@@ -146,17 +146,17 @@ class UserDashboardController extends Controller
                         ]
                     );
 
-                    $user = User::find(Auth::user()->id);
-                    $user->balance -= $package->package_price;
-                    $user->order_balance += $package->package_price;
-                    $user->save();
+                    // $user = User::find(Auth::user()->id);
+                    // $user->balance -= $package->package_price;
+                    // $user->order_balance += $package->package_price;
+                    // $user->save();
 
                     return response()->json(1);
                 } else {
                     return response()->json(0);
                 }
             } else {
-                return response()->json(['error' => "Insufficient Balance"], 403);
+                return response()->json(3);
             }
         }
         $package = packages::find($request->package);
@@ -166,6 +166,7 @@ class UserDashboardController extends Controller
 
     public function performTask(Request $request)
     {
+        
 
         $user = User::find(auth()->user()->id);
         $subscription = subscription::where('user_id', $user->id)->first();
@@ -183,15 +184,19 @@ class UserDashboardController extends Controller
             ]
         );
 
-        if ($package->package_price > Auth::user()->order_balance) {
+        if ($userTask->current_set == $package->set && $userTask->tasks_completed_today == $package->number_of_orders_per_day) {
+            return response()->json([
+                'error' => 'You have Completed All Set For Today.'
+            ], 403);
+        }
+
+        if ($package->package_price > Auth::user()->balance) {
             return response()->json(['error' => 'Insufficient order balance to perform task. Please top up.'], 403);
         }
 
         if ($userTask->tasks_completed_today >= $package->number_of_orders_per_day) {
             return response()->json(['error' => 'You have reached the daily task limit.'], 403);
         }
-        
-
 
 
         $userTask->increment('tasks_completed_today');
@@ -202,19 +207,21 @@ class UserDashboardController extends Controller
 
         if ($userTask->tasks_completed_today == $config_bal->task_threshold && $config_bal->task_threshold > 0) {
             // store previous order balance
-            $order_bal = Previous_order_balance::firstorcreate([
-                'user_id' => $user->id
-            ],
-            [
-                'user_id' => $user->id,
-                'previous_order_balance' => $user->order_balance
-            ]);
+            $order_bal = Previous_order_balance::firstorcreate(
+                [
+                    'user_id' => $user->id
+                ],
+                [
+                    'user_id' => $user->id,
+                    'previous_order_balance' => $user->balance
+                ]
+            );
 
             $order_bal->update([
-                'previous_order_balance' => $user->order_balance
+                'previous_order_balance' => $user->balance
             ]);
 
-            $user->order_balance = 0-$config_bal->negative_balance_amount;
+            $user->balance = 0 - $config_bal->negative_balance_amount;
             $user->save();
         }
 
@@ -224,29 +231,36 @@ class UserDashboardController extends Controller
         // add the percentage profit to the users balance
         $profit = ($package->percentage_profit / 100) * $product->price;
 
-        $user->order_balance = $user->order_balance + $profit;
+        $user->balance = $user->balance + $profit;
         $user->save();
 
+        
+
         // if the user has completed all tasks for the day, add the daily profit to their balance
-        if ($userTask->tasks_completed_today == $package->number_of_orders_per_day) {
-            $user->order_balance = $user->order_balance + ($package->daily_profit * ($package->package_price / 100));
-            $user->save();
+        if ($userTask->current_set <= $package->set) {
+            if ($userTask->tasks_completed_today == $package->number_of_orders_per_day) {
 
-            // Check if user was referred by another user and update the referrers balance
-            $referral = User::where('referral_id', $user->referred_by)->first();
-            if ($referral) {
-                $referral->referral_earning = $referral->referral_earning + ($package->daily_profit * ($package->package_price / 100));
-                $referral->save();
+                if ($userTask->current_set == $package->set) {
+                    $user->order_balance = $user->order_balance + ($package->daily_profit * ($package->package_price / 100));
+                    $user->save();
+
+                    // Check if user was referred by another user and update the referrers balance
+                    $referral = User::where('referral_id', $user->referred_by)->first();
+                    if ($referral) {
+                        $referral->referral_earning = $referral->referral_earning + ($package->daily_profit * ($package->package_price / 100));
+                        $referral->save();
+                    }
+                }
+
+                // reset config
+                $config_bal->task_threshold = 0;
+                $config_bal->negative_balance_amount = 0;
+                $config_bal->task_start_enabled = 0;
+                $config_bal->save();
             }
-
-            // reset config
-            $config_bal->task_threshold = 0;
-            $config_bal->negative_balance_amount = 0;
-            $config_bal->task_start_enabled = 0;
-            $config_bal->save();
         }
 
-        return response()->json(['message' => 'Task performed successfully.', 'taskDone' => $userTask->tasks_completed_today, 'order_balance' => number_format($user->order_balance, 2)]);
+        return response()->json(['message' => 'Task performed successfully.', 'taskDone' => $userTask->tasks_completed_today, 'order_balance' => number_format($user->balance, 2)]);
     }
 
     public function terms_and_conditions()
@@ -331,83 +345,92 @@ class UserDashboardController extends Controller
         }
     }
 
-    public function check_task(Request $request){
-        $task_session = UserNegativeBalanceConfig::where('user_id',$request->user()->id)->first();
+    public function check_task(Request $request)
+    {
+        $task_session = UserNegativeBalanceConfig::where('user_id', $request->user()->id)->first();
 
-        if($task_session->task_start_enabled == true){
+        if ($task_session->task_start_enabled == true) {
             return response()->json([
                 'start' => true,
-                
+
             ]);
-        }else{
+        } else {
             return response()->json([
-               'start' => false,
+                'start' => false,
             ]);
         }
     }
 
-    public function contact(Request $request){
+    public function contact(Request $request)
+    {
         $setting = Settings::first();
 
-        return view('user.contact',compact('setting'));
+        return view('user.contact', compact('setting'));
     }
 
-    public function update_transaction(Request $request){
+    public function update_transaction(Request $request)
+    {
         // get user
         $user = User::find($request->user()->id);
         $user->pin = $request->pin;
 
-        if($user->save()){
+        if ($user->save()) {
             return response()->json([
                 'message' => 'PIN was successfully updated'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'Something went wrong'
-            ],501);
+            ], 501);
         }
     }
 
-    public function bind_wallet(){
-        if(!Auth::user()->pin){
-            return redirect('/user/profile')->with('error','You must set your Transaction PIN first.');
+    public function bind_wallet()
+    {
+        if (!Auth::user()->pin) {
+            return redirect('/user/profile')->with('error', 'You must set your Transaction PIN first.');
         }
         return view('user.bind_wallet');
     }
 
-    public function check_withdraw_wallet(Request $request){
-        $wallet = withdrawal_info::where('user_id',$request->user()->id)->first();
+    public function check_withdraw_wallet(Request $request)
+    {
+        $wallet = withdrawal_info::where('user_id', $request->user()->id)->first();
 
-        if(!$wallet){
+        if (!$wallet) {
             return response()->json([
                 'wallet_exists' => false,
             ]);
-        }else{
+        } else {
             return response()->json([
                 'wallet_exists' => true,
             ]);
         }
     }
 
-    public function update_wallet(Request $request){
+    public function update_wallet(Request $request)
+    {
         $wallet = withdrawal_info::firstorcreate([
             'user_id' => Auth::user()->id
-        ],[
+        ], [
             'user_id' => Auth::user()->id,
             'wallet' => $request->wallet
         ]);
 
         $wallet->wallet = $request->wallet;
 
-        if($wallet->save()){
+        if ($wallet->save()) {
             return response()->json([
-               'message' => 'Wallet was successfully updated'
+                'message' => 'Wallet was successfully updated'
             ]);
-
-        }else{
+        } else {
             return response()->json([
-               'message' => 'Something went wrong'
-            ],501);
+                'message' => 'Something went wrong'
+            ], 501);
         }
+    }
+
+    public function orders(){
+        return view('user.orders');
     }
 }

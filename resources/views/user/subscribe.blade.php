@@ -20,22 +20,31 @@
 
         {{-- create deposit form --}}
         <ion-item mode="ios">
-            <ion-input type="text" name="package" value="{{ $package->package_name }}" label="Package" readonly></ion-input>
+            <ion-label slot="start">Package</ion-label>
+            <ion-input type="text" name="package" value="{{ $package->package_name }}" label="" readonly></ion-input>
         </ion-item>
 
         <ion-item mode="ios">
-            <ion-input type="number" placeholder="Enter amount to deposit" name="amount"
-                value="{{ $package->package_price }}" label="Price($):" readonly required></ion-input>
+            <ion-label slot="start">Price($):</ion-label>
+            <ion-input type="text" placeholder="Enter amount to deposit" name="amount"
+                value="${{ number_format($package->package_price,2) }}" label="" readonly required></ion-input>
         </ion-item>
 
         <ion-item mode="ios">
-            <ion-input type="number" name="amount" value="{{ $package->percentage_profit }}" label="Percentage Profit:"
+            <ion-label slot="start">Percentage Profit:</ion-label>
+            <ion-input type="number" name="amount" value="{{ $package->percentage_profit }}" label=""
                 readonly required></ion-input>
         </ion-item>
+        <ion-item mode="ios">
+            <ion-label slot="start">Number of Set:</ion-label>
+            <ion-input type="number" placeholder="Enter amount to deposit" name="set"
+                value="{{ $package->set }}" label="" label-placement="start" readonly required></ion-input>
+        </ion-item>
 
         <ion-item mode="ios">
+            <ion-label slot="start">Number of Orders per Set:</ion-label>
             <ion-input type="number" placeholder="Enter amount to deposit" name="amount"
-                value="{{ $package->number_of_orders_per_day }}" label="Number of Orders:" readonly required></ion-input>
+                value="{{ $package->number_of_orders_per_day }}" label="" label-placement="start" readonly required></ion-input>
         </ion-item>
 
         <ion-button type="button" expand="block" color="dark" id="confirm">Activate Package</ion-button>
@@ -83,9 +92,20 @@
                                     }];
 
                                     alertCustom.present();
+                                }else if(response == 3){
+                                    alertCustom.message =
+                                        "You Do Not Have Enough Balance to Access this Package.";
+                                    alertCustom.buttons = [{
+                                        text: "close",
+                                        handler: () => {
+                                           
+                                        }
+                                    }];
+
+                                    alertCustom.present();
                                 }
 
-                            }
+                            },
                         });
                     }
                 },

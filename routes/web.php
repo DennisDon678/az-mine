@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bind-wallet',[UserDashboardController::class, 'bind_wallet']);
         Route::get('/check-withdraw-wallet', [UserDashboardController::class, 'check_withdraw_wallet']);
         Route::post('/bind-wallet',[UserDashboardController::class, 'update_wallet']);
+        Route::get('/orders',[UserDashboardController::class, 'orders']);
     });
 });
 
