@@ -22,14 +22,14 @@
         <div class="tab-content mt-2" id="pills-tabContent">
             <div class="tab-pane fade show active" id="deposit" role="tabpanel" aria-labelledby="pills-home-tab">
                 @php
-                    $deposits = App\Models\Transactions::where('type', 'deposit')->get();
-                    $withdrawals = App\Models\Transactions::where('type', 'withdraw')->get();
+                    $pending = App\Models\TaskLog::where('user_id', Auth::user()->id)->where('completed',false)->get();
+                    $completed = App\Models\TaskLog::where('user_id', Auth::user()->id)->where('completed',true)->get();
                 @endphp
                 <ion-card>
                     
                     <ion-card-content>
                         <ion-lists>
-                            @forelse ($deposits as $deposit)
+                            @forelse ($pending as $deposit)
                                 <ion-item>
                                     <ion-label>Deposit Transaction</ion-label>
                                     <ion-label
@@ -39,7 +39,7 @@
                                 </ion-item>
                             @empty
                                 <ion-item>
-                                    <ion-label>No deposit history found.</ion-label>
+                                    <ion-label>No Pending Order found.</ion-label>
                                 </ion-item>
                             @endforelse
                         </ion-lists>
@@ -49,13 +49,10 @@
             </div>
             <div class="tab-pane fade" id="withdraw" role="tabpanel" aria-labelledby="pills-profile-tab">
                 <ion-card>
-                    <ion-card-header>
-                        <ion-card-subtitle>Withdraw History</ion-card-subtitle>
-                        <ion-card-title>Total Withdraws: ${{number_format($withdrawals->where('status','success')->sum('amount'),2)}}</ion-card-title>
-                    </ion-card-header>
+                   
                     <ion-card-content>
                         <ion-lists>
-                            @forelse ($withdrawals as $withdrawal)
+                            @forelse ($completed as $withdrawal)
                                 <ion-item>
                                     <ion-label>Withdrawal Transaction</ion-label>
                                     <ion-label
@@ -65,7 +62,7 @@
                                 </ion-item>
                             @empty
                                 <ion-item>
-                                    <ion-label>No withdraw history found.</ion-label>
+                                    <ion-label>No completed order found.</ion-label>
                                 </ion-item>
                             @endforelse
                         </ion-lists>
