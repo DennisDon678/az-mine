@@ -212,13 +212,14 @@
         <ion-header>
             <ion-toolbar>
                 <ion-title>Order</ion-title>
-                <ion-buttons slot="end">
+                {{-- <ion-buttons slot="end">
                     <ion-button onclick="modal.dismiss()">Close</ion-button>
-                </ion-buttons>
+                </ion-buttons> --}}
             </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
             <input type="hidden" id="product_id">
+            <input type="hidden" id="order_id">
             <ion-image>
                 <img alt="" id="image" referrerpolicy="no-referrer">
             </ion-image>
@@ -229,7 +230,7 @@
                 <ion-label id="price"></ion-label>
             </ion-item>
             <ion-item>
-                <ion-label>Order Number: #123456</ion-label>
+                <ion-label id="ordernumber"></ion-label>
             </ion-item>
 
             <div style="height: 50px;">
@@ -253,87 +254,125 @@
         const alertCustom = document.querySelector('ion-alert');
         const claim = document.querySelector('#claim');
         const loader = document.querySelector('ion-loading')
-
+        var inoperation = false;
 
         spinBtn.addEventListener('click', function() {
-            // check for tasks
-            $.ajax({
-                type: "get",
-                url: "/user/task-check",
-                success: function(response) {
-                    if (response.start == false) {
-                        alertCustom.message =
-                            "OOPS! You don't have any assigned task at the moment to perform.";
-                        alertCustom.buttons = [{
-                            text: 'Okay'
-                        }];
-                        alertCustom.present();
-                        return false;
-                    } else {
-                        $.ajax({
-                            type: "get",
-                            url: "/user/check-pending-task",
-                            success: function(response) {
-                                if (response.pending) {
-                                    alertCustom.message =
-                                        "You Have Pending Orders Kindly Submit them to continue";
+            if (!inoperation) {
+                inoperation = true;
+                $.ajax({
+                    type: "get",
+                    url: "/user/task-check",
+                    success: function(response) {
+                        if (!response.start) {
+                            alertCustom.message =
+                                "OOPS! You don't have any assigned task at the moment to perform.";
+                            alertCustom.buttons = [{
+                                text: 'Okay'
+                            }];
+                            alertCustom.present();
+                            inoperation = false;
+                            return false;
+                        } else {
+                            $.ajax({
+                                type: "get",
+                                url: "/user/check-pending-task",
+                                success: function(response) {
+                                    if (response.pending) {
+                                        alertCustom.message =
+                                            "You Have Pending Orders Kindly Submit them to continue";
+                                        alertCustom.buttons = [{
+                                            text: 'Okay'
+                                        }];
+                                        alertCustom.present();
+                                        return false;
+                                    } else {
+                                        spinArrow.style.animation =
+                                            'spin 300ms linear infinite';
+
+                                        setTimeout(() => {
+                                            //  random number between 0 and 81
+                                            var num = Math.floor(Math.random() *
+                                                    150) +
+                                                1;
+                                            $.ajax({
+                                                type: "get",
+                                                url: "/user/get_product/" +
+                                                    num,
+                                                success: function(
+                                                    response) {
+                                                    image.src = response
+                                                        .product.image;
+                                                    title.textContent =
+                                                        response.product
+                                                        .name;
+                                                    price.textContent =
+                                                        'Price: $' +
+                                                        response.product
+                                                        .price;
+                                                    $('#product_id')
+                                                        .val(
+                                                            response
+                                                            .product.id
+                                                        );
+                                                    $('#order_id').val(
+                                                        response
+                                                        .order_id);
+                                                    $('#ordernumber')
+                                                        .text(
+                                                            'Order ID: ' +
+                                                            response
+                                                            .order_id);
+                                                    spinArrow.style
+                                                        .animationPlayState =
+                                                        'paused';
+                                                    modal
+                                                        .backdropDismiss =
+                                                        false;
+                                                    modal.present();
+                                                },
+                                                error: function(
+                                                    error) {
+                                                    spinArrow.style
+                                                        .animationPlayState =
+                                                        'paused';
+                                                    // handle error here
+                                                    alertCustom
+                                                        .message =
+                                                        error
+                                                        .responseJSON
+                                                        .error;
+                                                    alertCustom
+                                                        .buttons = [{
+                                                            text: 'Okay'
+                                                        }];
+                                                    inoperation = false;
+                                                    alertCustom
+                                                        .present();
+
+                                                }
+                                            });
+                                        }, 3000);
+                                    }
+                                },
+                                error: function(error) {
+                                    alertCustom.message = error.responseJSON.error;
                                     alertCustom.buttons = [{
                                         text: 'Okay'
                                     }];
                                     alertCustom.present();
-                                    return false;
-                                } else {
-                                    spinArrow.style.animation =
-                                    'spin 300ms linear infinite';
-
-                                    setTimeout(() => {
-                                        //  random number between 0 and 81
-                                        var num = Math.floor(Math.random() * 150) +
-                                            1;
-                                        $.ajax({
-                                            type: "get",
-                                            url: "/user/get_product/" + num,
-                                            success: function(response) {
-                                                image.src = response
-                                                    .image;
-                                                title.textContent =
-                                                    response.name;
-                                                price.textContent =
-                                                    'Price: $' +
-                                                    response.price;
-                                                $('#product_id').val(
-                                                    response.id);
-
-                                                spinArrow.style
-                                                    .animationPlayState =
-                                                    'paused';
-                                                modal.present();
-                                            },
-                                            error: function(xhr, status,
-                                                error) {
-                                                spinArrow.style
-                                                    .animationPlayState =
-                                                    'paused';
-                                                // handle error here
-
-                                                // Alert the user
-                                                alertCustom.message =
-                                                    "Opps! no product available try again.";
-                                                alertCustom.buttons = [{
-                                                    text: 'Okay'
-                                                }];
-                                                alertCustom.present();
-                                            }
-                                        });
-                                    }, 3000);
                                 }
-                            }
-                        });
+                            });
 
+                        }
                     }
-                }
-            });
-
+                });
+            } else {
+                const toast = document.querySelector('ion-toast');
+                toast.message = 'You Have an incompleted order in your log';
+                toast.position = "top";
+                toast.duration = 3000;
+                toast.present();
+            }
         })
 
         $('#claim').click(() => {
@@ -343,7 +382,8 @@
 
             $.ajax({
                 type: "GET",
-                url: "/user/claim-order?package_id=" + $('#product_id').val(),
+                url: "/user/claim-order?package_id=" + $('#product_id').val() + "&order_id=" + $(
+                    '#order_id').val(),
                 success: function(response) {
                     loader.dismiss()
                     alertCustom.message = response.message;
@@ -352,6 +392,8 @@
 
                     $('#taskDone').text(response.taskDone);
                     $('#order_balance').text('$' + response.order_balance);
+
+                    inoperation = false;
                 },
                 error: (xhr, ajaxOptions, response) => {
                     loader.dismiss()

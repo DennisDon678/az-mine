@@ -345,18 +345,12 @@
                                             <ion-label>Username</ion-label>
                                             <ion-text>{{ $user->username }}</ion-text>
                                         </ion-item>
-                                        <ion-item>
-                                            <ion-label>Email</ion-label>
-                                            <ion-text>{{ $user->email }}</ion-text>
-                                        </ion-item>
+                                        
                                         <ion-item>
                                             <ion-label>Open Balance</ion-label>
                                             <ion-text>${{ number_format($user->balance, 2) }}</ion-text>
                                         </ion-item>
-                                        <ion-item>
-                                            <ion-label>Order Balance</ion-label>
-                                            <ion-text>${{ number_format($user->order_balance, 2) }}</ion-text>
-                                        </ion-item>
+                                        
                                     </ion-card-body>
                                 </ion-card>
 

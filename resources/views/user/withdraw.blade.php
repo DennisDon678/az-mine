@@ -79,7 +79,7 @@
             const alertCustom = document.querySelector('ion-alert');
 
             // check for empty input
-            if (!$('#amount').val() || !$('#coin').val() || !$('#address').val()) {
+            if (!$('#amount').val()) {
                 alertCustom.message = "Please fill all fields.";
                 alertCustom.buttons = [{
                     text: 'OK',

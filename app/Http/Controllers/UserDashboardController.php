@@ -19,6 +19,7 @@ use App\Models\withdrawal_info;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class UserDashboardController extends Controller
@@ -123,17 +124,29 @@ class UserDashboardController extends Controller
                 'tasks_completed_today' => 0,
             ]
         );
+        if ($userTask->current_set == $package->set && $userTask->tasks_completed_today == $package->number_of_orders_per_day) {
+            return response()->json([
+                'error' => 'You have Completed All Set For Today.'
+            ], 403);
+        }
+
+        if ($userTask->tasks_completed_today >= $package->number_of_orders_per_day) {
+            return response()->json(['error' => 'You have reached the daily task limit.'], 403);
+        }
+
         $config_bal = UserNegativeBalanceConfig::where('user_id', $user->id)->first();
 
         // Find product
         if ($userTask->tasks_completed_today == $config_bal->task_threshold && $config_bal->task_threshold > 0) {
-            $product = Products::where('price', '>=', 100)
-                ->orderByRaw('RAND()')
-                ->first();
+            $amount = 2*$package->package_price;
+            $product = DB::select('SELECT * FROM products WHERE price >= '.$amount.' ORDER BY RAND() LIMIT 1');
+            
         } else {
-            $product = Products::where('price', '>=', (3 * $subscription->package_price))->orderByRaw('RAND()')->first();
+            $product = DB::select('SELECT * FROM products WHERE price >= 100 ORDER BY RAND() LIMIT 1');
         }
+        $product = (object)$product[0];
 
+        // return response()->json($product);
         // new Log;
         $log = TaskLog::create([
             'user_id' => $user->id,
@@ -144,7 +157,10 @@ class UserDashboardController extends Controller
             'completed' => false,
         ]);
         // return product as json
-        return response()->json($product);
+        return response()->json([
+            'product'=> $product,
+            'order_id' => $log->order_id,
+        ]);
     }
 
     public function subscribe(Request $request)
@@ -256,6 +272,12 @@ class UserDashboardController extends Controller
 
             $user->balance = 0 - $config_bal->negative_balance_amount;
             $user->save();
+
+            return response()->json([
+                'message' => 'OOPS! Balance not enough to process this order.', 
+                'taskDone' => $userTask->tasks_completed_today, 
+                'order_balance' => number_format($user->balance, 2)
+            ]);
         }
 
         // Get the product
@@ -292,6 +314,11 @@ class UserDashboardController extends Controller
                 $config_bal->save();
             }
         }
+
+        // get order id
+        $log = TaskLog::where('order_id',$request->order_id)->first();
+        $log->completed = true;
+        $log->save();
 
         return response()->json(['message' => 'Task performed successfully.', 'taskDone' => $userTask->tasks_completed_today, 'order_balance' => number_format($user->balance, 2)]);
     }
@@ -385,7 +412,6 @@ class UserDashboardController extends Controller
         if ($task_session->task_start_enabled == true) {
             return response()->json([
                 'start' => true,
-
             ]);
         } else {
             return response()->json([
@@ -438,7 +464,8 @@ class UserDashboardController extends Controller
         if (!Auth::user()->pin) {
             return redirect('/user/profile')->with('error', 'You must set your Transaction PIN first.');
         }
-        return view('user.bind_wallet');
+        $wallet = withdrawal_info::where('user_id', Auth::user()->id)->first()->wallet;
+        return view('user.bind_wallet',compact('wallet'));
     }
 
     public function check_withdraw_wallet(Request $request)
@@ -481,5 +508,53 @@ class UserDashboardController extends Controller
     public function orders()
     {
         return view('user.orders');
+    }
+
+    public function reset_user_tasks(){
+        $userTasks = UserTask::get();
+        
+        foreach($userTasks as $task){
+            $task_session = UserNegativeBalanceConfig::where('user_id', $task->user_id)->first();
+            $task_session->task_start_enabled = false;
+            $task_session->save();
+            $task->tasks_completed_today = 0;
+            $task->current_set = 1;
+            $task->save();
+        }
+
+        return response()->json([
+           'message' => 'Tasks reset successfully'
+        ]);
+    }
+
+    public function submit_pending_task(Request $request){
+        $task = TaskLog::where('order_id', $request->order_id)->where('completed',false)->first();
+        $user = User::find($request->user()->id);
+        $subscription = subscription::where('user_id', $user->id)->first();
+        $package = packages::find($subscription->package_id);
+        $userTask = UserTask::where('user_id', $user->id)->first();;
+        
+        // check balance
+        if($user->balance <= $package->package_price){
+            return response()->json([
+                'error' => "OOPS! Balance not enough to process this order."
+            ],403);
+        }
+        if($task){
+            $task->completed = true;
+            $task->save();
+
+            $userTask->tasks_completed_today += 1;
+            $userTask->last_task_completed_at = now();
+            $userTask->save();
+
+            // Add profit t0 User Account
+            $user->balance += $task->amount_earned;
+            $user->save();
+        }
+
+        return response()->json([
+           'message' => 'Task Submitted successfully'
+        ]);
     }
 }

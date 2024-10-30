@@ -24,7 +24,7 @@
                 <form action="" id="walletForm">
                     @csrf
                     <ion-input placeholder="Wallet" class="form-control p-1 mb-2" value="USDT TRC20" readonly></ion-input>
-                    <ion-input placeholder="Enter USDTTRC20 Address" class="form-control p-1 mb-2" id="wallet" name="wallet"></ion-input>
+                    <ion-input placeholder="Enter USDTTRC20 Address" class="form-control p-1 mb-2" id="wallet" value="{{$wallet}}" name="wallet"></ion-input>
 
                     <ion-button type="submit" expand="block">Modify Wallet</ion-button>
                 </form>

@@ -61,7 +61,7 @@
                                     <ion-label class="bold"><strong>Action:</strong></ion-label>
                                 </div>
                                 <div class="col-6">
-                                    <button class="btn btn-success">Submit</button>
+                                    <button class="btn btn-success" id="{{ $deposit->order_id }}">Submit</button>
                                 </div>
                             </div>
                         </ion-card-body>
@@ -73,7 +73,7 @@
                 @endforelse
             </div>
             <div class="tab-pane fade" id="withdraw" role="tabpanel" aria-labelledby="pills-profile-tab">
-                @forelse ($completed as $withdrawal)
+                @forelse ($completed as $deposit)
                     <ion-card mode="ios" class="ion-padding">
                         <ion-card-body>
                             <div class="d-flex mb-2">
@@ -110,4 +110,46 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        const alertCustom = document.querySelector('ion-alert');
+        const loading = document.querySelector('ion-loading');
+    </script>
+
+    @foreach ($pending as $pending)
+        <script>
+            $('#{{ $pending->order_id}}').click(() => {
+                loading.message = "Submitting Order #{{$pending->order_id}}...";
+                loading.present();
+
+                $.ajax({
+                    type: "get",
+                    url: "/user/submit-pending-task?order_id={{$pending->order_id}}",
+                    success: function (response) {
+                        loading.dismiss();
+                        alertCustom.message = response.message;
+                        alertCustom.buttons = [{
+                            text: 'OK',
+                            handler: () => {
+                                loading.message = "Refreshing...";
+                                loading.present();
+                                setTimeout(() => {
+                                    location.href = "/user/orders";
+                                }, 2000);
+                            }
+                        }];
+                        alertCustom.present();
+                    },
+                    error: (err)=>{
+                        loading.dismiss();
+                        alertCustom.message = err.responseJSON.error;
+                        alertCustom.buttons = ['ok'],
+                        alertCustom.present();
+                    }
+                });
+            })
+        </script>
+    @endforeach
 @endsection

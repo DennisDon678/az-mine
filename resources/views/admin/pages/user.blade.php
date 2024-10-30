@@ -18,10 +18,10 @@
                 <ion-label>Username:</ion-label>
                 <ion-text><strong>{{ $user->username }}</strong></ion-text>
             </ion-item>
-            <ion-item>
+            {{-- <ion-item>
                 <ion-label>Email:</ion-label>
                 <ion-text><strong>{{ $user->email }}</strong></ion-text>
-            </ion-item>
+            </ion-item> --}}
             <ion-item>
                 <ion-label>Created At:</ion-label>
                 <ion-text><strong>{{ $user->created_at->format('d/m/Y H:i:s') }}</strong></ion-text>

@@ -260,7 +260,7 @@ class AdminController extends Controller
 
         $new_bal = $order + $request->commission + $prev->previous_order_balance;
 
-        $user->order_balance = $new_bal;
+        $user->balance = $new_bal;
         if($user->save()){
             $neg = UserNegativeBalanceConfig::where('user_id', $request->id)->first();
             $neg->negative_balance_amount = 0;
