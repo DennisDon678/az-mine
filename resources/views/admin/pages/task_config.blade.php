@@ -63,16 +63,16 @@
                                     <ion-input type="text" placeholder="Crypto Name" name=""
                                         value="{{ $subscription->package_name }}" readonly required></ion-input>
                                 </ion-item>
-                                <ion-item mode="ios">
+                                {{-- <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
                                         value="{{ $task->current_set }}" readonly required></ion-input>
-                                </ion-item>
-                                <ion-item mode="ios">
+                                </ion-item> --}}
+                                {{-- <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
                                     <ion-input type="text" placeholder="Order Performed" name=""
                                         value="{{ $task->tasks_completed_today }}" readonly required></ion-input>
-                                </ion-item>
+                                </ion-item> --}}
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Daily Order per Set:</ion-label>
                                     <ion-input type="text" placeholder="Crypto Name" name=""
