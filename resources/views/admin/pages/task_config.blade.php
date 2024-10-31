@@ -20,11 +20,11 @@
                         <ion-grid>
                             <ion-row class="ion-justify-content-between">
                                 @php
-                                    $subscription = App\Models\packages::where(
-                                        'id',
-                                        App\Models\subscription::where('user_id', $user->id)->first()->package_id,
-                                    )->first();
-                                    $task = App\Models\UserTask::where('user_id', $user->id)->first();
+                                $sub = App\Models\subscription::where('user_id', '=', $user->user->id)->first();
+
+                                $subscription = App\Models\packages::where(
+                                        'id',$sub->package_id)->first();
+                                $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
