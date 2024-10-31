@@ -21,12 +21,12 @@
                             <ion-row class="ion-justify-content-between">
                                 @php
                                 $sub = App\Models\subscription::where('user_id', '=', $user->user_id)->first();
-
+                                $current = App\Models\User::where('id', '=', $user->user_id)->first();
                                 $subscription = App\Models\packages::where('id',$sub->package_id)->first();
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
-                                        <p>Username: <strong>{{ $user->user->username }}</strong></p>
+                                        <p>Username: <strong>{{ $current->username }}</strong></p>
                                         <p><strong>{{ $subscription->package_name }}</strong></p>
                                     </ion-label>
                                 </ion-col>
@@ -58,18 +58,16 @@
                                     <ion-input type="text" placeholder="Crypto Name" name=""
                                         value="{{ $subscription->package_name }}" readonly required></ion-input>
                                 </ion-item>
-                                 {{-- @php
-                                    dd($user)
-                                @endphp --}}
+                                 
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
-                                        value="@php echo(\App\Models\UserTask::where('user_id', '=', $user->user_id)->first()->current_set) @endphp" readonly required></ion-input>
+                                        value="@php echo(\App\Models\UserTask::where('user_id', '=', $current->id)->first()->current_set) @endphp" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
                                     <ion-input type="text" placeholder="Order Performed" name=""
-                                        value="@php echo(\App\Models\UserTask::where('user_id', '=', $user->user_id)->first()->tasks_completed_today) @endphp" readonly required></ion-input>
+                                        value="@php echo(\App\Models\UserTask::where('user_id', '=', $current->id)->first()->tasks_completed_today) @endphp" readonly required></ion-input>
                                 </ion-item>
                                
                                 <ion-item mode="ios">

@@ -228,7 +228,7 @@ class AdminController extends Controller
     }
 
     public function task_config(){
-        $users =  UserNegativeBalanceConfig::with('user')->paginate(20);
+        $users =  UserNegativeBalanceConfig::paginate(20);
         return view('admin.pages.task_config',compact('users'));
     }
 
