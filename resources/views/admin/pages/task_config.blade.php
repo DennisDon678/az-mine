@@ -25,6 +25,7 @@
                                 $subscription = App\Models\packages::where(
                                         'id',$sub->package_id)->first();
                                 $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
+                                dd($task);
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
@@ -63,7 +64,7 @@
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
-                                        value="" readonly required></ion-input>
+                                        value="{{ $task->current_set }}" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
