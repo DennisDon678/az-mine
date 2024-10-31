@@ -238,7 +238,6 @@ class AdminController extends Controller
 
         if($config->update($request->except('_token'))){
             $userTask = UserTask::where('user_id',$config->user_id)->first();
-            $userTask->current_set += 1;
             $userTask->save();
             return response()->json([
                 'message' => 'Task configuration updated successfully',
@@ -277,4 +276,22 @@ class AdminController extends Controller
         }
     }
 
+    public function activate_next_set(Request $request){
+        $config = UserNegativeBalanceConfig::find($request->id);
+        $userTask = UserTask::where('user_id', $config->user_id)->first();
+
+        // find package
+        $subscription = subscription::find('user_id', $config->user_id);
+        $package = packages::find($subscription->package_id);
+
+        if($userTask->current_set < $package->set){
+            $userTask->current_set += 1;
+            $userTask->save();
+        }
+
+        return response()->json([
+            'current_set' => $userTask->current_set,
+           'message' => 'Next set activated successfully',
+        ]);
+    }
 }
