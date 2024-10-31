@@ -63,7 +63,7 @@
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
-                                        value="{{ $task->current_set }}" readonly required></ion-input>
+                                        value="" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
