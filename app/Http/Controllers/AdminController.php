@@ -233,7 +233,12 @@ class AdminController extends Controller
     }
 
     public function task_setting(Request $request){
+        $negative = UserNegativeBalanceConfig::where('user_id',$request->user)->first();
+        $subscription = subscription::where('user_id',$request->user)->first();
+        $package = packages::where('id',$subscription->package_id)->first();
+        $userTask = UserTask::where('user_id',$request->user)->first();
 
+        return view('admin.pages.task_config', compact('negative', 'package', 'userTask'));
     }
 
 
