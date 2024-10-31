@@ -16,31 +16,7 @@
         <ion-card-body>
             <ion-list inset="true">
                 @forelse ($users as $user)
-                    <ion-item>
-                        <ion-grid>
-                            <ion-row class="ion-justify-content-between">
-                                @php
-                                $sub = App\Models\subscription::where('user_id', '=', $user->user_id)->first();
-                                $current = App\Models\User::where('id', '=', $user->user_id)->first();
-                                $subscription = App\Models\packages::where('id',$sub->package_id)->first();
-                                @endphp
-                                <ion-col size="8">
-                                    <ion-label>
-                                        <p>Username: <strong>{{ $current->username }}</strong></p>
-                                        <p><strong>{{ $subscription->package_name }}</strong></p>
-                                    </ion-label>
-                                </ion-col>
-                                <ion-col size="4">
-                                    <ion-row class="ion-justify-content-end">
-                                        <ion-col>
-                                            <ion-button color="primary" id="config-{{ $user->id }}">Config</ion-button>
-                                        </ion-col>
-                                    </ion-row>
-                                </ion-col>
-                            </ion-row>
-
-                        </ion-grid>
-                    </ion-item>
+                    
 
                     <ion-modal trigger="config-{{ $user->id }}" initial-breakpoint="0.80" mode="ios"
                         id="modal-{{ $user->id }}">

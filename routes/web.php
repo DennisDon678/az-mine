@@ -142,6 +142,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
 
     Route::post('rest-user-balance', [AdminController::class, 'rest_user_balance']);
     Route::get('/activate-next-set', [AdminController::class, 'activate_next_set']);
+
+    Route::get('task-setting', [AdminController::class, 'task_setting']);
 });
 
 
