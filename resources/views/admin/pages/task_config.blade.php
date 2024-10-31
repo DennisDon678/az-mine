@@ -25,7 +25,7 @@
                                 $subscription = App\Models\packages::where(
                                         'id',$sub->package_id)->first();
                                 $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
-                                // dd($task);
+                                dd($task->current_set);
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
