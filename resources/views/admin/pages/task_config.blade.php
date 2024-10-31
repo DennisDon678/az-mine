@@ -51,10 +51,6 @@
                             </ion-toolbar>
                         </ion-header>
                         <ion-content class="ion-padding">
-                            @php
-                                $task = App\Models\UserTask::where('user_id', '=', $user->user->id)->first();
-                                
-                            @endphp
                             <form action="" method="post" id="save-{{ $user->id }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $user->id }}">
@@ -66,12 +62,12 @@
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
-                                        value="@php echo($task->current_set) @endphp" readonly required></ion-input>
+                                        value="@php echo(App\Models\UserTask::where('user_id', '=', $user->user->id)->first()->current_set) @endphp" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
                                     <ion-input type="text" placeholder="Order Performed" name=""
-                                        value="@php echo($task->tasks_completed_today) @endphp" readonly required></ion-input>
+                                        value="@php echo(App\Models\UserTask::where('user_id', '=', $user->user->id)->first()->tasks_completed_today) @endphp" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Daily Order per Set:</ion-label>
