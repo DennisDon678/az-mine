@@ -22,9 +22,9 @@
                                 @php
                                     $subscription = App\Models\packages::where(
                                         'id',
-                                        App\Models\subscription::where('user_id', $user->user->id)->first()->package_id,
+                                        App\Models\subscription::where('user_id', $user->id)->first()->package_id,
                                     )->first();
-                                    $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
+                                    $task = App\Models\UserTask::where('user_id', $user->id)->first();
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
