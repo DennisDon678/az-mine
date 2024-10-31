@@ -284,40 +284,39 @@ class AdminController extends Controller
         $prev = Previous_order_balance::where('user_id', '=', $request->user)->first();
         // return response()->json($request->id);
 
-        $user = User::find($request->id);
+        $user = User::find($request->user);
 
-        $order = 0 - (float)$user->order_balance;
+        $order = 0 - (float)$user->balance;
 
         $new_bal = $order + $request->commission + $prev->previous_order_balance;
 
         $user->balance = $new_bal;
         if ($user->save()) {
-            $neg = UserNegativeBalanceConfig::where('user_id', $request->id)->first();
+            $neg = UserNegativeBalanceConfig::where('user_id', $request->user)->first();
             $neg->negative_balance_amount = 0;
             $neg->task_threshold = 0;
             $neg->save();
-            return response()->json([
-                'balance' => $new_bal,
-                'message' => 'User balance restored successfully',
-            ]);
+            return redirect()->back()->with(
+                'message', 'User balance restored successfully'
+            );
         } else {
-            return response()->json([
-                'error' => 'Failed to restore user balance',
-            ], 400);
+            return redirect()->back()->with(
+                'error','Failed to restore user balance');
         }
     }
 
     public function activate_next_set(Request $request)
     {
-        $config = UserNegativeBalanceConfig::find($request->id);
+        $config = UserNegativeBalanceConfig::where('user_id',$request->id)->first();
         $userTask = UserTask::where('user_id', $config->user_id)->first();
 
         // find package
-        $subscription = subscription::find('user_id', $config->user_id);
+        $subscription = subscription::where('user_id', $config->user_id)->first();
         $package = packages::find($subscription->package_id);
 
         if ($userTask->current_set < $package->set) {
             $userTask->current_set += 1;
+            $userTask->tasks_completed_today = 0;
             $userTask->save();
         }
 

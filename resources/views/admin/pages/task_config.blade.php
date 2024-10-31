@@ -66,8 +66,9 @@
                 </form>
                 <br>
                 <br>
-                <form id="resetform-" class="mb-2">
-                    {!! Form::hidden('user', $negative->user_id) !!}
+                <form method="post" action="/admin/rest-user-balance" class="mb-2">
+                    @csrf
+                    <input type="hidden" name="user" value="{{$negative->user_id}}" id="user">
                     <ion-button expand="block" type="submit" color="success">Reset Balance</ion-button>
                 </form>
                 <ion-button expand="block" color="dark" id="nextSet">Activate Next Set</ion-button>
@@ -80,6 +81,26 @@
     <script>
         const loading = document.querySelector('ion-loading');
         const alertCustom = document.querySelector('ion-alert');
+
+        $('#nextSet').click(function() {
+            loading.message = "Activating Next Set...";
+            loading.present();
+            $.ajax({
+                type: "get",
+                url: "/admin/activate-next-set?id=" + $('#user').val(),
+                success: function (response) {
+                    loading.dismiss();
+                    alertCustom.message = response.message;
+                    alertCustom.buttons = [{
+                        text:'Ok',
+                        handler: function(){
+                            window.location.href = "/admin/task-setting?user=" + $('#user').val();
+                        }
+                    }];
+                    alertCustom.present();
+                }
+            });
+        });
     </script>
     @if (Session::has('message'))
     <script>
