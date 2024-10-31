@@ -71,7 +71,7 @@
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Task Performed:</ion-label>
                                     <ion-input type="text" placeholder="Order Performed" name=""
-                                        value="@php $task->tasks_completed_today @endphp" readonly required></ion-input>
+                                        value="@php echo($task->tasks_completed_today) @endphp" readonly required></ion-input>
                                 </ion-item>
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Daily Order per Set:</ion-label>
