@@ -62,12 +62,14 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Deposit rejected successfully');
     }
 
-    public function users(){
+    public function users()
+    {
         $users = User::paginate('20');
         return view('admin.pages.users', compact('users'));
     }
 
-    public function delete_user(Request $request){
+    public function delete_user(Request $request)
+    {
         $user = User::find($request->id);
 
         $user->delete();
@@ -77,27 +79,28 @@ class AdminController extends Controller
         ]);
     }
 
-    public function view_user($id){
+    public function view_user($id)
+    {
         $user = User::find($id);
         $package = subscription::where('user_id', $user->id)->first();
 
-        if($package){
+        if ($package) {
             $package = packages::find($package->package_id)->first();
-        }
-        else{
+        } else {
             $package = (object) [
                 'package_name' => 'No active package',
             ];
         }
 
-        return view('admin.pages.user',compact('user','package'));
+        return view('admin.pages.user', compact('user', 'package'));
     }
 
-    public function edit_user(Request $request){
+    public function edit_user(Request $request)
+    {
         $user = User::find($request->id);
-        if($request->choice == 'credit'){
+        if ($request->choice == 'credit') {
             $user->balance += $request->amount;
-        }else if($request->choice == 'debit'){
+        } else if ($request->choice == 'debit') {
             $user->balance -= $request->amount;
         }
         $user->save();
@@ -107,13 +110,15 @@ class AdminController extends Controller
         ]);
     }
 
-    public function wallets(){
+    public function wallets()
+    {
         $wallets = crypto::all();
 
         return view('admin.pages.wallets', compact('wallets'));
     }
 
-    public function create_wallet(Request $request){
+    public function create_wallet(Request $request)
+    {
         crypto::create($request->except('_token'));
 
         return response()->json([
@@ -121,19 +126,22 @@ class AdminController extends Controller
         ]);
     }
 
-    public function delete_wallet(Request $request){
+    public function delete_wallet(Request $request)
+    {
         $wallet = crypto::find($request->id);
         $wallet->delete();
 
         return redirect()->back();
     }
 
-    public function packages(Request $request){
+    public function packages(Request $request)
+    {
         $packages = packages::all();
         return view('admin.pages.packages', compact('packages'));
     }
 
-    public function update_packages(Request $request){
+    public function update_packages(Request $request)
+    {
         $package = packages::find($request->id);
         $package->package_price = $request->package_price;
         $package->percentage_profit = $request->percentage_profit;
@@ -142,16 +150,18 @@ class AdminController extends Controller
         $package->set = $request->set;
         $package->save();
 
-        return redirect()->back()->with('message',"Package update");
+        return redirect()->back()->with('message', "Package update");
     }
 
-    public function setting(){
+    public function setting()
+    {
         $settings = Settings::first();
-        return view('admin.pages.setting',compact('settings'));
+        return view('admin.pages.setting', compact('settings'));
     }
 
     // update settings
-    public function process_setting(Request $request){
+    public function process_setting(Request $request)
+    {
         $settings = Settings::first();
 
         $settings->update($request->except('_token'));
@@ -161,48 +171,53 @@ class AdminController extends Controller
         ]);
     }
 
-    public function profile(){
+    public function profile()
+    {
         return view('admin.pages.profile');
     }
 
-    public function update_profile(Request $request){
+    public function update_profile(Request $request)
+    {
         $admin = Admin::first();
         $admin->update($request->except('_token'));
 
         return response()->json([
-           'message' => 'Email updated successfully',
+            'message' => 'Email updated successfully',
         ]);
     }
 
-    public function reset_password(Request $request){
+    public function reset_password(Request $request)
+    {
         $admin = Admin::first();
-        $admin->password = password_hash($request->password,PASSWORD_DEFAULT);
+        $admin->password = password_hash($request->password, PASSWORD_DEFAULT);
         $admin->save();
 
         return response()->json([
-           'message' => 'Password updated successfully',
+            'message' => 'Password updated successfully',
         ]);
     }
 
-    public function change_password(Request $request){
+    public function change_password(Request $request)
+    {
         $admin = Admin::first();
-        if(password_verify($request->old_password, $admin->password)){
+        if (password_verify($request->old_password, $admin->password)) {
             $admin->password = password_hash($request->password, PASSWORD_DEFAULT);
             $admin->save();
 
             return response()->json([
-               'message' => 'Password updated successfully',
+                'message' => 'Password updated successfully',
             ]);
-        }else{
+        } else {
             return response()->json([
-               'message' => 'Old password does not match',
+                'message' => 'Old password does not match',
             ], 401);
         }
     }
 
-    public function approve_withdrawal(Request $request){
+    public function approve_withdrawal(Request $request)
+    {
         $withdrawal = withdrawal::find($request->id);
-        $transaction = Transactions::where('transaction_id',$withdrawal->withdrawal_id)->first();
+        $transaction = Transactions::where('transaction_id', $withdrawal->withdrawal_id)->first();
         $transaction->status = 'success';
         $transaction->save();
 
@@ -211,10 +226,11 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Withdrawal approved successfully');
     }
 
-    public function reject_withdrawal(Request $request){
+    public function reject_withdrawal(Request $request)
+    {
         $withdrawal = withdrawal::find($request->id);
-        $transaction = Transactions::where('transaction_id',$withdrawal->withdrawal_id)->first();
-        $transaction->status ='failed';
+        $transaction = Transactions::where('transaction_id', $withdrawal->withdrawal_id)->first();
+        $transaction->status = 'failed';
         $transaction->save();
 
         // refund user balance
@@ -227,65 +243,72 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Withdrawal rejected successfully');
     }
 
-    public function task_config(){
+    public function task_config()
+    {
         $users =  subscription::paginate(20);
-        return view('admin.pages.conf',compact('users'));
+        return view('admin.pages.conf', compact('users'));
     }
 
-    public function task_setting(Request $request){
-        $negative = UserNegativeBalanceConfig::where('user_id',$request->user)->first();
-        $subscription = subscription::where('user_id',$request->user)->first();
-        $package = packages::where('id',$subscription->package_id)->first();
-        $userTask = UserTask::where('user_id',$request->user)->first();
+    public function task_setting(Request $request)
+    {
+        $negative = UserNegativeBalanceConfig::where('user_id', $request->user)->first();
+        $subscription = subscription::where('user_id', $request->user)->first();
+        $package = packages::where('id', $subscription->package_id)->first();
+        $userTask = UserTask::where('user_id', $request->user)->first();
 
         return view('admin.pages.task_config', compact('negative', 'package', 'userTask'));
     }
 
 
-    public function update_task_config(Request $request){
-        $config = UserNegativeBalanceConfig::find($request->id);
+    public function update_task_config(Request $request)
+    {
+        $config = UserNegativeBalanceConfig::find($request->id); 
 
-        if($config->update($request->except('_token'))){
-            $userTask = UserTask::where('user_id',$config->user_id)->first();
+        if ($config->update($request->except('_token'))) {
+            $userTask = UserTask::where('user_id', $config->user_id)->first();
             $userTask->save();
-            return response()->json([
-                'message' => 'Task configuration updated successfully',
-            ]);
-        }else{
-            return response()->json([
-                'error' => 'Failed to update task configuration',
-            ], 400);
+            return redirect()->back()->with(
+                'message',
+                'Task configuration updated successfully'
+            );
+        } else {
+            return redirect()->back()->with(
+                'message',
+                'Something went wrong'
+            );
         }
     }
 
-    public function rest_user_balance(Request $request){
-        $prev = Previous_order_balance::where('user_id','=', $request->id)->first();
+    public function rest_user_balance(Request $request)
+    {
+        $prev = Previous_order_balance::where('user_id', '=', $request->user)->first();
         // return response()->json($request->id);
 
         $user = User::find($request->id);
 
-        $order = 0-(float)$user->order_balance;
+        $order = 0 - (float)$user->order_balance;
 
         $new_bal = $order + $request->commission + $prev->previous_order_balance;
 
         $user->balance = $new_bal;
-        if($user->save()){
+        if ($user->save()) {
             $neg = UserNegativeBalanceConfig::where('user_id', $request->id)->first();
             $neg->negative_balance_amount = 0;
             $neg->task_threshold = 0;
             $neg->save();
             return response()->json([
                 'balance' => $new_bal,
-               'message' => 'User balance restored successfully',
+                'message' => 'User balance restored successfully',
             ]);
-        }else{
+        } else {
             return response()->json([
                 'error' => 'Failed to restore user balance',
             ], 400);
         }
     }
 
-    public function activate_next_set(Request $request){
+    public function activate_next_set(Request $request)
+    {
         $config = UserNegativeBalanceConfig::find($request->id);
         $userTask = UserTask::where('user_id', $config->user_id)->first();
 
@@ -293,14 +316,14 @@ class AdminController extends Controller
         $subscription = subscription::find('user_id', $config->user_id);
         $package = packages::find($subscription->package_id);
 
-        if($userTask->current_set < $package->set){
+        if ($userTask->current_set < $package->set) {
             $userTask->current_set += 1;
             $userTask->save();
         }
 
         return response()->json([
             'current_set' => $userTask->current_set,
-           'message' => 'Next set activated successfully',
+            'message' => 'Next set activated successfully',
         ]);
     }
 }

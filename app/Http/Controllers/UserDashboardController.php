@@ -194,6 +194,15 @@ class UserDashboardController extends Controller
                             'task_start_enabled' => false
                         ]
                     );
+                    $userTask = UserTask::firstOrCreate(
+                        ['user_id' => Auth::user()->id],
+                        [
+                            'user_id' => Auth::user()->id,
+                            'current_set' => $package->set,
+                            'last_task_completed_at' => now(),
+                            'tasks_completed_today' => 0,
+                        ]
+                    );
 
                     // $user = User::find(Auth::user()->id);
                     // $user->balance -= $package->package_price;

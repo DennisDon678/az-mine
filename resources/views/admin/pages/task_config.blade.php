@@ -15,8 +15,9 @@
 
         <ion-card-body>
             <ion-list inset="true">
-                <form action="" method="post" >
+                <form action="/admin/task-config" method="post">
                     @csrf
+                    <input type="hidden" name="id" value="{{ $negative->id }}">
                     <ion-item mode="ios">
                         <ion-label slot="start">Package Name:</ion-label>
                         <ion-input type="text" placeholder="Crypto Name" name=""
@@ -26,14 +27,12 @@
                     <ion-item mode="ios">
                         <ion-label slot="start">Current Set:</ion-label>
                         <ion-input type="text" placeholder="Current Set" name=""
-                            value="{{$userTask->current_set}}"
-                            readonly required></ion-input>
+                            value="{{ $userTask->current_set }}" readonly required></ion-input>
                     </ion-item>
                     <ion-item mode="ios">
                         <ion-label slot="start">Current Task Performed:</ion-label>
                         <ion-input type="text" placeholder="Order Performed" name=""
-                            value="{{$userTask->tasks_completed_today}}"
-                            readonly required></ion-input>
+                            value="{{ $userTask->tasks_completed_today }}" readonly required></ion-input>
                     </ion-item>
 
                     <ion-item mode="ios">
@@ -68,6 +67,7 @@
                 <br>
                 <br>
                 <form id="resetform-" class="mb-2">
+                    {!! Form::hidden('user', $negative->user_id) !!}
                     <ion-button expand="block" type="submit" color="success">Reset Balance</ion-button>
                 </form>
                 <ion-button expand="block" color="dark" id="nextSet">Activate Next Set</ion-button>
@@ -80,6 +80,19 @@
     <script>
         const loading = document.querySelector('ion-loading');
         const alertCustom = document.querySelector('ion-alert');
-        
     </script>
+    @if (Session::has('message'))
+    <script>
+        alertCustom.message = "{{Session::get('message')}}";
+        alertCustom.buttons = ['Ok']
+        alertCustom.isOpen = true;
+    </script>
+    @endif
+    @if (Session::has('error'))
+    <script>
+        alertCustom.message = "{{Session::get('error')}}";
+        alertCustom.buttons = ['Ok']
+        alertCustom.isOpen = true;
+    </script>
+    @endif
 @endsection
