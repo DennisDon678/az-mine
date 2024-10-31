@@ -53,9 +53,10 @@
                         <ion-content class="ion-padding">
                             @php
                                 $task = App\Models\UserTask::where('user_id', '=', $user->user->id)->first();
-                                dd($task->current_set)
+                                
                             @endphp
-                            <form action="" method="post" id="save-{{ $user->id }}">
+                            {{$task->current_set}}
+                            {{-- <form action="" method="post" id="save-{{ $user->id }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $user->id }}">
                                 <ion-item mode="ios">
@@ -102,7 +103,7 @@
 
                                 <ion-button expand="block" type="submit" color="primary">Save
                                     Config</ion-button>
-                            </form>
+                            </form> --}}
                             <br>
                             <form id="resetform-{{$user->id}}" class="mb-2">
                                 @csrf
