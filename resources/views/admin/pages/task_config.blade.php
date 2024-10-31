@@ -24,8 +24,7 @@
 
                                 $subscription = App\Models\packages::where(
                                         'id',$sub->package_id)->first();
-                                $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
-                                dd($task->current_set);
+                                
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
@@ -53,6 +52,9 @@
                             </ion-toolbar>
                         </ion-header>
                         <ion-content class="ion-padding">
+                            @php
+                                $task = App\Models\UserTask::where('user_id', $user->user->id)->first();
+                            @endphp
                             <form action="" method="post" id="save-{{ $user->id }}">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $user->id }}">
