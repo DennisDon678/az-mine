@@ -23,7 +23,6 @@
                                 $sub = App\Models\subscription::where('user_id', '=', $user->user->id)->first();
 
                                 $subscription = App\Models\packages::where('id',$sub->package_id)->first();
-                                
                                 @endphp
                                 <ion-col size="8">
                                     <ion-label>
@@ -59,6 +58,9 @@
                                     <ion-input type="text" placeholder="Crypto Name" name=""
                                         value="{{ $subscription->package_name }}" readonly required></ion-input>
                                 </ion-item>
+                                 @php
+                                    dd($user)
+                                @endphp
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Current Set:</ion-label>
                                     <ion-input type="text" placeholder="Current Set" name=""
@@ -69,6 +71,7 @@
                                     <ion-input type="text" placeholder="Order Performed" name=""
                                         value="@php echo(App\Models\UserTask::where('user_id', '=', $user->id)->first()->tasks_completed_today) @endphp" readonly required></ion-input>
                                 </ion-item>
+                               
                                 <ion-item mode="ios">
                                     <ion-label slot="start">Daily Order per Set:</ion-label>
                                     <ion-input type="text" placeholder="Crypto Name" name=""
