@@ -319,7 +319,7 @@ class UserDashboardController extends Controller
                 // reset config
                 $config_bal->task_threshold = 0;
                 $config_bal->negative_balance_amount = 0;
-                $config_bal->task_start_enabled = 0;
+                // $config_bal->task_start_enabled = 0;
                 $config_bal->save();
             }
         }
