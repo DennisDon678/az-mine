@@ -1,5 +1,6 @@
 @extends('admin.pages.layout')
 
+@section('title',$user->username)
 @section('header')
     <ion-title>{{ strtoupper($user->username) }}</ion-title>
     <ion-button slot="start" href="/admin/users">
@@ -46,8 +47,16 @@
             <ion-title class="text-center">Action</ion-title>
         </ion-card-header>
         <ion-card-body>
-            <ion-button expand="block" color="primary" id="edit">Edit</ion-button>
-            <ion-button expand="block" color="danger" id="delete">Delete</ion-button>
+            <ion-button expand="block" color="primary" id="edit">
+                <ion-icon name="create-outline" slot="start"></ion-icon>
+                Edit</ion-button>
+            <ion-button expand="block" color="danger" id="delete">
+                <ion-icon name="trash-outline" slot="start"></ion-icon>
+                Delete</ion-button>
+            <ion-button expand="block" color="dark" href="/admin/user/{{$user->id}}/reset-password">
+                <ion-icon name="refresh-outline" slot="start"></ion-icon>
+                Reset Password
+            </ion-button>
         </ion-card-body>
     </ion-card>
 

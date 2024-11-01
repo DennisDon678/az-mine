@@ -120,6 +120,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/reject-deposit', [AdminController::class, 'reject_deposit']);
     Route::get('/delete-user', [AdminController::class, 'delete_user']);
     Route::get('/user/{id}', [AdminController::class, 'view_user']);
+    Route::get('/user/{id}/reset-password', [AdminController::class, 'reset_user_password']);
+    Route::get('/generate-new-password', [AdminController::class, 'generate_new_password']);
     Route::get('/edit-user', [AdminController::class, 'edit_user']);
     Route::get('/wallets', [AdminController::class, 'wallets']);
     Route::post('/wallet/create', [AdminController::class, 'create_wallet']);

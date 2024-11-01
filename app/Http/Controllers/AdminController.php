@@ -15,6 +15,7 @@ use App\Models\UserNegativeBalanceConfig;
 use App\Models\UserTask;
 use App\Models\withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -324,5 +325,28 @@ class AdminController extends Controller
             'current_set' => $userTask->current_set,
             'message' => 'Next set activated successfully',
         ]);
+    }
+
+    public function reset_user_password($user){
+        $user = User::find($user);
+
+        return view('admin.pages.reset_user_password',compact('user'));
+    }
+
+    public function generate_new_password(Request $request){
+        $user = User::find($request->user);
+
+        $new_password = Str::random(10);
+        $user->password = password_hash($new_password, PASSWORD_DEFAULT);
+        if($user->save()){
+            return response()->json([
+                'new_password' =>$new_password,
+                'message' => 'Password changed successfully'
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Something went wrong'
+            ],503);
+        }
     }
 }
