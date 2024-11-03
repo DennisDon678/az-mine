@@ -146,6 +146,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/activate-next-set', [AdminController::class, 'activate_next_set']);
 
     Route::get('task-setting', [AdminController::class, 'task_setting']);
+    Route::get('/logout', [AdminController::class, 'logout']);
 });
 
 

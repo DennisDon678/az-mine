@@ -15,6 +15,7 @@ use App\Models\UserNegativeBalanceConfig;
 use App\Models\UserTask;
 use App\Models\withdrawal;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class AdminController extends Controller
@@ -347,6 +348,15 @@ class AdminController extends Controller
             return response()->json([
                 'message' => 'Something went wrong'
             ],503);
+        }
+    }
+
+    public function logout(){
+        if(Auth::guard('admin')->check()){
+            Auth::guard('admin')->logout();
+            return redirect()->route('admin.login');
+        }else{
+            return redirect()->route('admin.login');
         }
     }
 }

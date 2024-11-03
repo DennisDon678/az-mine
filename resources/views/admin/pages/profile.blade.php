@@ -49,6 +49,11 @@
                 Change Password
                 <ion-icon name="key-outline" slot="end"></ion-icon>
             </ion-button>
+
+            <ion-button expand="block" color="danger" href="/admin/logout" id="logout">
+                <ion-icon name="log-out-outline" slot="end"></ion-icon>
+                Log Out</ion-button>
+
         </ion-card-body>
     </ion-card>
 
@@ -84,7 +89,7 @@
                     <ion-icon name="refresh-outline" slot="end"></ion-icon>
                 </ion-button>
             </form>
-        </ion-content>
+
         </ion-content>
     </ion-modal>
 
@@ -162,14 +167,15 @@
                 }
             });
         });
-        
-        $("#reset-form").submit(function(event){
+
+        $("#reset-form").submit(function(event) {
             event.preventDefault();
             loading.message = 'Resetting Password...';
             loading.present();
 
             // Check if password matches password confirmation
-            if ($("#reset-form input[name='password']").val()!== $("#reset-form input[name='password_confirmation']").val()) {
+            if ($("#reset-form input[name='password']").val() !== $(
+                    "#reset-form input[name='password_confirmation']").val()) {
                 loading.dismiss();
                 alertCustom.message = 'Passwords do not match. Please try again.';
                 alertCustom.buttons = [{
@@ -180,7 +186,8 @@
             }
 
             // check if empty
-            if (!$("#reset-form input[name='password']").val() ||!$("#reset-form input[name='password_confirmation']").val()) {
+            if (!$("#reset-form input[name='password']").val() || !$(
+                    "#reset-form input[name='password_confirmation']").val()) {
                 loading.dismiss();
                 alertCustom.message = 'Please fill all fields.';
                 alertCustom.buttons = [{
@@ -214,15 +221,16 @@
                 }
             });
         })
-        
-        $("#change-form").submit(function(event){
+
+        $("#change-form").submit(function(event) {
             event.preventDefault();
             loading.message = 'Changing Password...';
             loading.present();
 
 
             // Check if password matches password confirmation
-            if ($("#change-form input[name='password']").val()!== $("#change-form input[name='password_confirmation']").val()) {
+            if ($("#change-form input[name='password']").val() !== $(
+                    "#change-form input[name='password_confirmation']").val()) {
                 loading.dismiss();
                 alertCustom.message = 'Passwords do not match. Please try again.';
                 alertCustom.buttons = [{
@@ -233,7 +241,8 @@
             }
 
             // check if empty
-            if (!$("#change-form input[name='current_password']").val() ||!$("#change-form input[name='password']").val() ||!$("#change-form input[name='password_confirmation']").val()) {
+            if (!$("#change-form input[name='current_password']").val() || !$("#change-form input[name='password']")
+                .val() || !$("#change-form input[name='password_confirmation']").val()) {
                 loading.dismiss();
                 alertCustom.message = 'Please fill all fields.';
                 alertCustom.buttons = [{
