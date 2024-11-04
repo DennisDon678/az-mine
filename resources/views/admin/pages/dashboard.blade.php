@@ -277,6 +277,12 @@
                             <span>Configs</span>
                         </div>
                     </a>
+                    <a href="/admin/referral-config">
+                        <div class="menu-item">
+                            <ion-icon name="cog-outline"></ion-icon>
+                            <span>Referral Setting</span>
+                        </div>
+                    </a>
 
                 </div>
             </div>

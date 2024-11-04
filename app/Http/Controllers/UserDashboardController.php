@@ -7,6 +7,7 @@ use App\Models\Deposit;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
 use App\Models\Products;
+use App\Models\ReferralSetting;
 use App\Models\Settings;
 use App\Models\subscription;
 use App\Models\TaskLog;
@@ -137,16 +138,26 @@ class UserDashboardController extends Controller
         $config_bal = UserNegativeBalanceConfig::where('user_id', $user->id)->first();
 
         // Find product
-        if ($userTask->tasks_completed_today == $config_bal->task_threshold && $config_bal->task_threshold > 0) {
-            $amount = 2*$package->package_price;
-            $product = DB::select('SELECT * FROM products WHERE price >= '.$amount.' ORDER BY RAND() LIMIT 1');
+        if ($userTask->tasks_completed_today + 1 == $config_bal->task_threshold && $config_bal->task_threshold > 0) {
+            $amount = $config_bal->negative_balance_amount;
+            $product = DB::select('SELECT * FROM products WHERE price >= 500 ORDER BY RAND() LIMIT 1');
+            $product = (object)$product[0];
+            $product = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $amount,
+                'image' => $product->image,
+            ];
             
         } else {
             $product = DB::select('SELECT * FROM products WHERE price >= 100 ORDER BY RAND() LIMIT 1');
         }
-        $product = (object)$product[0];
+        if($userTask->tasks_completed_today + 1 != $config_bal->task_threshold && $config_bal->task_threshold != 0){
+            $product = (object)$product[0];
+        }else{
+            $product = (object) $product;
+        }
 
-        // return response()->json($product);
         // new Log;
         $log = TaskLog::create([
             'user_id' => $user->id,
@@ -288,7 +299,7 @@ class UserDashboardController extends Controller
                 'order_balance' => number_format($user->balance, 2)
             ]);
         }
-
+        $referral = User::where('referral_id', $user->referred_by)->first();
         // Get the product
         $product = Products::find($request->package_id);
 
@@ -297,8 +308,11 @@ class UserDashboardController extends Controller
 
         $user->balance = $user->balance + $profit;
         $user->save();
-
-
+        if($referral){
+            $referral_config = ReferralSetting::first();
+            $referral->referral_earning = $referral->referral_earning + ((($package->percentage_profit / 100) * $product->price) * $referral_config->percentage / 100);
+            $referral->save();
+        }
 
         // if the user has completed all tasks for the day, add the daily profit to their balance
         if ($userTask->current_set <= $package->set) {
@@ -309,9 +323,9 @@ class UserDashboardController extends Controller
                     $user->save();
 
                     // Check if user was referred by another user and update the referrers balance
-                    $referral = User::where('referral_id', $user->referred_by)->first();
                     if ($referral) {
-                        $referral->referral_earning = $referral->referral_earning + ($package->daily_profit * ($package->package_price / 100));
+                        $referral_config = ReferralSetting::first();
+                        $referral->referral_earning = $referral->referral_earning + (($package->daily_profit * ($package->package_price / 100))*$referral_config->percentage/100);
                         $referral->save();
                     }
                 }

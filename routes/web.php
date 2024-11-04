@@ -146,6 +146,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/activate-next-set', [AdminController::class, 'activate_next_set']);
 
     Route::get('task-setting', [AdminController::class, 'task_setting']);
+    Route::get('referral-config', [AdminController::class, 'referral_config']);
+    Route::post('referral-config', [AdminController::class, 'update_referral_config']);
     Route::get('/logout', [AdminController::class, 'logout']);
 });
 

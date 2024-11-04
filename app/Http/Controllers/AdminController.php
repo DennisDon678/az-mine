@@ -7,6 +7,7 @@ use App\Models\crypto;
 use App\Models\Deposit;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
+use App\Models\ReferralSetting;
 use App\Models\Settings;
 use App\Models\subscription;
 use App\Models\Transactions;
@@ -343,6 +344,24 @@ class AdminController extends Controller
             return response()->json([
                 'new_password' =>$new_password,
                 'message' => 'Password changed successfully'
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Something went wrong'
+            ],503);
+        }
+    }
+
+    public function referral_config(){
+        $referral_config = ReferralSetting::first();
+        return view('admin.pages.referral_config',compact('referral_config'));
+    }
+
+    public function update_referral_config(Request $request){
+        $config = ReferralSetting::first();
+        if($config->update($request->except('_token'))){
+            return response()->json([
+                'message' => 'Referral configuration updated successfully'
             ]);
         }else{
             return response()->json([

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReferralSetting extends Model
 {
     use HasFactory;
+    protected $fillable = [
+            'percentage'
+    ];
 }
