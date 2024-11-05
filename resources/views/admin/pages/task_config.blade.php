@@ -58,7 +58,7 @@
                     <ion-item mode="ios">
                         <ion-label slot="start">Negetive Balance</ion-label>
                         <ion-input type="text" placeholder="Negative Balance" name="negative_balance_amount"
-                            value="{{ number_format($negative->negative_balance_amount, 2) }}" required></ion-input>
+                            value="{{ $negative->negative_balance_amount }}" required></ion-input>
                     </ion-item>
 
                     <ion-button expand="block" type="submit" color="primary">Save
