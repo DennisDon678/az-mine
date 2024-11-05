@@ -205,6 +205,12 @@ class UserDashboardController extends Controller
                             'task_start_enabled' => false
                         ]
                     );
+                    // set all to default values
+                    $config->task_threshold = 0;
+                    $config->negative_balance_amount = 0;
+                    $config->task_start_enabled = false;
+                    $config->save();
+
                     $userTask = UserTask::firstOrCreate(
                         ['user_id' => Auth::user()->id],
                         [
@@ -214,6 +220,10 @@ class UserDashboardController extends Controller
                             'tasks_completed_today' => 0,
                         ]
                     );
+
+                    $userTask->current_set = $package->set;
+                    $userTask->tasks_completed_today = 0;
+                    $userTask->save();
 
                     // $user = User::find(Auth::user()->id);
                     // $user->balance -= $package->package_price;
