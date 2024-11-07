@@ -283,7 +283,12 @@
                             <span>Referral Setting</span>
                         </div>
                     </a>
-
+                     <a href="/admin/reset-user-task">
+                        <div class="menu-item">
+                            <ion-icon name="cog-outline"></ion-icon>
+                            <span>Reset All Users Task</span>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>

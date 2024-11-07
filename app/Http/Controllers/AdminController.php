@@ -378,4 +378,8 @@ class AdminController extends Controller
             return redirect()->route('admin.login');
         }
     }
+
+    public function reset_user_task(Request $request){
+        return view('admin.pages.reset_user_task');
+    }
 }
