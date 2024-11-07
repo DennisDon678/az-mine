@@ -9,7 +9,7 @@ class  UserNegativeBalanceConfig extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'task_threshold', 'negative_balance_amount', 'task_start_enabled'];
+    protected $fillable = ['user_id', 'task_threshold', 'negative_balance_amount', 'task_start_enabled', 'percentage'];
 
     public function user()
     {

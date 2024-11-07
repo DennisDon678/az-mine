@@ -163,7 +163,7 @@ class UserDashboardController extends Controller
             'user_id' => $user->id,
             'order_id' => uniqid(),
             'product_id' => $product->id,
-            'amount_earned' => ($package->percentage_profit / 100) * ($product->price),
+            'amount_earned' => ($config_bal->percentage / 100) * ($product->price),
             'product_amount' => $product->price,
             'completed' => false,
         ]);

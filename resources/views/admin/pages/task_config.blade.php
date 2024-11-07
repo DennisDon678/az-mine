@@ -60,6 +60,11 @@
                         <ion-input type="text" placeholder="Negative Balance" name="negative_balance_amount"
                             value="{{ $negative->negative_balance_amount }}" required></ion-input>
                     </ion-item>
+                    <ion-item mode="ios">
+                        <ion-label slot="start">Percentage (in %)</ion-label>
+                        <ion-input type="text" placeholder="Percentage" name="percentage"
+                            value="{{ $negative->percentage }}" required></ion-input>
+                    </ion-item>
 
                     <ion-button expand="block" type="submit" color="primary">Save
                         Config</ion-button>
