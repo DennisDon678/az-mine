@@ -13,7 +13,7 @@
         </ion-title>
     </ion-card-header>
     <ion-card-body>
-        <p>
+        <p style="text-decoration:underline;">
             This button will help you to reset the users daily task. Note you should only use this once in a day. Using it mutiple times may affect the users task for the day.
         </p>
         <ion-button expand="block" color="dark" id="resetBtn">
