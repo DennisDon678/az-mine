@@ -153,11 +153,12 @@ class UserDashboardController extends Controller
         } else {
             $product = DB::select('SELECT * FROM products WHERE price >= 100 ORDER BY RAND() LIMIT 1');
         }
-        if($userTask->tasks_completed_today + 1 != $config_bal->task_threshold && $config_bal->task_threshold != 0){
+        if($userTask->tasks_completed_today + 1 != $config_bal->task_threshold ){
             $product = (object)$product[0];
         }else{
             $product = (object) $product;
         }
+
 
         // new Log;
         $log = TaskLog::create([
