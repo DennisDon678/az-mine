@@ -142,6 +142,7 @@ class UserDashboardController extends Controller
             $amount = $config_bal->negative_balance_amount;
             $product = DB::select('SELECT * FROM products WHERE price >= 500 ORDER BY RAND() LIMIT 1');
             $product = (object)$product[0];
+
             $product = [
                 'id' => $product->id,
                 'name' => $product->name,
@@ -160,7 +161,7 @@ class UserDashboardController extends Controller
 
         // new Log;
         $log = TaskLog::create([
-            'user_id' => $user->id,
+            'user_id' => Auth::user()->id,
             'order_id' => uniqid(),
             'product_id' => $product->id,
             'amount_earned' => ($config_bal->percentage / 100) * ($product->price),
