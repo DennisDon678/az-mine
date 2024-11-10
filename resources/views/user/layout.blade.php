@@ -87,15 +87,36 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-  const refresher = document.getElementById('refresher');
+        const refresher = document.getElementById('refresher');
 
-  refresher.addEventListener('ionRefresh', () => {
-    setTimeout(() => {
-      location.reload();
-      refresher.complete();
-    }, 2000);
-  });
-</script>
+        refresher.addEventListener('ionRefresh', () => {
+            setTimeout(() => {
+                location.reload();
+                refresher.complete();
+            }, 2000);
+        });
+    </script>
+
+    <div class="gtranslate_wrapper"></div>
+    <script>
+        window.gtranslateSettings = {
+            "default_language": "en",
+            "wrapper_selector": ".gtranslate_wrapper",
+            "flag_size": 16,
+            "switcher_horizontal_position": "inline",
+            "flag_style": "3d",
+            "switcher_text_color": "#f7f7f7",
+            "switcher_arrow_color": "#f2f2f2",
+            "switcher_border_color": "#161616",
+            "switcher_background_color": "#303030",
+            "switcher_background_shadow_color": "#474747",
+            "switcher_background_hover_color": "#3a3a3a",
+            "dropdown_text_color": "#eaeaea",
+            "dropdown_hover_color": "#748393",
+            "dropdown_background_color": "#474747"
+        }
+    </script>
+    <script src="https://cdn.gtranslate.net/widgets/latest/dwf.js" defer></script>
 
     @yield('script')
 </body>
