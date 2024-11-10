@@ -35,8 +35,10 @@
             <ion-refresher id="refresher" slot="fixed">
                 <ion-refresher-content></ion-refresher-content>
             </ion-refresher>
+            <div class="gtranslate_wrapper"></div>
             @yield('content')
         </ion-content>
+
         <ion-tab-bar slot="bottom" color="primary">
             <ion-tab-button href="/user/dashboard"
                 {{ request()->segment(count(request()->segments())) == 'dashboard' ? 'selected' : '' }}>
@@ -97,7 +99,6 @@
         });
     </script>
 
-    <div class="gtranslate_wrapper"></div>
     <script>
         window.gtranslateSettings = {
             "default_language": "en",
