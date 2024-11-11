@@ -597,4 +597,8 @@ class UserDashboardController extends Controller
            'message' => 'Task Submitted successfully'
         ]);
     }
+
+    public function lucky(){
+        return view('user.lucky');
+    }
 }

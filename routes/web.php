@@ -82,6 +82,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/check-pending-task', [UserDashboardController::class, 'check_pending_task']);
 
         Route::get('/submit-pending-task', [UserDashboardController::class, 'submit_pending_task']);
+        Route::get('/lucky', [UserDashboardController::class, 'lucky']);
     });
 });
 Route::get('rest-user-tasks', [UserDashboardController::class, 'reset_user_tasks']);

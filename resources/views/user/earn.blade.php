@@ -101,9 +101,6 @@
         opacity: 0;
     }
 
-    /* #si-btn:hover {
-  background:#e81238;
-} */
     #si-btn a {
         color: inherit;
         text-decoration: none;
