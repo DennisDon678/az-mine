@@ -66,8 +66,8 @@
                                     <br>
                                     <ion-item>
                                         <ion-icon name="enter-outline" slot="start"></ion-icon>
-                                        <ion-input type="text" placeholder="Enter Invitation code (optional)"
-                                            fill="" id="referral_code" name="referred_by"></ion-input>
+                                        <ion-input type="text" placeholder="Enter Invitation code"
+                                            fill="" id="referral_code" name="referred_by" required></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>
