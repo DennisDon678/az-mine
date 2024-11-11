@@ -32,8 +32,8 @@
         <div class="tab-content mt-2" id="pills-tabContent">
             <div class="tab-pane fade show active" id="deposit" role="tabpanel" aria-labelledby="pills-home-tab">
                 @php
-                    $deposits = App\Models\Transactions::where('type', 'deposit')->get();
-                    $withdrawals = App\Models\Transactions::where('type', 'withdraw')->get();
+                    $deposits = App\Models\Transactions::where('user_id',Auth::user()->id)->where('type', 'deposit')->get();
+                    $withdrawals = App\Models\Transactions::where('user_id',Auth::user()->id)->where('type', 'withdraw')->get();
                 @endphp
                 <ion-card>
                     <ion-card-header>
