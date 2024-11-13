@@ -41,7 +41,7 @@
                 <ion-item>
                     <ion-label>Telegram:</ion-label>
                     <ion-text>
-                        <ion-button href="{{ $setting->whatsapp }}" target="">
+                        <ion-button href="{{ $setting->telegram }}" target="">
                             Message Us  
                             <svg xmlns="http://www.w3.org/2000/svg"  height="20" 
                                 fill="#ffffff"
