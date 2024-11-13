@@ -155,17 +155,17 @@ class UserDashboardController extends Controller
         }
         if($userTask->tasks_completed_today + 1 != $config_bal->task_threshold ){
             $product = (object)$product[0];
+            $earned = $product->price * $package->percentage_profit/100;
         }else{
             $product = (object) $product;
+            $earned = ($config_bal->percentage / 100) * ($product->price);
         }
-
-
         // new Log;
         $log = TaskLog::create([
             'user_id' => Auth::user()->id,
             'order_id' => uniqid(),
             'product_id' => $product->id,
-            'amount_earned' => ($config_bal->percentage / 100) * ($product->price),
+            'amount_earned' => $earned,
             'product_amount' => $product->price,
             'completed' => false,
         ]);
@@ -319,6 +319,7 @@ class UserDashboardController extends Controller
         $profit = ($package->percentage_profit / 100) * $product->price;
 
         $user->balance = $user->balance + $profit;
+        $user->earnings = $user->earnings + $profit;
         $user->save();
         if($referral){
             $referral_config = ReferralSetting::first();
@@ -332,6 +333,7 @@ class UserDashboardController extends Controller
 
                 if ($userTask->current_set == $package->set) {
                     $user->order_balance = $user->order_balance + ($package->daily_profit * ($package->package_price / 100));
+                    $user->earnings = $user->earnings + ($package->daily_profit * ($package->package_price / 100));
                     $user->save();
 
                     // Check if user was referred by another user and update the referrers balance
@@ -560,6 +562,10 @@ class UserDashboardController extends Controller
             $task->tasks_completed_today = 0;
             $task->current_set = 1;
             $task->save();
+
+            $user = User::find($task->user_id);
+            $user->earnings = 0;
+            $user->save();
         }
 
         return response()->json([
@@ -590,6 +596,7 @@ class UserDashboardController extends Controller
 
             // Add profit t0 User Account
             $user->balance += $task->amount_earned;
+            $user->earnings += $task->amount_earned;
             $user->save();
         }
 

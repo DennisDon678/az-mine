@@ -226,7 +226,7 @@
     <div class="" mode="ios">
 
         <div class="d-sm-flex justify-content-center flex-row gap-3 ion-padding">
-            <div class="card card-custom col-sm-6 col-12">
+            <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Wallet Balance</h4>
@@ -235,7 +235,7 @@
                     <div class="icon bg-success text-white"><ion-icon name="cash-outline"></ion-icon></div>
                 </div>
             </div>
-            <div class="card card-custom col-sm-6 col-12">
+            <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h4 class="card-title mt-1">Referral Balance</h4>
@@ -244,17 +244,16 @@
                     <div class="icon bg-danger text-white"><ion-icon name="people-outline"></ion-icon></div>
                 </div>
             </div>
-            {{-- <div class="card card-custom col-sm-4 col-12">
+            <div class="card card-custom col-sm-4 col-12">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="card-title mt-1">Order Wallet</h4>
-                        <p class="card-balance">${{ number_format(Auth::user()->order_balance, 2) }}</p>
+                        <h4 class="card-title mt-1">Today's Earning</h4>
+                        <p class="card-balance">${{ number_format(Auth::user()->earnings, 2) }}</p>
                     </div>
                     <div class="icon bg-primary text-white"><ion-icon name="cart-outline"></ion-icon></div>
                 </div>
-            </div> --}}
+            </div>
         </div>
-
         <!-- Menu List Section (below the cards) -->
         <div class="" mode="ios">
             <div class="pb-2" style="background-color: rgba(182, 179, 179, 0.39)">
@@ -273,13 +272,13 @@
                             <span>Customer Service</span>
                         </div>
                     </a>
-                     {{-- <a href="/user/deposit">
+                    {{-- <a href="/user/deposit">
                         <div class="menu-item">
                             <ion-icon name="wallet-outline"></ion-icon>
                             <span>Deposit</span>
                         </div>
                     </a> --}}
-                   
+
                     <a href="/user/withdraw">
                         <div class="menu-item">
                             <ion-icon name="cash-outline"></ion-icon>
@@ -292,14 +291,14 @@
                             <span>Transfer</span>
                         </div>
                     </a>
-                   
+
                     <a href="/user/terms-and-conditions">
                         <div class="menu-item">
                             <ion-icon name="document-text-outline"></ion-icon>
                             <span>T&C</span>
                         </div>
                     </a>
-                    
+
                     <a href="">
                         <div class="menu-item">
                             <ion-icon name="help-circle-outline"></ion-icon>
@@ -332,11 +331,17 @@
                                         <i class="fas fa-medal" style="font-size: 3rem;"></i>
                                         <h5 class="card-title mt-3"><strong>{{ $package->package_name }}</strong></h5>
                                         <h5 class="card-title mt-1">
-                                            <strong>${{ number_format($package->package_price, 2) }}</strong></h5>
-                                        <p class="card-text"><strong>{{ number_format($package->percentage_profit,1) }}%</strong> Profit
-                                            rate. <br> {{$package->set}} set per Day. <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
-                                            order. <br><strong>{{number_format($package->daily_profit,1)}}%</strong> daily Profit.</p>
-                                            
+                                            <strong>${{ number_format($package->package_price, 2) }}</strong>
+                                        </h5>
+                                        <p class="card-text">
+                                            <strong>{{ number_format($package->percentage_profit, 1) }}%</strong> Profit
+                                            rate. <br> {{ $package->set }} set per Day.
+                                            <br><strong>{{ $package->number_of_orders_per_day }}</strong> orders per
+                                            order. <br><strong>{{ number_format($package->daily_profit, 1) }}%</strong>
+                                            daily
+                                            Profit.
+                                        </p>
+
 
                                         @if ($active)
                                             @if ($active->package_id === $package->id)
