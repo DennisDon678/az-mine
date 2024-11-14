@@ -56,7 +56,7 @@
             <input type="file" name="profile" id="profile" hidden>
             <ion-button id="change-profile">
                 <ion-icon name="create-outline"></ion-icon>
-                change profile
+                change
             </ion-button>
             <h3>Hello, {{ Auth::user()->username }}</h3>
         </div>
