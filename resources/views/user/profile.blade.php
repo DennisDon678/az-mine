@@ -370,6 +370,7 @@
                             text: 'OK',
                             handler: () => {
                                 loading.message = 'reloading profile picture';
+                                loading.present();
                                 // reload the page
                                 setTimeout(() => {
                                     location.href = '/user/profile';
