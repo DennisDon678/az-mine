@@ -83,6 +83,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/submit-pending-task', [UserDashboardController::class, 'submit_pending_task']);
         Route::get('/lucky', [UserDashboardController::class, 'lucky']);
+        Route::post('/update-profile-picture', [UserDashboardController::class, 'update_profile_picture']);
     });
 });
 Route::get('rest-user-tasks', [UserDashboardController::class, 'reset_user_tasks']);

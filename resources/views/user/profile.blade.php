@@ -20,13 +20,15 @@
 
     .over {
         background: black;
-        height: 100%;
+        height: 112%;
         opacity: 0.75;
+        margin-top: -15px;
     }
 
     img {
         border-radius: 50%;
         height: 160px;
+        width: 160px;
     }
 
     .content-profile {
@@ -49,7 +51,13 @@
     <div class="profile-card p-3 m-3">
         <div class="over"></div>
         <div class="content-profile text-center">
-            <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+            <img alt="Silhouette of a person's head" src="{{Auth::user()->profile_picture?asset('/images/profile_pictures/'.Auth::user()->profile_picture):'https://ionicframework.com/docs/img/demos/avatar.svg'}}"
+                id="preview-image" />
+            <input type="file" name="profile" id="profile" hidden>
+            <ion-button id="change-profile">
+                <ion-icon name="create-outline"></ion-icon>
+                change profile
+            </ion-button>
             <h3>Hello, {{ Auth::user()->username }}</h3>
         </div>
     </div>
@@ -254,7 +262,7 @@
                 text: "Save",
                 role: 'confirm',
                 handler: () => {
-                    alertCustom.inputs =[];
+                    alertCustom.inputs = [];
                     alertCustom.isOpen = false;
                     loading.message = "Updating PIN..."
                     loading.present();
@@ -319,6 +327,69 @@
             }];
             alertCustom.present();
         })
+
+        $('#change-profile').click(function() {
+            alertCustom.message = "Change Profile Picture";
+            alertCustom.buttons = [{
+                    text: 'Cancel',
+                    role: 'cancel',
+                    handler: () => {
+                        alertCustom.inputs = [];
+                        alertCustom.isOpen = false;
+                    }
+                },
+                {
+                    text: 'Choose from Library',
+                    handler: () => {
+                        alertCustom.inputs = [];
+                        alertCustom.isOpen = false;
+                        $('#profile').click();
+                    }
+                }
+            ]
+            alertCustom.present();
+        });
+
+        $('#profile').on('change', () => {
+            loading.message = "Uploading...";
+            loading.present();
+            const data = new FormData();
+            data.append('profile_picture', $('#profile')[0].files[0]);
+            data.append('_token', '{{ csrf_token() }}');
+            $.ajax({
+                type: "post",
+                url: "/user/update-profile-picture",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    loading.dismiss()
+                    alertCustom.message = response.message;
+                    alertCustom.buttons = [
+                        {
+                            text: 'OK',
+                            handler: () => {
+                                loading.message = 'reloading profile picture';
+                                // reload the page
+                                setTimeout(() => {
+                                    location.href = '/user/profile';
+                                }, 2000);
+                            }
+                        }
+                    ]
+                    toast.present();
+                    return;
+                },
+                error: function(xhr) {
+                    loading.dismiss();
+                    var error = xhr.responseJSON;
+                    toast.message = error.message;
+                    toast.position = 'top';
+                    toast.duration = 3000;
+                    toast.present();
+                }
+            });
+        });
     </script>
 
     @if (Session::has('error'))
@@ -329,4 +400,5 @@
             alertCustom.isOpen = true;
         </script>
     @endif
+
 @endsection

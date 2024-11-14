@@ -149,14 +149,13 @@ class UserDashboardController extends Controller
                 'price' => $amount,
                 'image' => $product->image,
             ];
-            
         } else {
             $product = DB::select('SELECT * FROM products WHERE price >= 100 ORDER BY RAND() LIMIT 1');
         }
-        if($userTask->tasks_completed_today + 1 != $config_bal->task_threshold ){
+        if ($userTask->tasks_completed_today + 1 != $config_bal->task_threshold) {
             $product = (object)$product[0];
-            $earned = $product->price * $package->percentage_profit/100;
-        }else{
+            $earned = $product->price * $package->percentage_profit / 100;
+        } else {
             $product = (object) $product;
             $earned = ($config_bal->percentage / 100) * ($product->price);
         }
@@ -171,7 +170,7 @@ class UserDashboardController extends Controller
         ]);
         // return product as json
         return response()->json([
-            'product'=> $product,
+            'product' => $product,
             'order_id' => $log->order_id,
         ]);
     }
@@ -306,8 +305,8 @@ class UserDashboardController extends Controller
             $user->save();
 
             return response()->json([
-                'message' => 'OOPS! Balance not enough to process this order.', 
-                'taskDone' => $userTask->tasks_completed_today, 
+                'message' => 'OOPS! Balance not enough to process this order.',
+                'taskDone' => $userTask->tasks_completed_today,
                 'order_balance' => number_format($user->balance, 2)
             ]);
         }
@@ -321,7 +320,7 @@ class UserDashboardController extends Controller
         $user->balance = $user->balance + $profit;
         $user->earnings = $user->earnings + $profit;
         $user->save();
-        if($referral){
+        if ($referral) {
             $referral_config = ReferralSetting::first();
             $referral->referral_earning = $referral->referral_earning + ((($package->percentage_profit / 100) * $product->price) * $referral_config->percentage / 100);
             $referral->save();
@@ -339,7 +338,7 @@ class UserDashboardController extends Controller
                     // Check if user was referred by another user and update the referrers balance
                     if ($referral) {
                         $referral_config = ReferralSetting::first();
-                        $referral->referral_earning = $referral->referral_earning + (($package->daily_profit * ($package->package_price / 100))*$referral_config->percentage/100);
+                        $referral->referral_earning = $referral->referral_earning + (($package->daily_profit * ($package->package_price / 100)) * $referral_config->percentage / 100);
                         $referral->save();
                     }
                 }
@@ -353,7 +352,7 @@ class UserDashboardController extends Controller
         }
 
         // get order id
-        $log = TaskLog::where('order_id',$request->order_id)->first();
+        $log = TaskLog::where('order_id', $request->order_id)->first();
         $log->completed = true;
         $log->save();
 
@@ -457,15 +456,16 @@ class UserDashboardController extends Controller
         }
     }
 
-    public function check_pending_task(){
+    public function check_pending_task()
+    {
         // check pending task log
-        $task = TaskLog::where('user_id', '=', Auth::user()->id)->where('completed',false)->count();
+        $task = TaskLog::where('user_id', '=', Auth::user()->id)->where('completed', false)->count();
 
-        if($task > 0){
+        if ($task > 0) {
             return response()->json([
                 'pending' => true,
             ]);
-        }else{
+        } else {
             return response()->json([
                 'pending' => false,
             ]);
@@ -502,12 +502,12 @@ class UserDashboardController extends Controller
             return redirect('/user/profile')->with('error', 'You must set your Transaction PIN first.');
         }
         $wallet = withdrawal_info::where('user_id', Auth::user()->id)->first()->wallet;
-        if($wallet){
+        if ($wallet) {
             $wallet = $wallet;
-        }else{
+        } else {
             $wallet = "";
         }
-        return view('user.bind_wallet',compact('wallet'));
+        return view('user.bind_wallet', compact('wallet'));
     }
 
     public function check_withdraw_wallet(Request $request)
@@ -552,10 +552,11 @@ class UserDashboardController extends Controller
         return view('user.orders');
     }
 
-    public function reset_user_tasks(){
+    public function reset_user_tasks()
+    {
         $userTasks = UserTask::get();
-        
-        foreach($userTasks as $task){
+
+        foreach ($userTasks as $task) {
             $task_session = UserNegativeBalanceConfig::where('user_id', $task->user_id)->first();
             $task_session->task_start_enabled = false;
             $task_session->save();
@@ -569,24 +570,25 @@ class UserDashboardController extends Controller
         }
 
         return response()->json([
-           'message' => 'Tasks reset successfully'
+            'message' => 'Tasks reset successfully'
         ]);
     }
 
-    public function submit_pending_task(Request $request){
-        $task = TaskLog::where('order_id', $request->order_id)->where('completed',false)->first();
+    public function submit_pending_task(Request $request)
+    {
+        $task = TaskLog::where('order_id', $request->order_id)->where('completed', false)->first();
         $user = User::find($request->user()->id);
         $subscription = subscription::where('user_id', $user->id)->first();
         $package = packages::find($subscription->package_id);
         $userTask = UserTask::where('user_id', $user->id)->first();;
-        
+
         // check balance
-        if($user->balance <= $package->package_price){
+        if ($user->balance <= $package->package_price) {
             return response()->json([
                 'error' => "OOPS! Balance not enough to process this order."
-            ],403);
+            ], 403);
         }
-        if($task){
+        if ($task) {
             $task->completed = true;
             $task->save();
 
@@ -601,11 +603,31 @@ class UserDashboardController extends Controller
         }
 
         return response()->json([
-           'message' => 'Task Submitted successfully'
+            'message' => 'Task Submitted successfully'
         ]);
     }
 
-    public function lucky(){
+    public function lucky()
+    {
         return view('user.lucky');
+    }
+
+    public function update_profile_picture(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+        $image = $request->file('profile_picture');
+        $imageName = time() . '.' . $image->getClientOriginalExtension();
+        $image->move(public_path('images/profile_pictures'), $imageName);
+        $user->profile_picture = $imageName;
+
+        if ($user->save()) {
+            return response()->json([
+                'message' => 'Profile picture updated successfully'
+            ]);
+        } else {
+            return response()->json([
+                'error' => 'Failed to update profile picture'
+            ], 403);
+        }
     }
 }
