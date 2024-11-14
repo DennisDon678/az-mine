@@ -377,7 +377,7 @@
                             }
                         }
                     ]
-                    toast.present();
+                    alertCustom.present();
                     return;
                 },
                 error: function(xhr) {
