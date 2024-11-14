@@ -12,7 +12,7 @@
     .profile-card {
         border-radius: 20px;
         position: relative;
-        height: 32vh;
+        height: 33vh;
         background-image: url('{{ asset('users/imgs/profile-card-bg.jpg') }}');
         background-position: center;
         background-size: cover;
