@@ -501,9 +501,9 @@ class UserDashboardController extends Controller
         if (!Auth::user()->pin) {
             return redirect('/user/profile')->with('error', 'You must set your Transaction PIN first.');
         }
-        $wallet = withdrawal_info::where('user_id', Auth::user()->id)->first()->wallet;
+        $wallet = withdrawal_info::where('user_id', Auth::user()->id)->first();
         if ($wallet) {
-            $wallet = $wallet;
+            $wallet = $wallet->wallet;
         } else {
             $wallet = "";
         }
