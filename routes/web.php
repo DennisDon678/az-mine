@@ -152,6 +152,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('referral-config', [AdminController::class, 'update_referral_config']);
     Route::get('/reset-user-task',[AdminController::class, 'reset_user_task']);
     Route::get('/logout', [AdminController::class, 'logout']);
+
+    Route::post('system-time', [AdminController::class, 'system_time']);
 });
 
 

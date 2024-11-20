@@ -10,6 +10,7 @@ use App\Models\Previous_order_balance;
 use App\Models\ReferralSetting;
 use App\Models\Settings;
 use App\Models\subscription;
+use App\Models\SystemTime;
 use App\Models\Transactions;
 use App\Models\User;
 use App\Models\UserNegativeBalanceConfig;
@@ -265,7 +266,7 @@ class AdminController extends Controller
 
     public function update_task_config(Request $request)
     {
-        $config = UserNegativeBalanceConfig::find($request->id); 
+        $config = UserNegativeBalanceConfig::find($request->id);
 
         if ($config->update($request->except('_token'))) {
             $userTask = UserTask::where('user_id', $config->user_id)->first();
@@ -300,17 +301,20 @@ class AdminController extends Controller
             $neg->task_threshold = 0;
             $neg->save();
             return redirect()->back()->with(
-                'message', 'User balance restored successfully'
+                'message',
+                'User balance restored successfully'
             );
         } else {
             return redirect()->back()->with(
-                'error','Failed to restore user balance');
+                'error',
+                'Failed to restore user balance'
+            );
         }
     }
 
     public function activate_next_set(Request $request)
     {
-        $config = UserNegativeBalanceConfig::where('user_id',$request->id)->first();
+        $config = UserNegativeBalanceConfig::where('user_id', $request->id)->first();
         $userTask = UserTask::where('user_id', $config->user_id)->first();
 
         // find package
@@ -329,57 +333,82 @@ class AdminController extends Controller
         ]);
     }
 
-    public function reset_user_password($user){
+    public function reset_user_password($user)
+    {
         $user = User::find($user);
 
-        return view('admin.pages.reset_user_password',compact('user'));
+        return view('admin.pages.reset_user_password', compact('user'));
     }
 
-    public function generate_new_password(Request $request){
+    public function generate_new_password(Request $request)
+    {
         $user = User::find($request->user);
 
         $new_password = Str::random(10);
         $user->password = password_hash($new_password, PASSWORD_DEFAULT);
-        if($user->save()){
+        if ($user->save()) {
             return response()->json([
-                'new_password' =>$new_password,
+                'new_password' => $new_password,
                 'message' => 'Password changed successfully'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'Something went wrong'
-            ],503);
+            ], 503);
         }
     }
 
-    public function referral_config(){
+    public function referral_config()
+    {
         $referral_config = ReferralSetting::first();
-        return view('admin.pages.referral_config',compact('referral_config'));
+        return view('admin.pages.referral_config', compact('referral_config'));
     }
 
-    public function update_referral_config(Request $request){
+    public function update_referral_config(Request $request)
+    {
         $config = ReferralSetting::first();
-        if($config->update($request->except('_token'))){
+        if ($config->update($request->except('_token'))) {
             return response()->json([
                 'message' => 'Referral configuration updated successfully'
             ]);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'Something went wrong'
-            ],503);
+            ], 503);
         }
     }
 
-    public function logout(){
-        if(Auth::guard('admin')->check()){
+    public function logout()
+    {
+        if (Auth::guard('admin')->check()) {
             Auth::guard('admin')->logout();
             return redirect()->route('admin.login');
-        }else{
+        } else {
             return redirect()->route('admin.login');
         }
     }
 
-    public function reset_user_task(Request $request){
+    public function reset_user_task(Request $request)
+    {
         return view('admin.pages.reset_user_task');
+    }
+
+    public function system_time(Request $request)
+    {
+        $system = SystemTime::firstorcreate(
+            [
+                'id' => 1
+            ],
+            [
+                'open_time' => $request->open_time,
+                'close_time' => $request->close_time
+            ]
+        );
+
+        $system->update($request->except('_token'));
+
+        return response()->json([
+           'message' => 'System time updated successfully'
+        ]);
     }
 }
