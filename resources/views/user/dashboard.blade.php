@@ -396,6 +396,8 @@
             text: 'close',
             role: 'cancel',
         }]
+        toast.backdropDismiss =
+        false;
         toast.isOpen = true;
     </script>
 @endsection
