@@ -72,12 +72,12 @@
                             </ion-label>
                         </ion-input>
                     </ion-item>
-                    <h3 class="ps-3">Current TimeZone: UTC{{ $time->timezone }}</h3>
+                    <h3 class="ps-3"><strong>Current TimeZone:</strong> {{ $time->timezone }}</h3>
                     <ion-item>
                         {{-- select --}}
                         <ion-select label-placement="floating" name="timezone" label="Select Timezone" id="timezone">
                             @foreach ($timezone as $zone)
-                                <ion-select-option value="{{ $zone['offset'] }}">{{ $zone['text'] }}</ion-select-option>
+                                <ion-select-option value="{{ $zone['text'] }}">{{ $zone['text'] }}</ion-select-option>
                             @endforeach
                         </ion-select>
                     </ion-item>

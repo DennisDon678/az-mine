@@ -390,10 +390,10 @@
         });
 
         const toast = document.querySelector('ion-toast');
-        toast.message = 'Our Support opens between {{$time->open_time}} and {{$time->close_time}} UTC{{$time->timezone}}';
+        toast.message = `Our Support opens between {{$time->open_time}} and {{$time->close_time}} {!!$time->timezone!!}`;
         toast.position = "top";
         toast.buttons = [{
-            text: 'ok',
+            text: 'close',
             role: 'cancel',
         }]
         toast.isOpen = true;
