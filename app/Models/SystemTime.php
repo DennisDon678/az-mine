@@ -13,5 +13,6 @@ class SystemTime extends Model
     protected $fillable = [
         'open_time',
         'close_time',
+        'timezone'
     ];
 }

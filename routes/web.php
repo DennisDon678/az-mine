@@ -186,6 +186,7 @@ Route::get('products_update/{id}/{page}', function ($id, $page) {
     }
 });
 
+Route::get('/timezone',[AdminController::class,'timezone']);
 
 Route::get('/artisan', function () {
     Artisan::call('migrate');

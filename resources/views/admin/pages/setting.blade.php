@@ -54,8 +54,9 @@
                 <ion-list>
                     <ion-item>
                         {{-- <ion-icon name="whatsapp-outline"></ion-icon> --}}
-                        <ion-input type="time" label-placement="floating" placeholder="Whatsapp Link for customer service."
-                            value="" name="open_time">
+                        <ion-input type="time" label-placement="floating"
+                            placeholder="Whatsapp Link for customer service." value="{{ $time->open_time }}"
+                            name="open_time">
                             <ion-label slot="label">
                                 System Opening time
                             </ion-label>
@@ -63,12 +64,22 @@
                     </ion-item>
                     <ion-item>
                         {{-- <ion-icon name="telegram-outline"></ion-icon> --}}
-                        <ion-input type="time" label-placement="floating" placeholder="Telegram Link for customer service."
-                            value="" name="close_time">
+                        <ion-input type="time" label-placement="floating"
+                            placeholder="Telegram Link for customer service." value="{{ $time->close_time }}"
+                            name="close_time">
                             <ion-label slot="label">
                                 System Closing time
                             </ion-label>
                         </ion-input>
+                    </ion-item>
+                    <h3 class="ps-3">Current TimeZone: UTC{{ $time->timezone }}</h3>
+                    <ion-item>
+                        {{-- select --}}
+                        <ion-select label-placement="floating" name="timezone" label="Select Timezone" id="timezone">
+                            @foreach ($timezone as $zone)
+                                <ion-select-option value="{{ $zone['offset'] }}">{{ $zone['text'] }}</ion-select-option>
+                            @endforeach
+                        </ion-select>
                     </ion-item>
                 </ion-list>
                 <ion-button expand="block" class="mt-3" type="submit">
@@ -116,7 +127,7 @@
             });
 
         });
-        
+
         $('#system-time').on('submit', function(e) {
             e.preventDefault();
             loading.message = 'Saving System Time...';
@@ -133,6 +144,11 @@
                     alertCustom.message = response.message;
                     alertCustom.buttons = [{
                         text: 'OK',
+                        handler: function(){
+                            loading.message = 'Reloading details...';
+                            loading.present();
+                            location.href = '/admin/setting'
+                        }
                     }];
                     alertCustom.present();
                 },

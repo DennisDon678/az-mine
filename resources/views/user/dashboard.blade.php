@@ -378,8 +378,8 @@
             </div>
         </div>
     </div>
-
-
+@endsection
+@section('script')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const cards = document.querySelectorAll('.fa-medal');
@@ -388,7 +388,14 @@
                 card.style.color = colors[index % colors.length];
             });
         });
+
+        const toast = document.querySelector('ion-toast');
+        toast.message = 'Our Support opens between {{$time->open_time}} and {{$time->close_time}} UTC{{$time->timezone}}';
+        toast.position = "top";
+        toast.buttons = [{
+            text: 'ok',
+            role: 'cancel',
+        }]
+        toast.isOpen = true;
     </script>
-
-
 @endsection

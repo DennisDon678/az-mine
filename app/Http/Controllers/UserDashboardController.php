@@ -10,6 +10,7 @@ use App\Models\Products;
 use App\Models\ReferralSetting;
 use App\Models\Settings;
 use App\Models\subscription;
+use App\Models\SystemTime;
 use App\Models\TaskLog;
 use App\Models\Transactions;
 use App\Models\User;
@@ -27,9 +28,10 @@ class UserDashboardController extends Controller
 {
     public function index()
     {
+        $time = SystemTime::first();
         $active = subscription::where('user_id', Auth::user()->id)->first();
         $package = packages::all();
-        return view('user.dashboard', compact('package', 'active'));
+        return view('user.dashboard', compact('package', 'active','time'));
     }
 
     public function profile()
