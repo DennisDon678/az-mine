@@ -110,16 +110,6 @@
                     </ion-col>
                 </ion-row>
 
-                {{-- FOR EMAIL --}}
-                <ion-row>
-                    <ion-col>
-                        <ion-text class="ion-text-nowrap"><strong>Email:</strong></ion-text>
-                    </ion-col>
-                    <ion-col>
-                        <ion-text>{{ Auth::user()->email }}</ion-text>
-                    </ion-col>
-                </ion-row>
-
                 {{-- Username --}}
                 <ion-icon name="person-circle-outline" slot="start"></ion-icon>
                 <ion-row>
