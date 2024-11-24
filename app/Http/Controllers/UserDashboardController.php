@@ -31,7 +31,7 @@ class UserDashboardController extends Controller
         $time = SystemTime::first();
         $active = subscription::where('user_id', Auth::user()->id)->first();
         $package = packages::all();
-        return view('user.dashboard', compact('package', 'active','time'));
+        return view('user.dashboard', compact('package', 'active', 'time'));
     }
 
     public function profile()
@@ -369,6 +369,15 @@ class UserDashboardController extends Controller
 
     public function create_withdraw(Request $request)
     {
+        // check if user has completed all tasks
+        $userTask = UserTask::where('user_id', Auth::user()->id)->first();
+        // get user subscriptiom information
+        $sub = subscription::where('user_id', Auth::user()->id)->first();
+        $package = packages::find($sub->package_id);
+
+        if ($userTask->tasks_completed_today < $package->number_of_orders_per_day) {
+            return response()->json(['message' => 'You have not completed all tasks for today. Please complete your tasks first.'], 403);
+        }
         if (Auth::user()->balance >= $request->amount) {
             $ref = uniqid();
 

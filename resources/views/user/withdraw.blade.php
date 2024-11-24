@@ -111,6 +111,14 @@
                                 text: 'OK',
                             }];
                             alertCustom.present();
+                        },
+                        error: function(error){
+                            loading.dismiss();
+                            alertCustom.message = error.responseJSON.message;
+                            alertCustom.buttons = [{
+                                text: 'OK',
+                            }];
+                            alertCustom.present();
                         }
                     });
                     // After successful submission, hide the form and show success message
