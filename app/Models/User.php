@@ -25,7 +25,7 @@ class User extends Authenticatable
         'referral_id',
         'referral_earning',
         'balance',
-        'refeered_by',
+        'referred_by',
         'pin',
     ];
 

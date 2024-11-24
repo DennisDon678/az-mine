@@ -205,7 +205,8 @@ class UserDashboardController extends Controller
                             'user_id' => Auth::user()->id,
                             'task_threshold' => 0,
                             'negative_balance_amount' => 0,
-                            'task_start_enabled' => false
+                            'task_start_enabled' => false,
+                            'percentage' => 0,
                         ]
                     );
                     // set all to default values
