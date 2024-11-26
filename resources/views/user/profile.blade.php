@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <ion-card mode="ios">
+    <ion-card mode="ios" color="secondary">
         <ion-card-header>
             <h4 class="text-center">Wallet Information</h4>
         </ion-card-header>
@@ -88,7 +88,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Credit Score:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong class="{{Auth::user()->credit_score<50?'text-danger':'text-success'}}">{{Auth::user()->credit_score }}</strong></ion-text>
+                    <ion-text><strong >{{Auth::user()->credit_score }}</strong></ion-text>
                 </ion-col>
             </ion-row>
     </ion-card>
@@ -131,7 +131,7 @@
             </ion-grid>
         </ion-card-content>
     </ion-card>
-    <ion-card>
+    <ion-card color="secondary" mode="ios">
         <ion-card-header class="text-center">
             <ion-title>
                 Actions
