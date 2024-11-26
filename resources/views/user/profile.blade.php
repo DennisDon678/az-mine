@@ -141,19 +141,19 @@
             <ion-item button href="/user/bind-wallet" class="mx-3 border-custom">
                 {{-- <ion-button> --}}
                 <ion-icon name="wallet-outline" slot="start"></ion-icon>
-                <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                {{-- <ion-icon name="chevron-forward-outline" slot="end"></ion-icon> --}}
                 Wallet Binding
                 {{-- </ion-button> --}}
             </ion-item>
             <ion-item button id="security" class="mx-3 border-custom">
                 <ion-icon name="lock-open-outline" slot="start"></ion-icon>
                 Security
-                <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                {{-- <ion-icon name="chevron-forward-outline" slot="end"></ion-icon> --}}
             </ion-item>
             <ion-item button href="/user/contact" class="mx-3 border-custom">
                 {{-- <ion-button> --}}
                 <ion-icon name="mic-outline" slot="start"></ion-icon>
-                <ion-icon name="chevron-forward-outline" slot="end"></ion-icon>
+                {{-- <ion-icon name="chevron-forward-outline" slot="end"></ion-icon> --}}
                 Customer Service
                 {{-- </ion-button> --}}
             </ion-item>
