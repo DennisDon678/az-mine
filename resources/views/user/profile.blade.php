@@ -88,7 +88,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Credit Score:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong>{{Auth::user()->credit_score }}</strong></ion-text>
+                    <ion-text><strong class="{{Auth::user()->credit_score<50?'text-danger':'text-success'}}">{{Auth::user()->credit_score }}</strong></ion-text>
                 </ion-col>
             </ion-row>
     </ion-card>
