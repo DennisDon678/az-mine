@@ -154,6 +154,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::get('/logout', [AdminController::class, 'logout']);
 
     Route::post('system-time', [AdminController::class, 'system_time']);
+    Route::get('/announcement', [AdminController::class, 'announcement']);
+    Route::post('/announcement', [AdminController::class, 'save_announcement']);
 });
 
 

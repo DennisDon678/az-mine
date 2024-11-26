@@ -271,6 +271,12 @@
                             <span>Packages</span>
                         </div>
                     </a>
+                    <a href="/admin/announcement">
+                        <div class="menu-item">
+                            <ion-icon name="notifications-outline"></ion-icon>
+                            <span>Announcement</span>
+                        </div>
+                    </a>
                      <a href="/admin/task-config">
                         <div class="menu-item">
                             <ion-icon name="cog-outline"></ion-icon>

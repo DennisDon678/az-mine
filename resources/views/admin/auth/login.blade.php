@@ -39,7 +39,7 @@
                                     @csrf
                                     <ion-item>
                                         <ion-icon name="mail-outline" slot="start"></ion-icon>
-                                        <ion-input placeholder="Email" name="username" fill=""></ion-input>
+                                        <ion-input placeholder="Email" name="username" fill="outline"></ion-input>
                                     </ion-item>
                                     <br>
                                     <ion-item>

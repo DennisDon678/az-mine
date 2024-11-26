@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Admin;
 use App\Models\crypto;
 use App\Models\Deposit;
+use App\Models\notice;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
 use App\Models\ReferralSetting;
@@ -1865,5 +1866,32 @@ class AdminController extends Controller
             ]
 
         );
+    }
+
+    public function announcement(){
+        $announcement = notice::first();
+        if(!$announcement){
+            $announcement = (object)[
+                'notice' => ''
+            ];
+        }
+        return view('admin.pages.announcement',compact('announcement'));
+    }
+
+    public function save_announcement(Request $request){
+        $notice = notice::firstorcreate([
+            'id' => 1,
+        ],[
+            'notice' => $request->notice,
+            'reference' => uniqid()
+        ]);
+
+        $notice->update([
+            'notice' => $request->notice,
+            'reference' => uniqid()
+        ]);
+        return response()->json([
+           'message' => 'Announcement updated successfully',
+        ]);
     }
 }

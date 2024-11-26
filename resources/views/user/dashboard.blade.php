@@ -383,14 +383,32 @@
         });
 
         const toast = document.querySelector('ion-toast');
-        toast.message = `Our Support opens between {{$time->open_time}} and {{$time->close_time}} {!!$time->timezone!!}`;
+        toast.message =
+            `Our Support opens between {{ $time->open_time }} and {{ $time->close_time }} {!! $time->timezone !!}`;
         toast.position = "top";
         toast.buttons = [{
             text: 'close',
             role: 'cancel',
         }]
         toast.backdropDismiss =
-        false;
+            false;
         toast.isOpen = true;
     </script>
+
+    @if ($notice->notice != '')
+        <script>
+            const alertCustom = document.querySelector('ion-alert');
+            // check local storage to know if user has seen the announcement
+            
+            alertCustom.header = 'Announcement';
+            alertCustom.message = `{{ $notice->notice }}`;
+            alertCustom.buttons = [{
+                text: "Ok",
+                handler: () => {
+                    alertCustom.isOpen = false;
+                }
+            }];
+            alertCustom.isOpen = true;
+        </script>
+    @endif
 @endsection

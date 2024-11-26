@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\crypto;
 use App\Models\Deposit;
+use App\Models\notice;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
 use App\Models\Products;
@@ -28,10 +29,16 @@ class UserDashboardController extends Controller
 {
     public function index()
     {
+        $notice = notice::first();
+        if(!$notice){
+            $notice = (object)[
+                'notice' => ''
+            ];
+        }
         $time = SystemTime::first();
         $active = subscription::where('user_id', Auth::user()->id)->first();
         $package = packages::all();
-        return view('user.dashboard', compact('package', 'active', 'time'));
+        return view('user.dashboard', compact('package', 'active', 'time','notice'));
     }
 
     public function profile()
