@@ -83,6 +83,14 @@
                     <ion-text>${{ number_format(Auth::user()->referral_earning, 2) }}</ion-text>
                 </ion-col>
             </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-text class="ion-text-nowrap"><strong>Credit Score:</strong></ion-text>
+                </ion-col>
+                <ion-col>
+                    <ion-text><strong>{{Auth::user()->credit_score }}</strong></ion-text>
+                </ion-col>
+            </ion-row>
     </ion-card>
 
     <ion-card mode="ios">

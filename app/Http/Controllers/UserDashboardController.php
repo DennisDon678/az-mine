@@ -325,7 +325,9 @@ class UserDashboardController extends Controller
         $user->save();
         if ($referral) {
             $referral_config = ReferralSetting::first();
-            $referral->referral_earning = $referral->referral_earning + ((($package->percentage_profit / 100) * $product->price) * $referral_config->percentage / 100);
+            $earning = ((($package->percentage_profit / 100) * $product->price) * $referral_config->percentage / 100);
+            $referral->referral_earning += $earning;
+            $referral->balance += $earning;
             $referral->save();
         }
 
@@ -341,7 +343,9 @@ class UserDashboardController extends Controller
                     // Check if user was referred by another user and update the referrers balance
                     if ($referral) {
                         $referral_config = ReferralSetting::first();
-                        $referral->referral_earning = $referral->referral_earning + (($package->daily_profit * ($package->package_price / 100)) * $referral_config->percentage / 100);
+                        $earning = (($package->daily_profit * ($package->package_price / 100)) * $referral_config->percentage / 100);
+                        $referral->referral_earning += $earning;
+                        $referral->balance += $earning;
                         $referral->save();
                     }
                 }

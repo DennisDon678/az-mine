@@ -285,13 +285,6 @@
                             <span>Withdrawal</span>
                         </div>
                     </a>
-                    <a href="/user/transfer">
-                        <div class="menu-item">
-                            <ion-icon name="cloud-upload-outline"></ion-icon>
-                            <span>Transfer</span>
-                        </div>
-                    </a>
-
                     <a href="/user/terms-and-conditions">
                         <div class="menu-item">
                             <ion-icon name="document-text-outline"></ion-icon>

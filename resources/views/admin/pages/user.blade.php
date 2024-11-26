@@ -1,6 +1,6 @@
 @extends('admin.pages.layout')
 
-@section('title',$user->username)
+@section('title', $user->username)
 @section('header')
     <ion-title>{{ strtoupper($user->username) }}</ion-title>
     <ion-button slot="start" href="/admin/users">
@@ -36,8 +36,12 @@
                 <ion-text><strong>${{ number_format($user->balance, 2) }}</strong></ion-text>
             </ion-item>
             <ion-item>
-                <ion-label>Referral Balance:</ion-label>
+                <ion-label>Referral Earning:</ion-label>
                 <ion-text><strong>${{ number_format($user->referral_earning, 2) }}</strong></ion-text>
+            </ion-item>
+            <ion-item>
+                <ion-label>credit Score:</ion-label>
+                <ion-text><strong>{{ $user->credit_score }}</strong></ion-text>
             </ion-item>
         </ion-card-body>
     </ion-card>
@@ -53,7 +57,7 @@
             <ion-button expand="block" color="danger" id="delete">
                 <ion-icon name="trash-outline" slot="start"></ion-icon>
                 Delete</ion-button>
-            <ion-button expand="block" color="dark" href="/admin/user/{{$user->id}}/reset-password">
+            <ion-button expand="block" color="dark" href="/admin/user/{{ $user->id }}/reset-password">
                 <ion-icon name="refresh-outline" slot="start"></ion-icon>
                 Reset Password
             </ion-button>
@@ -70,14 +74,15 @@
         <ion-content class="ion-padding">
             <ion-item mode="ios">
                 <ion-icon name="list-circle-outline" slot="start"></ion-icon>
-                <ion-select placeholder="Select action to take" name="choice2">
+                <ion-select placeholder="Select action to take" name="choice2" interface="action-sheet">
                     <ion-select-option value="credit">Credit</ion-select-option>
                     <ion-select-option value="debit">Debit</ion-select-option>
+                    <ion-select-option value="credit_score">Change Credit score</ion-select-option>
                 </ion-select>
             </ion-item>
             <ion-item mode="ios">
                 <ion-icon name="cash-outline" slot="start"></ion-icon>
-                <ion-input type="number" placeholder="Enter amount to deposit" name="amount" required></ion-input>
+                <ion-input type="number" placeholder="Enter amount" name="amount" required></ion-input>
             </ion-item>
 
             <ion-button expand="block" color="primary" id="save">Save</ion-button>
@@ -112,9 +117,16 @@
                             success: function(response) {
                                 loadings.dismiss();
                                 alertCustom.message = response.message;
-                                alertCustom.buttons = ['OK'];
+                                alertCustom.buttons = [{
+                                    text: 'OK',
+                                    handler: () => {
+                                        loadings.message = "Reloading...";
+                                        loadings.present();
+                                        window.location.href = '/admin/users'
+                                    },
+                                }];
                                 alertCustom.present();
-                                window.location.href = '/admin/users';
+
                             },
                             error: () => {
                                 loadings.dismiss();

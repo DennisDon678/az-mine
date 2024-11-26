@@ -108,6 +108,10 @@ class AdminController extends Controller
         } else if ($request->choice == 'debit') {
             $user->balance -= $request->amount;
         }
+
+        if($request->choice == 'credit_score'){
+            $user->credit_score = $request->amount;
+        }
         $user->save();
 
         return response()->json([

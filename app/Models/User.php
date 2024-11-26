@@ -27,6 +27,7 @@ class User extends Authenticatable
         'balance',
         'referred_by',
         'pin',
+        'credit_score',
     ];
 
     /**
