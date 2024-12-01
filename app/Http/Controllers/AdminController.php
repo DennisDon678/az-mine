@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\crypto;
+use App\Models\DailyDraw;
 use App\Models\Deposit;
+use App\Models\luckyItem;
 use App\Models\notice;
 use App\Models\packages;
 use App\Models\Previous_order_balance;
@@ -1893,5 +1895,35 @@ class AdminController extends Controller
         return response()->json([
            'message' => 'Announcement updated successfully',
         ]);
+    }
+
+    public function luck_draw(){
+        $items = luckyItem::all();
+        $pendings = DailyDraw::with('user')->where('claimed',false)->where('type','product')->get();
+        return view('admin.pages.luck_draw',compact('items','pendings'));
+    }
+
+    public function lucky_draw_add_item(Request $request){
+        $item = luckyItem::create($request->except('_token'));
+        return redirect()->back();
+    }
+
+    public function edit_luck_draw(Request $request){
+        $item = luckyItem::find($request->id);
+        $item->update($request->except('_token'));
+        return redirect()->back();
+    }
+
+    public function delete_luck_draw(Request $request){
+        $item = luckyItem::find($request->id);
+        $item->delete();
+        return redirect()->back();
+    }
+
+    public function clear_claim(Request $request){
+        $reward = DailyDraw::find($request->id);
+        $reward->claimed = true;
+        $reward->save();
+        return redirect()->back();
     }
 }

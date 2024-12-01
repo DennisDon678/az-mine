@@ -277,7 +277,7 @@
                             <span>Announcement</span>
                         </div>
                     </a>
-                     <a href="/admin/task-config">
+                    <a href="/admin/task-config">
                         <div class="menu-item">
                             <ion-icon name="cog-outline"></ion-icon>
                             <span>Configs</span>
@@ -289,7 +289,13 @@
                             <span>Referral Setting</span>
                         </div>
                     </a>
-                     <a href="/admin/reset-user-task">
+                    <a href="/admin/luck-draw">
+                        <div class="menu-item">
+                            <ion-icon name="cog-outline"></ion-icon>
+                            <span>Lucky Draw</span>
+                        </div>
+                    </a>
+                    <a href="/admin/reset-user-task">
                         <div class="menu-item">
                             <ion-icon name="cog-outline"></ion-icon>
                             <span>Reset All Users Task</span>
@@ -362,17 +368,17 @@
                                             <ion-label>Username</ion-label>
                                             <ion-text>{{ $user->username }}</ion-text>
                                         </ion-item>
-                                        
+
                                         <ion-item>
                                             <ion-label>Open Balance</ion-label>
                                             <ion-text>${{ number_format($user->balance, 2) }}</ion-text>
                                         </ion-item>
-                                        
+
                                     </ion-card-body>
                                 </ion-card>
 
                                 <ion-card>
-                                     <ion-card-header>
+                                    <ion-card-header>
                                         <ion-title>
                                             Withdrawal Details
                                         </ion-title>
@@ -390,11 +396,11 @@
                                             <ion-label>Coin</ion-label>
                                             <ion-text>{{ $deposit->coin }}</ion-text>
                                         </ion-item>
-                                        @if($deposit->network)
-                                        <ion-item>
-                                            <ion-label>Coin Network</ion-label>
-                                            <ion-text class="text-wrap">{{ $deposit->network }}</ion-text>
-                                        </ion-item>
+                                        @if ($deposit->network)
+                                            <ion-item>
+                                                <ion-label>Coin Network</ion-label>
+                                                <ion-text class="text-wrap">{{ $deposit->network }}</ion-text>
+                                            </ion-item>
                                         @endif
                                         <ion-item>
                                             <ion-label>Wallet Address:</ion-label>
@@ -403,7 +409,8 @@
 
                                         {{-- copy wallet address --}}
                                         <div class="mb-2" style="height: 50px;">
-                                        <ion-button onclick="copyToClipboard('{{ $deposit->wallet }}')">Copy Wallet Address</ion-button>
+                                            <ion-button onclick="copyToClipboard('{{ $deposit->wallet }}')">Copy Wallet
+                                                Address</ion-button>
                                         </div>
                                 </ion-card>
                             </ion-content>
@@ -423,7 +430,7 @@
 @section('script')
     <script>
         const alertCustom = document.querySelector('ion-alert');
-        
+
         document.addEventListener("DOMContentLoaded", function() {
             const cards = document.querySelectorAll('.fa-medal');
             cards.forEach((card, index) => {
@@ -439,7 +446,6 @@
             alertCustom.buttons = ['OK'];
             alertCustom.present();
         }
-
     </script>
 
 

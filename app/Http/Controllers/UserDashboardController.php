@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\crypto;
+use App\Models\DailyDraw;
 use App\Models\Deposit;
 use App\Models\notice;
 use App\Models\packages;
@@ -632,7 +633,8 @@ class UserDashboardController extends Controller
 
     public function lucky()
     {
-        return view('user.lucky');
+        $pending = DailyDraw::where('user_id', Auth::user()->id)->where('claimed',false)->first();
+        return view('user.lucky',compact('pending'));
     }
 
     public function update_profile_picture(Request $request)

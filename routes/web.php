@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\luckyDraw;
 use App\Http\Controllers\UserDashboardController;
 use App\Models\Admin;
 use App\Models\Products;
@@ -84,6 +85,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/submit-pending-task', [UserDashboardController::class, 'submit_pending_task']);
         Route::get('/lucky', [UserDashboardController::class, 'lucky']);
         Route::post('/update-profile-picture', [UserDashboardController::class, 'update_profile_picture']);
+
+        // luck draw
+        Route::get('/lucky-draw', [luckyDraw::class, 'performDraw']);
+        Route::post('/lucky-draw', [luckyDraw::class,'store_lucky_draw']);
+        Route::get('/claim-draw', [luckyDraw::class, 'claim_draw']);
+        Route::post('/claim-draw', [luckyDraw::class,'claim_unclaimed']);
     });
 });
 Route::get('rest-user-tasks', [UserDashboardController::class, 'reset_user_tasks']);
@@ -156,6 +163,13 @@ Route::middleware('admin')->prefix('admin')->group(function () {
     Route::post('system-time', [AdminController::class, 'system_time']);
     Route::get('/announcement', [AdminController::class, 'announcement']);
     Route::post('/announcement', [AdminController::class, 'save_announcement']);
+
+    Route::get('/luck-draw', [AdminController::class,'luck_draw']);
+    Route::post('/luck-draw', [AdminController::class,'edit_luck_draw']);
+    Route::post('/lucky-draw/add-item', [AdminController::class,'lucky_draw_add_item']);
+    Route::get('/lucky-draw/delete',[AdminController::class,'delete_luck_draw']);
+
+    Route::get('/clear-claim', [AdminController::class,'clear_claim']);
 });
 
 

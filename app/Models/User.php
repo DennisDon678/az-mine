@@ -54,4 +54,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserNegativeBalanceConfig::class);
     }
+
+    public function dailyDraw(){
+        return $this->hasMany(DailyDraw::class);
+    }
 }

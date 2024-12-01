@@ -150,6 +150,28 @@
             </div>
         </div>
     </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            <ion-title class="text-center">Pending claims</ion-title>
+            <p class="text-center">Pending Claims Has to be cleared to take part in the next draw.</button></p>
+        </ion-card-header>
+        <ion-card-content>
+            @if ($pending)
+                <ion-list>
+                    <ion-item>
+                        <ion-label>${{ number_format($pending->reward, 2) }} worth of {{ $pending->type }}</ion-label>
+                        <ion-chip color="primary" id="claim">
+                            <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+                            <ion-label>Claim Reward</ion-label>
+                        </ion-chip>
+                    </ion-item>
+                </ion-list>
+            @else
+                <p class="text-center">You do not have any pending claims!</p>
+            @endif
+        </ion-card-content>
+    </ion-card>
 @endsection
 
 @section('script')
@@ -170,13 +192,104 @@
                 inoperation = true;
                 spinArrow.style.animation = 'spin 300ms linear infinite';
 
-                setTimeout(() => {
-                    spinArrow.style.animationPlayState = 'paused';
-                    alertCustom.message = 'No Draw is available at the moment.';
-                    alertCustom.buttons = ['Ok'];
-                    alertCustom.isOpen = true;
-                }, 2000);
+                $.ajax({
+                    type: "get",
+                    url: "/user/lucky-draw",
+                    success: function(data) {
+                        // pause animation
+                        spinArrow.style.animationPlayState = 'paused';
+                        // display alert
+                        // alertCustom.message = data.message;
+
+                        const item = data.reward;
+                        if (item.type == 'credit') {
+                            alertCustom.message =
+                                `You have won $${item.amount} worth of credits. Click the claim button to Add this to your balance.`;
+
+                            alertCustom.buttons = [{
+                                text: 'Claim',
+                                handler: () => {
+
+                                }
+                            }];
+                        } else {
+                            alertCustom.message =
+                                `You have won $${item.amount} worth of product. Click the claim button to contact our support on how to claim this.`;
+
+                            alertCustom.buttons = [{
+                                text: 'Claim',
+                                handler: () => {
+                                    loader.message = 'Redirecting...';
+                                    loader.present();
+                                    setTimeout(() => {
+                                        location.href = '/user/contact'
+                                    }, 2000);
+                                }
+                            }];
+                        }
+
+
+                        alertCustom.present();
+                    },
+                    error: function(xhr) {
+                        spinArrow.style.animationPlayState = 'paused';
+                        // display alert
+                        alertCustom.message = xhr.responseJSON.message;
+                        alertCustom.buttons = [{
+                            text: 'Okay'
+                        }];
+                        alertCustom.present();
+                    },
+                });
             }
         })
     </script>
+
+    @if ($pending)
+        <script>
+            $('#claim').click(() => {
+                loader.message = 'Claiming please wait...';
+                loader.present();
+                if ('{{ $pending->type }}' == 'credit') {
+                    $.ajax({
+                        type: "post",
+                        url: "/user/claim-draw",
+                        data: {
+                            id: '{{ $pending->id }}',
+                            _token: '{{ csrf_token() }}'
+                        },
+                        processData: true,
+                        success: function(data) {
+                            loader.dismiss();
+                            alertCustom.message = data.message;
+                            alertCustom.buttons = [{
+                                text: 'Go To Dashboard',
+                                handler: () => {
+                                    location.href = '/user/dashboard'
+                                }
+                            }];
+                            alertCustom.present();
+                        }
+                    });
+
+                } else {
+                    loader.dismiss();
+                    alertCustom.message =
+                        `You have won ${{$pending->reward}}" worth of product. Click the claim button to contact our support on how to claim this.`;
+
+                    alertCustom.buttons = [{
+                        text: 'Claim',
+                        handler: () => {
+                            loader.message = 'Redirecting...';
+                            loader.present();
+                            setTimeout(() => {
+                                location.href = '/user/contact'
+                            }, 2000);
+                        }
+                    }];
+                    alertCustom.present();
+                }
+            });
+        </script>
+    @endif
 @endsection
