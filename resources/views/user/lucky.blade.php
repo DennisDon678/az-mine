@@ -209,7 +209,24 @@
                             alertCustom.buttons = [{
                                 text: 'Claim',
                                 handler: () => {
-
+                                    loader.message = "Claiming...";
+                                    loader.present();
+                                    $.ajax({
+                                        type: "get",
+                                        url: "/user/claim-draw",
+                                        success: function(data) {
+                                            loader.dismiss();
+                                            alertCustom.message = data.message;
+                                            alertCustom.buttons = [{
+                                                text: 'Go To Dashboard',
+                                                handler: () => {
+                                                    location.href =
+                                                        '/user/dashboard'
+                                                }
+                                            }];
+                                            alertCustom.present();
+                                        }
+                                    });
                                 }
                             }];
                         } else {
@@ -275,7 +292,7 @@
                 } else {
                     loader.dismiss();
                     alertCustom.message =
-                        `You have won ${{$pending->reward}}" worth of product. Click the claim button to contact our support on how to claim this.`;
+                        `You have won ${{ $pending->reward }}" worth of product. Click the claim button to contact our support on how to claim this.`;
 
                     alertCustom.buttons = [{
                         text: 'Claim',
