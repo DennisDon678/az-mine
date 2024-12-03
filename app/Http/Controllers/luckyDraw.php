@@ -33,6 +33,10 @@ class luckyDraw extends Controller
             ]); 
         }
 
+        if($user->balance < 0){
+            return response()->json(['message' => 'Clear All negative balance to qualify for a draw.'], 403);
+        }
+
         $alreadyDrawn = DailyDraw::where('user_id', $user->id)
             ->whereDate('draw_date', $today)
             ->exists();

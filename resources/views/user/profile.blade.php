@@ -51,7 +51,8 @@
     <div class="profile-card p-3 m-3">
         <div class="over"></div>
         <div class="content-profile text-center">
-            <img alt="Silhouette of a person's head" src="{{Auth::user()->profile_picture?asset('/images/profile_pictures/'.Auth::user()->profile_picture):'https://ionicframework.com/docs/img/demos/avatar.svg'}}"
+            <img alt="Silhouette of a person's head"
+                src="{{ Auth::user()->profile_picture ? asset('/images/profile_pictures/' . Auth::user()->profile_picture) : 'https://ionicframework.com/docs/img/demos/avatar.svg' }}"
                 id="preview-image" />
             <input type="file" name="profile" id="profile" hidden>
             <ion-button id="change-profile">
@@ -88,7 +89,7 @@
                     <ion-text class="ion-text-nowrap"><strong>Credit Score:</strong></ion-text>
                 </ion-col>
                 <ion-col>
-                    <ion-text><strong >{{Auth::user()->credit_score }}</strong></ion-text>
+                    <ion-text><strong>{{ Auth::user()->credit_score }}</strong></ion-text>
                 </ion-col>
             </ion-row>
     </ion-card>
@@ -155,6 +156,13 @@
                 <ion-icon name="mic-outline" slot="start"></ion-icon>
                 {{-- <ion-icon name="chevron-forward-outline" slot="end"></ion-icon> --}}
                 Customer Service
+                {{-- </ion-button> --}}
+            </ion-item>
+            <ion-item class="mx-3 border-custom">
+                {{-- <ion-button> --}}
+                <ion-icon name="mic-outline" slot="start"></ion-icon>
+                {{-- <ion-icon name="chevron-forward-outline" slot="end"></ion-icon> --}}
+                <div class="gtranslate_wrapper"></div>
                 {{-- </ion-button> --}}
             </ion-item>
         </ion-card-body>
@@ -363,19 +371,17 @@
                 success: function(response) {
                     loading.dismiss()
                     alertCustom.message = response.message;
-                    alertCustom.buttons = [
-                        {
-                            text: 'OK',
-                            handler: () => {
-                                loading.message = 'reloading profile picture';
-                                loading.present();
-                                // reload the page
-                                setTimeout(() => {
-                                    location.href = '/user/profile';
-                                }, 2000);
-                            }
+                    alertCustom.buttons = [{
+                        text: 'OK',
+                        handler: () => {
+                            loading.message = 'reloading profile picture';
+                            loading.present();
+                            // reload the page
+                            setTimeout(() => {
+                                location.href = '/user/profile';
+                            }, 2000);
                         }
-                    ]
+                    }]
                     alertCustom.present();
                     return;
                 },
@@ -400,4 +406,5 @@
         </script>
     @endif
 
+    
 @endsection
