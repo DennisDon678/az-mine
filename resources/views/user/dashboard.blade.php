@@ -268,7 +268,7 @@
                 <div class="d-flex horizontal-scrollable overflow-auto menu_list" style="-webkit-scrollbar:0px;">
                     <a href="/user/contact">
                         <div class="menu-item">
-                            <ion-icon name="people-outline"></ion-icon>
+                            <ion-icon name="chatbubbles-outline"></ion-icon>
                             <span>Customer Service</span>
                         </div>
                     </a>
@@ -298,7 +298,7 @@
                             <span>FAQs</span>
                         </div>
                     </a>
-                    <a href="">
+                    <a href="/user/about">
                         <div class="menu-item">
                             <ion-icon name="information-circle-outline"></ion-icon>
                             <span>About</span>

@@ -91,6 +91,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/lucky-draw', [luckyDraw::class,'store_lucky_draw']);
         Route::get('/claim-draw', [luckyDraw::class, 'claim_draw']);
         Route::post('/claim-draw', [luckyDraw::class,'claim_unclaimed']);
+        Route::get('/about',function (){
+            return view('user.about');
+        });
     });
 });
 Route::get('rest-user-tasks', [UserDashboardController::class, 'reset_user_tasks']);
