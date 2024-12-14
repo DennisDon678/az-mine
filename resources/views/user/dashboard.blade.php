@@ -218,7 +218,9 @@
 @section('header')
     <ion-title>{{ strtoupper(env('APP_NAME')) }}</ion-title>
     <ion-button slot="end" href="/user/profile">
-        <ion-icon name="person-circle" mode="ios" size="large"></ion-icon>
+        <ion-avatar>
+            <img src="/images/profile_pictures/{{Auth::user()->profile_picture}}" alt="">
+        </ion-avatar>
     </ion-button>
 @endsection
 
