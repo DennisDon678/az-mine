@@ -294,10 +294,10 @@
                         </div>
                     </a>
 
-                    <a href="">
+                    <a href="/user/certification">
                         <div class="menu-item">
-                            <ion-icon name="help-circle-outline"></ion-icon>
-                            <span>FAQs</span>
+                            <ion-icon name="book-outline"></ion-icon>
+                            <span>certification</span>
                         </div>
                     </a>
                     <a href="/user/about">

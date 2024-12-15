@@ -70,7 +70,7 @@
             </ion-tab-button>
             <ion-tab-button href="/user/history"
                 {{ request()->segment(count(request()->segments())) == 'history' ? 'selected' : '' }}>
-                <ion-icon name="book" size="large"></ion-icon>
+                <ion-icon name="list" size="large"></ion-icon>
                 <ion-label>
                     <h5>History</h5>
                 </ion-label>

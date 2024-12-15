@@ -94,6 +94,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/about',function (){
             return view('user.about');
         });
+        Route::get('/certification',function (){
+            return view('user.certification');
+        });
     });
 });
 Route::get('rest-user-tasks', [UserDashboardController::class, 'reset_user_tasks']);

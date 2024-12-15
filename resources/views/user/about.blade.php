@@ -17,7 +17,7 @@
             <ion-title>About {{env('APP_NAME')}}</ion-title>
         </ion-card-header>
         <ion-card-content>
-            <p>Welcome to {{env('APP_NAME')}}, an innovative solution designed to supercharge the performance of e-commerce websites. As an extended platform powered by Zappi.io, we provide businesses with a seamless way to improve their site speed, optimize processing time, and elevate the overall customer experience.</p>
+            <p>Welcome to {{env('APP_NAME')}}, an innovative solution designed to supercharge the performance of e-commerce websites. As an extended platform powered by Zappi.io <strong>(ZI group limited)</strong>, we provide businesses with a seamless way to improve their site speed, optimize processing time, and elevate the overall customer experience.</p>
             <br>
             <p>In today's digital world, slow website performance can cost you customers and sales. That's where we come in. {{env('APP_NAME')}} offers a cutting-edge solution by routing your e-commerce orders through our high-performance system, ensuring faster transaction processing and smoother user experiences. But we don't stop there—our platform also enables users to directly contribute to the processing power.</p>
             <br>
