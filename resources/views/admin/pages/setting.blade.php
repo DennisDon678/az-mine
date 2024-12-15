@@ -55,7 +55,7 @@
                     <ion-item>
                         {{-- <ion-icon name="whatsapp-outline"></ion-icon> --}}
                         <ion-input type="time" label-placement="floating"
-                            placeholder="Whatsapp Link for customer service." value="{{ $time->open_time }}"
+                            placeholder="System Opening time." value="{{ $time->open_time }}"
                             name="open_time">
                             <ion-label slot="label">
                                 System Opening time
@@ -65,21 +65,22 @@
                     <ion-item>
                         {{-- <ion-icon name="telegram-outline"></ion-icon> --}}
                         <ion-input type="time" label-placement="floating"
-                            placeholder="Telegram Link for customer service." value="{{ $time->close_time }}"
+                            placeholder="System Closing time." value="{{ $time->close_time }}"
                             name="close_time">
                             <ion-label slot="label">
                                 System Closing time
                             </ion-label>
                         </ion-input>
                     </ion-item>
-                    <h3 class="ps-3"><strong>Current TimeZone:</strong> {{ $time->timezone }}</h3>
+                    {{-- <h3 class="ps-3"><strong>Current TimeZone:</strong> {{ $time->timezone }}</h3> --}}
                     <ion-item>
-                        {{-- select --}}
-                        <ion-select label-placement="floating" name="timezone" label="Select Timezone" id="timezone">
-                            @foreach ($timezone as $zone)
-                                <ion-select-option value="{{ $zone['text'] }}">{{ $zone['text'] }}</ion-select-option>
-                            @endforeach
-                        </ion-select>
+                        <ion-input type="text" label-placement="floating"
+                            placeholder="Systen Time Zone." value="{{ $time->timezone }}"
+                            name="timezone">
+                            <ion-label slot="label">
+                                Systen Time Zone
+                            </ion-label>
+                        </ion-input>
                     </ion-item>
                 </ion-list>
                 <ion-button expand="block" class="mt-3" type="submit">
